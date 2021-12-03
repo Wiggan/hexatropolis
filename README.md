@@ -1,1 +1,4 @@
-# hexatropolis
+# Hexatropolis
+
+## Build environment
+    npm install

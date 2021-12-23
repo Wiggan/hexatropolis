@@ -19,4 +19,9 @@ function init_controls() {
     hud_canvas.oncontextmenu = function (e) {
         e.preventDefault();
     };
+    window.onkeyup = function (e) {
+        if (e.keyCode == 68) { //D
+            debug = !debug;
+        }
+    };
 }

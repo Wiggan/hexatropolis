@@ -5,6 +5,7 @@ var hud_canvas;
 var game_context;
 
 var world;
+var debug = false;
 
 function init() {
     game_canvas = document.getElementById('game_canvas');

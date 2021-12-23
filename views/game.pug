@@ -7,7 +7,6 @@ block head
   script(src='/javascripts/utils/image_handler.js')
   script(src='/javascripts/item_system/consumable.js')
   script(src='/javascripts/item_system/drop.js')
-  script(src='/javascripts/item_system/skills.js')
   style.
     #stack {
     position:relative;
@@ -32,6 +31,7 @@ block content
     canvas#fog_of_war_canvas(width=width/scale height=height/scale)
     canvas#hud_canvas(width=width/scale height=height/scale)
   script(src='/javascripts/actors/actor.js')
+  script(src='/javascripts/item_system/skills.js')
   script(src='/javascripts/actors/monster.js')
   script(src='/javascripts/actors/player.js')
   script(src='/javascripts/game/world.js')

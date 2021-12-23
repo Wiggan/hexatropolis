@@ -5,6 +5,7 @@ const MonsterState = {
     Hunting: 'Hunting'
 };
 
+
 class Monster extends Actor {
     constructor({x, y}) {
         super({x, y});
@@ -13,9 +14,9 @@ class Monster extends Actor {
         this.time_to_spend_in_state = Math.random()*4;
         this.walk_speed = 5;
         this.run_speed = 10;
-        this.color = "red";
+        this.sprites = robot_2_idle;
+        this.shadow = shadow_small;
         console.log("Created monster at x: " + x + ", y: " + y);
-
     }
     
     pick_new_state() {
@@ -32,6 +33,7 @@ class Monster extends Actor {
     }
 
     update(elapsed) {
+        super.update(elapsed);
         if (this.health > 0) {
             this.time_spent_in_state += elapsed;
             if (this.state === MonsterState.Walking) {

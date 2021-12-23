@@ -60,7 +60,7 @@ class Cavern {
 
 class World {
     constructor() {
-        this.cavern = new Cavern(16, [1, 1], [10, 10]);
+        this.cavern = new Cavern(40, [1, 1], [10, 10]);
         this.player = new Player({x: 0, y: 0});
         this.projectiles = [];
         this.drops = [];   

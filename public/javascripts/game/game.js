@@ -14,13 +14,6 @@ function init() {
     game_context = game_canvas.getContext('2d');
 
     world = new World();
-    
-    //console.log(JSON.stringify(screen_to_world({x: 100, y: 100})));
-    //console.log(JSON.stringify(world_to_screen({x: -44, y: -26})));
-    //world.player.position.x = 10;
-    //world.player.position.y = 10;
-    //console.log(JSON.stringify(screen_to_world({x: 100, y: 100})));
-    //console.log(JSON.stringify(world_to_screen({x: -44, y: -26})));
     init_controls();
     
 

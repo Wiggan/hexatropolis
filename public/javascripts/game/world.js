@@ -84,14 +84,6 @@ class World {
         });
     }
 }
-const scale = 10;
-function screen_to_world2({x, y}) {
-    return {x: game_canvas.clientWidth / 2 / scale - x/ scale - world.player.position.x, y: game_canvas.clientHeight/2/ scale - y/ scale - world.player.position.y };
-}
-
-function world_to_screen2({x, y}) {
-    return {x: game_canvas.clientWidth / 2 - (world.player.position.x + x) * scale, y: game_canvas.clientHeight / 2 - (world.player.position.y + y) * scale};
-}
 
 function screen_to_world({x, y}) {
     return {x: x/scale + world.player.position.x - game_canvas.clientWidth/2/scale, y: y/scale + world.player.position.y - game_canvas.clientHeight/2/scale};

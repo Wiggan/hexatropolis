@@ -8,6 +8,7 @@ class Player extends Actor {
         this.sprites = robot_1_idle; 
         this.shadow = shadow_large;
         this.walk_speed = 100;
+        this.brightness = 4;
     }
 
     update(elapsed) {

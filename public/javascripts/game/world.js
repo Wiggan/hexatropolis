@@ -47,13 +47,13 @@ class Cavern {
         });
     }
 
-    draw(game_ctx) {
+    draw() {
         this.tiles.forEach((tile) => {
-            game_ctx.fillStyle = "SaddleBrown";
-            game_ctx.fillRect(tile[0] * this.tile_size, tile[1] * this.tile_size, this.tile_size, this.tile_size);
+            game_context.fillStyle = "SaddleBrown";
+            game_context.fillRect(tile[0] * this.tile_size, tile[1] * this.tile_size, this.tile_size, this.tile_size);
         });
         this.monsters.forEach((monster) => {
-            monster.draw(game_ctx);
+            monster.draw();
         });
     }
 }
@@ -76,11 +76,11 @@ class World {
         });
     }
     
-    draw(game_ctx) {
-        this.cavern.draw(game_ctx);
-        this.player.draw(game_ctx);
+    draw() {
+        this.cavern.draw();
+        this.player.draw();
         this.projectiles.forEach((projectile) => {
-            projectile.draw(game_ctx);
+            projectile.draw();
         });
     }
 }

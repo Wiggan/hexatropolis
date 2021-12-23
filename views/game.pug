@@ -27,6 +27,8 @@ block head
 block content
   #stack
     canvas#game_canvas(width=width/scale height=height/scale)
+    canvas#shadow_canvas(width=width/scale height=height/scale)
+    canvas#actor_canvas(width=width/scale height=height/scale)
     canvas#effect_canvas(width=width/scale height=height/scale)
     canvas#fog_of_war_canvas(width=width/scale height=height/scale)
     canvas#hud_canvas(width=width/scale height=height/scale)
@@ -34,6 +36,7 @@ block content
   script(src='/javascripts/item_system/skills.js')
   script(src='/javascripts/actors/monster.js')
   script(src='/javascripts/actors/player.js')
+  script(src='/javascripts/game/renderer.js')
   script(src='/javascripts/game/world.js')
   script(src='/javascripts/game/game.js')
   script(src='/javascripts/game/controls.js')

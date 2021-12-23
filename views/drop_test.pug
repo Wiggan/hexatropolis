@@ -1,0 +1,19 @@
+extends layout
+
+block head
+  script(src='/javascripts/item_system/consumable.js')
+  script(src='/javascripts/item_system/drop.js')
+
+block content
+  label(for='dropper_level') Monster level:
+  input#level(type='text' name='dropper_level') 
+  br
+  label(for='dropper_max_drop') Max nr of drops:
+  input#max_drop(type='text' name='dropper_max_drop') 
+  br
+  button#drop(type='button' value='Drop') Drop!
+  script(type='text/javascript').
+    var btn = document.getElementById("drop");
+    btn.addEventListener("click", () => {
+      drop({ x: 5, y: 2, level: document.getElementById('level').value, max_drop: document.getElementById('max_drop').value});
+    });

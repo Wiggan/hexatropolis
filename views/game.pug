@@ -1,0 +1,23 @@
+extends layout
+
+block head
+  script(src='/javascripts/utils/math.js')
+  script(src='/javascripts/utils/image_handler.js')
+  script(src='/javascripts/item_system/consumable.js')
+  script(src='/javascripts/item_system/drop.js')
+  script(src='/javascripts/item_system/skills.js')
+
+block content
+  #stack
+    canvas#game_canvas(width=width height=height)
+    canvas#effect_canvas(width=width height=height)
+    canvas#fog_of_war_canvas(width=width height=height)
+    canvas#hud_canvas(width=width height=height)
+  script(src='/javascripts/actors/actor.js')
+  script(src='/javascripts/actors/monster.js')
+  script(src='/javascripts/actors/player.js')
+  script(src='/javascripts/game/world.js')
+  script(src='/javascripts/game/game.js')
+  script(src='/javascripts/game/controls.js')
+  script(type='text/javascript').
+    init();

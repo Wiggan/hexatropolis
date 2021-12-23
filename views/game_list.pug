@@ -1,0 +1,11 @@
+extends layout
+
+block content
+  h1 Ongoing Games
+  each game in games
+    if game.getCurrentPlayer().id == player.id
+      p #{game.name}
+  hr
+  each game in games
+    if game.getCurrentPlayer().id != player.id
+      p #{game.name}

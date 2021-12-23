@@ -4,9 +4,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+//require('./services/database').init();
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+var gameListRouter = require('./routes/game_list');
+var dropTestRouter = require('./routes/drop_test');
+var pocRouter = require('./routes/game_poc');
 var app = express();
 
 // view engine setup
@@ -21,12 +24,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/games', gameListRouter);
+app.use('/drop_test', dropTestRouter);
+app.use('/poc', pocRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
+ 
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development

@@ -63,25 +63,34 @@ function draw_actor({position, sprite, angle}) {
     }
 }
 
-function draw_shadow({position, sprite}) {
-    shadow_context.save();
-    shadow_context.translate(Math.round(position.x), Math.round(position.y));
-    shadow_context.drawImage(sprite, -sprite.width / 2, -sprite.height / 2);
-    shadow_context.restore();
+function fill_circle(ctx, radius) {
+    ctx.beginPath();
+    ctx.arc(0, 0, radius, 0, 2 * Math.PI, false);
+    ctx.fill();   
 }
 
+function draw_shadow({position, radius}) {
+    shadow_context.save();
+    shadow_context.translate(Math.round(position.x), Math.round(position.y));    
+    
+    var radgrad = fog_of_war_context.createRadialGradient(0,0,0,0,0,radius);
+    radgrad.addColorStop(0, 'rgba(0,0,0,0.7)');
+    radgrad.addColorStop(1, 'rgba(0,0,0,0)');
+    shadow_context.fillStyle = radgrad;
+    fill_circle(shadow_context, radius);
+    shadow_context.restore();
+}
+// TODO store gradients in a map with brightness as key for reuse.
 function draw_light({position, brightness}) {
     fog_of_war_context.save();
     fog_of_war_context.globalCompositeOperation = 'destination-out';
     fog_of_war_context.translate(Math.round(position.x), Math.round(position.y));
-    fog_of_war_context.beginPath();
-    fog_of_war_context.arc(0, 0, 20*brightness, 0, 2 * Math.PI, false);
 
     var radgrad = fog_of_war_context.createRadialGradient(0,0,0,0,0,20*brightness);
     radgrad.addColorStop(0, 'rgba(255,255,255,1)');
     radgrad.addColorStop(0.5, 'rgba(255,255,255,0.9)');
     radgrad.addColorStop(1, 'rgba(0,0,0,0)');
     fog_of_war_context.fillStyle = radgrad;
-    fog_of_war_context.fill();        
+    fill_circle(fog_of_war_context, 20*brightness);
     fog_of_war_context.restore();
 }

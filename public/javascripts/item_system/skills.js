@@ -28,6 +28,9 @@ class Projectile extends Actor {
 
 const fireball_effect = ({instigator, target_position}) => {
     const dir = direction(instigator.position, target_position);
-    world.projectiles.push(new Projectile({instigator: instigator, position: { ...instigator.position }, direction: dir, sprites: fireball_images}));
+    var projectile = new Projectile({instigator: instigator, position: { ...instigator.position }, direction: dir, sprites: fireball_images});
+    projectile.brightness = 3;
+    projectile.shadow_radius = 0;
+    world.projectiles.push(projectile);
 };
 const fireball = (x, y) => (new Skill({x: x, y: y, name: "Fireball", description: "Shoots fireballs", effect: fireball_effect}));

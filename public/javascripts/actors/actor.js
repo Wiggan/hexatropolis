@@ -11,7 +11,7 @@ class Actor {
         this.frame = 0;
         this.frame_time = 0.1;
         this.time_spent_in_frame = 0;
-        this.shadow = shadow_medium;
+        this.shadow_radius = 20;
         this.rotate = false;
         this.brightness = 1;
     }
@@ -22,7 +22,7 @@ class Actor {
     }
 
     draw() {
-        draw_shadow({position: this.position, sprite: this.shadow});
+        draw_shadow({position: this.position, radius: this.shadow_radius});
         if (this.rotate) {
             draw_actor({position: this.position, sprite: this.sprites[this.frame], angle: angle(this.direction)});
         } else {

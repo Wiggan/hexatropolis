@@ -6,9 +6,9 @@ class Player extends Actor {
         this.left_mouse_button_action = this.walk;
         this.right_mouse_button_action = this.skills[0].effect;
         this.sprites = robot_1_idle; 
-        this.shadow = shadow_large;
+        this.shadow_radius = 20;
         this.walk_speed = 100;
-        this.brightness = 4;
+        this.brightness = 5;
     }
 
     update(elapsed) {

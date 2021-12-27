@@ -15,7 +15,7 @@ class Monster extends Actor {
         this.walk_speed = 5;
         this.run_speed = 10;
         this.sprites = robot_2_idle;
-        this.shadow = shadow_small;
+        this.shadow_radius = 10;
         console.log("Created monster at x: " + x + ", y: " + y);
     }
     

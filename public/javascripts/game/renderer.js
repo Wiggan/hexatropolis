@@ -45,7 +45,7 @@ function translate_to_position(position) {
     fog_of_war_context.translate(x, y);
 }
 
-function draw_actor({position, sprite, angle}) {
+function draw_actor({position, sprite, angle, collision}) {
     actor_context.save();
     if (angle != 0) {
         actor_context.translate(Math.round(position.x), Math.round(position.y)-sprite.height/2);
@@ -59,6 +59,9 @@ function draw_actor({position, sprite, angle}) {
         actor_context.translate(Math.round(position.x), Math.round(position.y));
         actor_context.fillStyle = "red";
         actor_context.fillRect(0, 0, 1, 1);
+        actor_context.translate(Math.round(collision.x), Math.round(collision.y));
+        actor_context.fillStyle = "green";
+        fill_circle(actor_context, collision.radius);
         actor_context.restore();
     }
 }

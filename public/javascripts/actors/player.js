@@ -10,8 +10,9 @@ class Player extends Actor {
         this.walk_speed = 100;
         this.brightness = 5;
     }
-
+    
     update(elapsed) {
+        //this.collision = {x: 0, y: -robot_1_idle.height/2, radius: robot_1_idle.height/2};
         super.update(elapsed);
         if (this.health > 0) {
             if (length(this.position, this.target_position) > 1) {

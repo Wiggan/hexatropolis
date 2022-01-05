@@ -24,7 +24,3 @@ const robot_2_idle = [
     load_image("images/sprites/robot_2/robot_2_idle__0000s_0001_2.png"),
     load_image("images/sprites/robot_2/robot_2_idle__0000s_0000_3.png"),
 ]
-
-const shadow_small = load_image("images/sprites/misc/shadow_small.png")
-const shadow_medium = load_image("images/sprites/misc/shadow_medium.png")
-const shadow_large = load_image("images/sprites/misc/shadow_large.png")

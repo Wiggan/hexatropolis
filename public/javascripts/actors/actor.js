@@ -14,6 +14,7 @@ class Actor {
         this.shadow_radius = 20;
         this.rotate = false;
         this.brightness = 1;
+        this.collision = {position: {x: 0, y: -4}, radius: 4};
     }
 
     walk({instigator, target_position}) {
@@ -24,9 +25,9 @@ class Actor {
     draw() {
         draw_shadow({position: this.position, radius: this.shadow_radius});
         if (this.rotate) {
-            draw_actor({position: this.position, sprite: this.sprites[this.frame], angle: angle(this.direction)});
+            draw_actor({position: this.position, sprite: this.sprites[this.frame], angle: angle(this.direction), collision: this.collision});
         } else {
-            draw_actor({position: this.position, sprite: this.sprites[this.frame], angle: 0});
+            draw_actor({position: this.position, sprite: this.sprites[this.frame], angle: 0, collision: this.collision});
         }
         draw_light({position: {x: this.position.x, y: this.position.y - this.sprites[this.frame].height/2}, brightness: this.brightness});
     }

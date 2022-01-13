@@ -106,3 +106,6 @@ dist
 # Application specifics
 .vscode/
 hexatropolis.db
+*.blend1
+public/models/
+public/common/models/

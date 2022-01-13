@@ -6,10 +6,9 @@ var logger = require('morgan');
 
 //require('./services/database').init();
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var gameListRouter = require('./routes/game_list');
 var dropTestRouter = require('./routes/drop_test');
 var pocRouter = require('./routes/game_poc');
+var poc3dRouter = require('./routes/game_poc_3d');
 var app = express();
 
 // view engine setup
@@ -23,10 +22,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/games', gameListRouter);
 app.use('/drop_test', dropTestRouter);
 app.use('/poc', pocRouter);
+app.use('/poc3d', poc3dRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

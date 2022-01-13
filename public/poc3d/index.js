@@ -125,11 +125,15 @@ async function initProgram() {
     program.aVertexNormal = gl.getAttribLocation(program, 'aVertexNormal');
     program.uProjectionMatrix = gl.getUniformLocation(program, 'uProjectionMatrix');
     program.uModelViewMatrix = gl.getUniformLocation(program, 'uModelViewMatrix');
-    program.uMaterialDiffuse = gl.getUniformLocation(program, 'uMaterialDiffuse');
+    program.uNormalMatrix = gl.getUniformLocation(program, 'uNormalMatrix');
     program.uMaterialAmbient = gl.getUniformLocation(program, 'uMaterialAmbient');
+    program.uMaterialDiffuse = gl.getUniformLocation(program, 'uMaterialDiffuse');
+    program.uMaterialSpecular = gl.getUniformLocation(program, 'uMaterialSpecular');
+    program.uShininess = gl.getUniformLocation(program, 'uShininess');
     program.uLightPosition = gl.getUniformLocation(program, 'uLightPosition');
     program.uLightDiffuse = gl.getUniformLocation(program, 'uLightDiffuse');
     program.uLightAmbient = gl.getUniformLocation(program, 'uLightAmbient');
+    program.uLightSpecular = gl.getUniformLocation(program, 'uLightSpecular');
     program.uDebug = gl.getUniformLocation(program, 'uDebug');
 }
 
@@ -194,16 +198,24 @@ function draw() {
     const lightPositions = lights.map((light) => {return light.position}).flat();
     gl.uniform3fv(program.uLightPosition, lightPositions);
     gl.uniform4fv(program.uLightDiffuse, [0.4, 0.4, 0.4, 1.0]);
+    gl.uniform4fv(program.uLightSpecular, [0.4, 0.4, 0.4, 1.0]);
     gl.uniform4fv(program.uLightAmbient, [0.1, 0.1, 0.1, 1.0]);
     gl.uniformMatrix4fv(program.uProjectionMatrix, false, projectionMatrix);
     entities.forEach((entity) => {
-        var uModelViewMatrix = mat4.create();
-        mat4.copy(uModelViewMatrix, camera.getViewMatrix());
-        mat4.multiply(uModelViewMatrix, uModelViewMatrix, entity.transform.getWorldMatrix());
+        var modelViewMatrix = mat4.create();
+        mat4.copy(modelViewMatrix, camera.getViewMatrix());
+        mat4.multiply(modelViewMatrix, modelViewMatrix, entity.transform.getWorldMatrix());
+        var normalMatrix = mat4.create();
+        mat4.copy(normalMatrix, modelViewMatrix);
+        mat4.invert(normalMatrix, normalMatrix);
+        mat4.transpose(normalMatrix, normalMatrix);
 
-        gl.uniformMatrix4fv(program.uModelViewMatrix, false, uModelViewMatrix);   
+        gl.uniformMatrix4fv(program.uModelViewMatrix, false, modelViewMatrix);   
+        gl.uniformMatrix4fv(program.uNormalMatrix, false, normalMatrix);
         gl.uniform4fv(program.uMaterialDiffuse, [1.0, 1.0, 1.0, 1.0]);
         gl.uniform4fv(program.uMaterialAmbient, [1.0, 1.0, 1.0, 1.0]); 
+        gl.uniform4fv(program.uMaterialSpecular, [1.0, 1.0, 1.0, 1.0]); 
+        gl.uniform1f(program.uShininess, 4.0); 
         gl.uniform1i(program.uDebug, entity.debug);
     
         // Use the buffers we've constructed
@@ -264,9 +276,9 @@ async function init() {
     entities.push(new Hex(getHexPosition(2, 0, 1)));
     entities.push(new Hex(getHexPosition(2, 0, 2)));
     lights.push(new PointLight([6, 2, 8]));
-    lights.push(new PointLight([-6, 2, 8]));
-    lights.push(new PointLight([3, 2, 10]));
-    lights.push(new PointLight([0, 2, 10]));
+    //lights.push(new PointLight([-6, 2, 8]));
+    //lights.push(new PointLight([3, 2, 10]));
+    //lights.push(new PointLight([0, 2, 10]));
     lights.forEach(light => {entities.push(light);});
     camera = new Camera([0, 0, 0]);
     render();

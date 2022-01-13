@@ -1,18 +1,18 @@
 #version 300 es
 precision mediump float;
 
-const int numLights = 4;
-
-uniform vec4 uMaterialAmbient;
-uniform vec4 uMaterialDiffuse;
 uniform bool uDebug;
+uniform float uShininess;
 uniform vec4 uLightAmbient;
 uniform vec4 uLightDiffuse;
-uniform float uCutOff;
+uniform vec4 uLightSpecular;
+uniform vec4 uMaterialAmbient;
+uniform vec4 uMaterialDiffuse;
+uniform vec4 uMaterialSpecular;
 
 in vec3 vNormal;
-in vec3 vLightRay[numLights];
-in vec4 vFinalColor;
+in vec3 vLightRay;
+in vec3 vEyeVector;
 
 out vec4 fragColor;
 
@@ -20,23 +20,27 @@ void main(void) {
     if (uDebug){
         fragColor = vec4(1.0, 0.0, 1.0, 1.0);
     } else {
-    vec4 Ia = uLightAmbient * uMaterialAmbient;
-    // Base color
-    vec4 finalColor = vec4(0.0, 0.0, 0.0, 1.0);
+        // Normalized normal
+        vec3 N = normalize(vNormal);
+        vec3 L = normalize(vLightRay);
+        float lambertTerm = dot(N, -L);
+        // Ambient
+        vec4 Ia = uLightAmbient * uMaterialAmbient;
+        // Diffuse
+        vec4 Id = vec4(0.0, 0.0, 0.0, 1.0);
+        // Specular
+        vec4 Is = vec4(0.0, 0.0, 0.0, 1.0);
 
-    vec3 N = normalize(vNormal);
-    vec3 L = vec3(0.0);
-    float lambertTerm = 0.0;
-
-    // Iterate for every light
-    for(int i = 0; i < numLights; i++) {
-        L = normalize(vLightRay[i]);
-        lambertTerm = dot(N, L);
         if (lambertTerm > 0.0) {
-            finalColor += uLightDiffuse * uMaterialDiffuse * lambertTerm;
+            Id = uLightDiffuse * uMaterialDiffuse * lambertTerm;
+            vec3 E = normalize(vEyeVector);
+            vec3 R = reflect(L, N);
+            float specular = pow( max(dot(R, E), 0.0), uShininess);
+            Is = uLightSpecular * uMaterialSpecular * specular;
         }
-    }
 
-        fragColor = vec4(vec3(finalColor += Ia), 1.0);
+        // Final fargment color takes into account all light values that
+        // were computed within the fragment shader
+        fragColor = vec4(vec3(Ia + Id /*+ Is*/), 1.0);
     }
 }

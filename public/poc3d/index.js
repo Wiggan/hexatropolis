@@ -15,23 +15,56 @@ let gl,
 
 
 class Transform {
+    #position;
+    #yaw;
+    #pitch;
+    #roll;
+    #dirty;
+    #worldMatrix;
     constructor() {
-        this.position = [0, 0, 0];
-        this.yaw = 0;
-        this.pitch = 0;
-        this.roll = 0;
-        // If I ever need non-uniform scaling, then add the normal matrix again.
-        //this.normalMatrix = mat4.create();
+        this.#position = vec3.create();
+        this.#yaw = 0;
+        this.#pitch = 0;
+        this.#roll = 0;
+        this.#dirty = true;
+        this.#worldMatrix = mat4.create();
     }
     
     getWorldMatrix() {
-        var worldMatrix = mat4.create();
-        mat4.identity(worldMatrix);
-        mat4.translate(worldMatrix, worldMatrix, this.position);
-        mat4.rotateZ(worldMatrix, worldMatrix, this.roll * Math.PI / 180);
-        mat4.rotateY(worldMatrix, worldMatrix, this.yaw * Math.PI / 180);
-        mat4.rotateX(worldMatrix, worldMatrix, this.pitch * Math.PI / 180);
-        return worldMatrix;
+        if (this.#dirty) {
+            mat4.identity(this.#worldMatrix);
+            mat4.translate(this.#worldMatrix, this.#worldMatrix, this.#position);
+            mat4.rotateZ(this.#worldMatrix, this.#worldMatrix, this.#roll * Math.PI / 180);
+            mat4.rotateY(this.#worldMatrix, this.#worldMatrix, this.#yaw * Math.PI / 180);
+            mat4.rotateX(this.#worldMatrix, this.#worldMatrix, this.#pitch * Math.PI / 180);
+            this.#dirty = false;
+        }
+        return this.#worldMatrix;
+    }
+
+    setPosition(position) {
+        this.#dirty = true;
+        this.#position = position;
+    }
+
+    translate(movement) {
+        this.#dirty = true;
+        vec3.add(this.#position, this.#position, movement);
+    }
+
+    yaw(delta) {
+        this.#dirty = true;
+        this.#yaw += delta;
+    }
+
+    pitch(delta) {
+        this.#dirty = true;
+        this.#pitch += delta;
+    }
+
+    roll(delta) {
+        this.#dirty = true;
+        this.#roll += delta;
     }
 }
 
@@ -39,7 +72,7 @@ class Hex {
     constructor(position) {
         this.model = models.hex;
         this.transform = new Transform();
-        this.transform.position = position;
+        this.transform.setPosition(position);
     }
 
     draw() {
@@ -50,7 +83,7 @@ class Hex {
 class Camera {
     constructor(position) {
         this.transform = new Transform();
-        this.transform.position = position;
+        this.transform.setPosition(position);
     }
 
     getViewMatrix() {
@@ -66,7 +99,7 @@ class PointLight {
         this.debug = true;
         this.model = models.block;
         this.transform = new Transform();
-        this.transform.position = position;
+        this.transform.setPosition(position);
         this.position = position;
     }
 }
@@ -205,6 +238,7 @@ function draw() {
         var modelViewMatrix = mat4.create();
         mat4.copy(modelViewMatrix, camera.getViewMatrix());
         mat4.multiply(modelViewMatrix, modelViewMatrix, entity.transform.getWorldMatrix());
+
         var normalMatrix = mat4.create();
         mat4.copy(normalMatrix, modelViewMatrix);
         mat4.invert(normalMatrix, normalMatrix);
@@ -286,8 +320,8 @@ async function init() {
 }
 
 function updatePosition(e) {
-    camera.transform.yaw -= e.movementX/10;
-    camera.transform.pitch -= e.movementY/10;
+    camera.transform.yaw(-e.movementX/10);
+    camera.transform.pitch(-e.movementY/10);
 }
 
 function getHexPosition(ix, y, iz) {
@@ -326,24 +360,16 @@ function initControls() {
     window.addEventListener('keyup', (e) => {
         const viewMatrix = camera.getViewMatrix();
         if (e.key == 'ArrowDown' || e.key == 's' || e.key == 'S') {
-            camera.transform.position[0] += viewMatrix[2];
-            camera.transform.position[1] += viewMatrix[6];
-            camera.transform.position[2] += viewMatrix[10];
+            camera.transform.translate([viewMatrix[2], viewMatrix[6], viewMatrix[10]]);
             e.preventDefault();
         } else if (e.key == 'ArrowLeft' || e.key == 'a' || e.key == 'A') {
-            camera.transform.position[0] -= viewMatrix[0];
-            camera.transform.position[1] -= viewMatrix[4];
-            camera.transform.position[2] -= viewMatrix[8];
+            camera.transform.translate([-viewMatrix[0], -viewMatrix[4], -viewMatrix[8]]);
             e.preventDefault();
         } else if (e.key == 'ArrowRight' || e.key == 'd' || e.key == 'D') {
-            camera.transform.position[0] += viewMatrix[0];
-            camera.transform.position[1] += viewMatrix[4];
-            camera.transform.position[2] += viewMatrix[8];
+            camera.transform.translate([viewMatrix[0], viewMatrix[4], viewMatrix[8]]);
             e.preventDefault();
         } else if (e.key == 'ArrowUp' || e.key == 'w' || e.key == 'W') {
-            camera.transform.position[0] -= viewMatrix[2];
-            camera.transform.position[1] -= viewMatrix[6];
-            camera.transform.position[2] -= viewMatrix[10];
+            camera.transform.translate([-viewMatrix[2], -viewMatrix[6], -viewMatrix[10]]);
             e.preventDefault();
         }
     });

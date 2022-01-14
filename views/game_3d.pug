@@ -1,11 +1,17 @@
 extends layout
 
 block head
-  script(type='x-shader/x-vertex', id='vertex-shader', src='/programs/vertex_shader.vert')
-  script(type='x-shader/x-fragment', id='fragment-shader', src='/programs/fragment_shader.frag')
   script(type='text/javascript', src='/common/js/utils.js')
   script(type='text/javascript', src='/common/lib/dat.gui.js')
   script(type='text/javascript', src='/common/lib/gl-matrix.js')
+  script(type='text/javascript', src='/poc3d/renderer/program_loader.js')
+  script(type='text/javascript', src='/poc3d/renderer/renderer.js')
+  script(type='text/javascript', src='/poc3d/renderer/model_loader.js')
+  script(type='text/javascript', src='/poc3d/basic/transform.js')
+  script(type='text/javascript', src='/poc3d/basic/scene.js')
+  script(type='text/javascript', src='/poc3d/basic/point_light.js')
+  script(type='text/javascript', src='/poc3d/basic/camera.js')
+  script(type='text/javascript', src='/poc3d/entities/hex.js')
   script(type='text/javascript', src='/poc3d/index.js')
   style.
     #stack {

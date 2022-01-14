@@ -27,7 +27,8 @@ async function init() {
     await initProgram();
     await load_all_models();
     scene = new Scene();
-    active_camera = new DebugCamera([0, 0, 0]);
+    active_camera = new DebugCamera([6, 3, 8]);
+
     render();
     initControls();
 }

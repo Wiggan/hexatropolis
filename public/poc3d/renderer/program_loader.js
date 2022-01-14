@@ -56,9 +56,9 @@ async function initProgram() {
     program.uMaterialDiffuse = gl.getUniformLocation(program, 'uMaterialDiffuse');
     program.uMaterialSpecular = gl.getUniformLocation(program, 'uMaterialSpecular');
     program.uShininess = gl.getUniformLocation(program, 'uShininess');
-    program.uLightPosition = gl.getUniformLocation(program, 'uLightPosition');
-    program.uLightDiffuse = gl.getUniformLocation(program, 'uLightDiffuse');
+    program.uLightPosition = gl.getUniformLocation(program, 'uLight.position');
+    program.uLightDiffuse = gl.getUniformLocation(program, 'uLight.diffuse');
+    program.uLightSpecular = gl.getUniformLocation(program, 'uLight.specular');
     program.uLightAmbient = gl.getUniformLocation(program, 'uLightAmbient');
-    program.uLightSpecular = gl.getUniformLocation(program, 'uLightSpecular');
     program.uDebug = gl.getUniformLocation(program, 'uDebug');
 }

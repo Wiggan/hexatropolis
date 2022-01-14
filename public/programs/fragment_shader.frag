@@ -1,11 +1,16 @@
 #version 300 es
 precision mediump float;
 
+struct Light {
+    vec3 position;
+    vec4 diffuse;
+    vec4 specular;
+};
+
 uniform bool uDebug;
 uniform float uShininess;
 uniform vec4 uLightAmbient;
-uniform vec4 uLightDiffuse;
-uniform vec4 uLightSpecular;
+uniform Light uLight;
 uniform vec4 uMaterialAmbient;
 uniform vec4 uMaterialDiffuse;
 uniform vec4 uMaterialSpecular;
@@ -32,11 +37,11 @@ void main(void) {
         vec4 Is = vec4(0.0, 0.0, 0.0, 1.0);
 
         if (lambertTerm > 0.0) {
-            Id = uLightDiffuse * uMaterialDiffuse * lambertTerm;
+            Id = uLight.diffuse * uMaterialDiffuse * lambertTerm;
             vec3 E = normalize(vEyeVector);
             vec3 R = reflect(L, N);
             float specular = pow( max(dot(R, E), 0.0), uShininess);
-            Is = uLightSpecular * uMaterialSpecular * specular;
+            Is = uLight.specular * uMaterialSpecular * specular;
         }
 
         // Final fargment color takes into account all light values that

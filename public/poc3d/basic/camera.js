@@ -3,8 +3,7 @@
 
 class Camera {
     constructor(position) {
-        this.transform = new Transform();
-        this.transform.setPosition(position);
+        this.transform = new Transform(position);
     }
 
     getViewMatrix() {
@@ -13,4 +12,11 @@ class Camera {
         mat4.invert(viewMatrix, this.transform.getWorldMatrix());
         return viewMatrix;
     }
+
+    activate() {
+        active_camera.deactivate();
+        active_camera = this;
+    }
+
+    deactivate() {}
 }

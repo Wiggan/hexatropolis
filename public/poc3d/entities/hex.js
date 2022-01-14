@@ -3,8 +3,7 @@
 class Hex {
     constructor(position) {
         this.model = models.hex;
-        this.transform = new Transform();
-        this.transform.setPosition(position);
+        this.transform = new Transform(position);
     }
 
     draw(renderer) {

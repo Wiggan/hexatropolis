@@ -7,8 +7,8 @@ class Transform {
     #roll;
     #dirty;
     #worldMatrix;
-    constructor() {
-        this.#position = vec3.create();
+    constructor(position) {
+        this.#position = vec3.fromValues(position[0], position[1], position[2]);
         this.#yaw = 0;
         this.#pitch = 0;
         this.#roll = 0;
@@ -30,7 +30,13 @@ class Transform {
 
     setPosition(position) {
         this.#dirty = true;
-        this.#position = position;
+        this.#position = vec3.fromValues(position[0], position[1], position[2]);
+    }
+
+    getPosition() {
+        var position = vec3.create();
+        mat4.getTranslation(position, this.getWorldMatrix());
+        return position;
     }
 
     translate(movement) {

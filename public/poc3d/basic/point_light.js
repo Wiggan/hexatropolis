@@ -4,9 +4,11 @@ class PointLight {
     constructor(position) {
         this.debug = true;
         this.model = models.block;
-        this.transform = new Transform();
-        this.transform.setPosition(position);
-        this.position = position;
+        this.transform = new Transform(position);
+    }
+
+    getPosition() {
+        return this.transform.getPosition();
     }
 
     draw(renderer) {

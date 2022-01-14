@@ -4,7 +4,7 @@
 // across the application
 let renderer,
     scene,
-    camera,
+    active_camera,
     program,
     lightDiffuseColor = [1, 1, 1],
     lightDirection = [0, -1, -1],
@@ -27,14 +27,13 @@ async function init() {
     await initProgram();
     await load_all_models();
     scene = new Scene();
-    camera = new Camera([0, 0, 0]);
+    active_camera = new DebugCamera([0, 0, 0]);
     render();
     initControls();
 }
 
 function updatePosition(e) {
-    camera.transform.yaw(-e.movementX/10);
-    camera.transform.pitch(-e.movementY/10);
+    active_camera.updatePosition(e);
 }
 
 function initControls() {     
@@ -57,27 +56,14 @@ function initControls() {
           console.log('The pointer lock status is now unlocked');
           document.removeEventListener("mousemove", updatePosition, false);
         }
-      }
+    }
       
 
     // Hook pointer lock state change events for different browsers
     document.addEventListener('pointerlockchange', lockChangeAlert, false);
     document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
     window.addEventListener('keyup', (e) => {
-        const viewMatrix = camera.getViewMatrix();
-        if (e.key == 'ArrowDown' || e.key == 's' || e.key == 'S') {
-            camera.transform.translate([viewMatrix[2], viewMatrix[6], viewMatrix[10]]);
-            e.preventDefault();
-        } else if (e.key == 'ArrowLeft' || e.key == 'a' || e.key == 'A') {
-            camera.transform.translate([-viewMatrix[0], -viewMatrix[4], -viewMatrix[8]]);
-            e.preventDefault();
-        } else if (e.key == 'ArrowRight' || e.key == 'd' || e.key == 'D') {
-            camera.transform.translate([viewMatrix[0], viewMatrix[4], viewMatrix[8]]);
-            e.preventDefault();
-        } else if (e.key == 'ArrowUp' || e.key == 'w' || e.key == 'W') {
-            camera.transform.translate([-viewMatrix[2], -viewMatrix[6], -viewMatrix[10]]);
-            e.preventDefault();
-        }
+        active_camera.onKeyUp(e);
     });
 }
 

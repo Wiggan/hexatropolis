@@ -14,7 +14,7 @@ function render() {
     try {
         requestAnimationFrame(render);
         scene.draw(renderer);
-        renderer.draw();
+        renderer.draw_with_bloom();
     } catch (error) {
         console.error(error);
     }

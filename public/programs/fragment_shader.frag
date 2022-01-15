@@ -19,7 +19,8 @@ in vec3 vNormal;
 in vec3 vLightRay;
 in vec3 vEyeVector;
 
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
+layout(location = 1) out vec4 brightColor;
 
 void main(void) {
     if (uDebug){
@@ -47,5 +48,11 @@ void main(void) {
         // Final fargment color takes into account all light values that
         // were computed within the fragment shader
         fragColor = vec4(vec3(Ia + Id /*+ Is*/), 1.0);
+        float brightness = dot(fragColor.rgb, vec3(0.2, 0.7, 0.07));
+        if (brightness > 1.0) {
+            brightColor = fragColor;
+        } else {
+            brightColor = vec4(0.0, 0.0, 0.0, 1.0);
+        }
     }
 }

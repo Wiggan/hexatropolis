@@ -95,17 +95,19 @@ class Renderer {
         var amount = 10;
         gl.useProgram(gaussian_blur_program);
         for (var i = 0; i < amount; i++) {
-            gl.bindFramebuffer(gl.FRAMEBUFFER, this.pingpongFramebuffers[horizontal]); 
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this.pingpongFramebuffers[horizontal ? 1 : 0]); 
             gl.uniform1i(gaussian_blur_program.horizontal, horizontal);
 
             gl.activeTexture(gl.TEXTURE0);
-            gl.bindTexture(gl.TEXTURE_2D, first_iteration ? this.offscreenTextures[1] : this.pingpongTextures[!horizontal]);
-            gl.uniform1i(gaussian_blur_program.image, i);
+            var tex = first_iteration == true ? this.offscreenTextures[1] : this.pingpongTextures[!horizontal ? 1 : 0];
+            gl.bindTexture(gl.TEXTURE_2D, tex);
+            gl.uniform1i(gaussian_blur_program.image, 0);
             
             this.render_quad(gaussian_blur_program);
             horizontal = !horizontal;
             if (first_iteration) first_iteration = false;
         }
+
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         this.draw_post_process();
@@ -155,18 +157,6 @@ class Renderer {
         // Use the Post Process shader
         gl.useProgram(ppProgram);
         
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-        // Bind the quad geometry
-        gl.enableVertexAttribArray(ppProgram.aVertexPosition);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-        gl.vertexAttribPointer(ppProgram.aVertexPosition, 2, gl.FLOAT, false, 0, 0);
-
-        gl.enableVertexAttribArray(ppProgram.aVertexTextureCoords);
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
-        gl.vertexAttribPointer(ppProgram.aVertexTextureCoords, 2, gl.FLOAT, false, 0, 0);
-
         // Bind the textures from the framebuffer
         //for (var i = 0; i < 2; i++) {
         //    gl.activeTexture(gl['TEXTURE' + i]);
@@ -177,14 +167,10 @@ class Renderer {
         gl.bindTexture(gl.TEXTURE_2D, this.offscreenTextures[0]);
         gl.uniform1i(ppProgram['uSampler' + 0], 0);
         gl.activeTexture(gl['TEXTURE' + 1]);
-        gl.bindTexture(gl.TEXTURE_2D, this.pingpongTextures[0]);
+        gl.bindTexture(gl.TEXTURE_2D, this.pingpongTextures[1]);
         gl.uniform1i(ppProgram['uSampler' + 1], 1);
         
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-
-        // Cleanup
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        this.render_quad(ppProgram);
     }
 
     configureGeometry() {

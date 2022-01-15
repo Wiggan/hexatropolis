@@ -1,5 +1,7 @@
 'use strict';
 
+var program, ppProgram;
+
 function getShader(path) {
     return fetch(path)
     .then(response => response.text())
@@ -29,6 +31,7 @@ function getShader(path) {
 }
 
 async function initProgram() {
+    // Normal shaders
     const vertexShader = await getShader('/programs/vertex_shader.vert');
     const fragmentShader = await getShader('/programs/fragment_shader.frag');
 
@@ -61,4 +64,27 @@ async function initProgram() {
     program.uLightSpecular = gl.getUniformLocation(program, 'uLight.specular');
     program.uLightAmbient = gl.getUniformLocation(program, 'uLightAmbient');
     program.uDebug = gl.getUniformLocation(program, 'uDebug');
+
+    // Post processing shaders
+    const ppVertexShader = await getShader('/programs/post_processing_vexter_shader.vert');
+    const ppFragmentShader = await getShader('/programs/glow_fragment_shader.frag');
+
+    // Create a program
+    ppProgram = gl.createProgram();
+    // Attach the shaders to this program
+    gl.attachShader(ppProgram, ppVertexShader);
+    gl.attachShader(ppProgram, ppFragmentShader);
+    gl.linkProgram(ppProgram);
+
+    if (!gl.getProgramParameter(ppProgram, gl.LINK_STATUS)) {
+        console.error('Could not initialize shaders');
+    }
+
+    // Use this program instance
+    gl.useProgram(ppProgram);
+    // We attach the location of these shader values to the program instance
+    // for easy access later in the code
+    ppProgram.aVertexPosition = gl.getAttribLocation(ppProgram, 'aVertexPosition');
+    ppProgram.aVertexTextureCoords = gl.getAttribLocation(ppProgram, 'aVertexTextureCoords');
+    ppProgram.uSampler = gl.getUniformLocation(ppProgram, 'uSampler');
 }

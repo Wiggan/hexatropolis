@@ -5,7 +5,6 @@
 let renderer,
     scene,
     active_camera,
-    program,
     lightDiffuseColor = [1, 1, 1],
     lightDirection = [0, -1, -1],
     sphereColor = [0.5, 0.8, 0.1];
@@ -14,7 +13,8 @@ function render() {
     try {
         requestAnimationFrame(render);
         scene.draw(renderer);
-        renderer.draw_with_bloom();
+        //renderer.draw_with_bloom();
+        renderer.render();
     } catch (error) {
         console.error(error);
     }

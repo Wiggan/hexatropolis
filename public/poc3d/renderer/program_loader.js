@@ -1,6 +1,6 @@
 'use strict';
 
-var program, ppProgram;
+var program, gaussian_blur_program, ppProgram;
 
 function getShader(path) {
     return fetch(path)
@@ -30,62 +30,45 @@ function getShader(path) {
     }).catch(console.error);
 }
 
-async function initProgram() {
-    // Normal shaders
-    const vertexShader = await getShader('/programs/vertex_shader.vert');
-    const fragmentShader = await getShader('/programs/fragment_shader.frag');
+async function loadProgram(vert, frag) {
+    const vertexShader = await getShader(vert);
+    const fragmentShader = await getShader(frag);
 
     // Create a program
-    program = gl.createProgram();
+    var program = gl.createProgram();
     // Attach the shaders to this program
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.error('Could not initialize shaders');
+        console.error(gl.getProgramInfoLog(program));
     }
 
     // Use this program instance
     gl.useProgram(program);
-    // We attach the location of these shader values to the program instance
-    // for easy access later in the code
-    program.aVertexPosition = gl.getAttribLocation(program, 'aVertexPosition');
-    program.aVertexNormal = gl.getAttribLocation(program, 'aVertexNormal');
-    program.uProjectionMatrix = gl.getUniformLocation(program, 'uProjectionMatrix');
-    program.uModelViewMatrix = gl.getUniformLocation(program, 'uModelViewMatrix');
-    program.uNormalMatrix = gl.getUniformLocation(program, 'uNormalMatrix');
-    program.uMaterialAmbient = gl.getUniformLocation(program, 'uMaterialAmbient');
-    program.uMaterialDiffuse = gl.getUniformLocation(program, 'uMaterialDiffuse');
-    program.uMaterialSpecular = gl.getUniformLocation(program, 'uMaterialSpecular');
-    program.uShininess = gl.getUniformLocation(program, 'uShininess');
-    program.uLightPosition = gl.getUniformLocation(program, 'uLight.position');
-    program.uLightDiffuse = gl.getUniformLocation(program, 'uLight.diffuse');
-    program.uLightSpecular = gl.getUniformLocation(program, 'uLight.specular');
-    program.uLightAmbient = gl.getUniformLocation(program, 'uLightAmbient');
-    program.uDebug = gl.getUniformLocation(program, 'uDebug');
 
-    // Post processing shaders
-    const ppVertexShader = await getShader('/programs/post_processing_vexter_shader.vert');
-    const ppFragmentShader = await getShader('/programs/glow_fragment_shader.frag');
-
-    // Create a program
-    ppProgram = gl.createProgram();
-    // Attach the shaders to this program
-    gl.attachShader(ppProgram, ppVertexShader);
-    gl.attachShader(ppProgram, ppFragmentShader);
-    gl.linkProgram(ppProgram);
-
-    if (!gl.getProgramParameter(ppProgram, gl.LINK_STATUS)) {
-        console.error('Could not initialize shaders');
+    var na = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
+    console.log(na, 'attributes');
+    for (var i = 0; i < na; ++i) {
+        var a = gl.getActiveAttrib(program, i);
+        console.log(i, a.size, a.type, a.name);
+        program[a.name] = gl.getAttribLocation(program, a.name);
+    }
+    var nu = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
+    console.log(nu, 'uniforms');
+    for (var i = 0; i < nu; ++i) {
+        var u = gl.getActiveUniform(program, i);
+        program[u.name] = gl.getUniformLocation(program, u.name);
+        console.log(i, u.size, u.type, u.name);
     }
 
-    // Use this program instance
-    gl.useProgram(ppProgram);
-    // We attach the location of these shader values to the program instance
-    // for easy access later in the code
-    ppProgram.aVertexPosition = gl.getAttribLocation(ppProgram, 'aVertexPosition');
-    ppProgram.aVertexTextureCoords = gl.getAttribLocation(ppProgram, 'aVertexTextureCoords');
-    ppProgram.uSampler0 = gl.getUniformLocation(ppProgram, 'uSampler0');
-    ppProgram.uSampler1 = gl.getUniformLocation(ppProgram, 'uSampler1');
+    return program;
+}
+
+async function initProgram() {
+    program = await loadProgram('/programs/vertex_shader.vert', '/programs/fragment_shader.frag');
+    gaussian_blur_program = await loadProgram('/programs/post_processing_vexter_shader.vert', '/programs/gaussian_blur.frag');
+    ppProgram = await loadProgram('/programs/post_processing_vexter_shader.vert', '/programs/glow_fragment_shader.frag');
+    
 }

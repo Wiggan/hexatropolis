@@ -25,6 +25,7 @@ layout(location = 1) out vec4 brightColor;
 void main(void) {
     if (uDebug){
         fragColor = vec4(1.0, 0.0, 1.0, 1.0);
+        brightColor = fragColor;
     } else {
         // Normalized normal
         vec3 N = normalize(vNormal);
@@ -47,12 +48,12 @@ void main(void) {
 
         // Final fargment color takes into account all light values that
         // were computed within the fragment shader
-        fragColor = vec4(vec3(Ia + Id /*+ Is*/), 1.0);
+        fragColor = vec4(vec3(Ia + Id + Is), 1.0);
         float brightness = dot(fragColor.rgb, vec3(0.2, 0.7, 0.07));
-        if (brightness > 1.0) {
+        if (brightness > 0.5) {
             brightColor = fragColor;
         } else {
-            brightColor = vec4(1.0, 0.0, 0.0, 1.0);
+            brightColor = vec4(0.0, 0.0, 0.0, 1.0);
         }
     }
 }

@@ -6,6 +6,8 @@ class Renderer {
     constructor() {
         this.offscreenTextures = [];
         this.framebuffer;
+        this.pingpongTextures = [];
+        this.pingpongFramebuffers = [];
         this.projectionMatrix = mat4.create();
         this.drawables = [];
         this.lights = [];
@@ -27,23 +29,23 @@ class Renderer {
         this.configureGeometry();
     }
 
+    create_texture() {
+        var texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        return texture;
+    }
+
     setup_textures() {
         // Textures
-        for (var i = 0; i < 2; i++) {
-            var texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            
-            // Set up texture so we can render any size image and so we are
-            // working with pixels.
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
-            
-            this.offscreenTextures.push(texture);
-        }
+        this.offscreenTextures.push(this.create_texture());
+        this.offscreenTextures.push(this.create_texture());
 
         // Render buffer
         this.renderbuffer = gl.createRenderbuffer();
@@ -57,7 +59,19 @@ class Renderer {
             gl.framebufferTexture2D(gl.FRAMEBUFFER, gl['COLOR_ATTACHMENT' + i], gl.TEXTURE_2D, this.offscreenTextures[i], 0);
         }
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderbuffer);
+        gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
 
+
+        // Textures for ping pong
+        for (var i = 0; i < 2; i++) {
+            this.pingpongFramebuffers.push(gl.createFramebuffer());
+            this.pingpongTextures.push(this.create_texture());
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this.pingpongFramebuffers[i]);
+            gl.bindTexture(gl.TEXTURE_2D, this.pingpongTextures[i]);
+
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.pingpongTextures[i], 0);
+        }
+        
         // Clean up
         gl.bindTexture(gl.TEXTURE_2D, null);
         gl.bindRenderbuffer(gl.RENDERBUFFER, null);
@@ -76,6 +90,23 @@ class Renderer {
         this.validateSize();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         this.draw();
+
+        var horizontal = true, first_iteration = true;
+        var amount = 10;
+        gl.useProgram(gaussian_blur_program);
+        for (var i = 0; i < amount; i++) {
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this.pingpongFramebuffers[horizontal]); 
+            gl.uniform1i(gaussian_blur_program.horizontal, horizontal);
+
+            gl.activeTexture(gl.TEXTURE0);
+            gl.bindTexture(gl.TEXTURE_2D, first_iteration ? this.offscreenTextures[1] : this.pingpongTextures[!horizontal]);
+            gl.uniform1i(gaussian_blur_program.image, i);
+            
+            this.render_quad(gaussian_blur_program);
+            horizontal = !horizontal;
+            if (first_iteration) first_iteration = false;
+        }
+
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         this.draw_post_process();
     }
@@ -85,6 +116,10 @@ class Renderer {
         // 1. Resize Color Texture
         for (var i = 0; i < 2; i++) {
             gl.bindTexture(gl.TEXTURE_2D, this.offscreenTextures[i]);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        }
+        for (var i = 0; i < 2; i++) {
+            gl.bindTexture(gl.TEXTURE_2D, this.pingpongTextures[i]);
             gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
         }
 
@@ -97,9 +132,31 @@ class Renderer {
         gl.bindRenderbuffer(gl.RENDERBUFFER, null);
     }
 
+    render_quad(p) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+        // Bind the quad geometry
+        gl.enableVertexAttribArray(p.aVertexPosition);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+        gl.vertexAttribPointer(p.aVertexPosition, 2, gl.FLOAT, false, 0, 0);
+
+        gl.enableVertexAttribArray(p.aVertexTextureCoords);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
+        gl.vertexAttribPointer(p.aVertexTextureCoords, 2, gl.FLOAT, false, 0, 0);
+
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        // Cleanup
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+    }
+
     draw_post_process() {
         // Use the Post Process shader
         gl.useProgram(ppProgram);
+        
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
         // Bind the quad geometry
         gl.enableVertexAttribArray(ppProgram.aVertexPosition);
@@ -111,11 +168,17 @@ class Renderer {
         gl.vertexAttribPointer(ppProgram.aVertexTextureCoords, 2, gl.FLOAT, false, 0, 0);
 
         // Bind the textures from the framebuffer
-        for (var i = 0; i < 2; i++) {
-            gl.activeTexture(gl['TEXTURE' + i]);
-            gl.bindTexture(gl.TEXTURE_2D, this.offscreenTextures[i]);
-            gl.uniform1i(ppProgram['uSampler' + i], i);
-        }
+        //for (var i = 0; i < 2; i++) {
+        //    gl.activeTexture(gl['TEXTURE' + i]);
+        //    gl.bindTexture(gl.TEXTURE_2D, this.offscreenTextures[i]);
+        //    gl.uniform1i(ppProgram['uSampler' + i], i);
+        //}
+        gl.activeTexture(gl['TEXTURE' + 0]);
+        gl.bindTexture(gl.TEXTURE_2D, this.offscreenTextures[0]);
+        gl.uniform1i(ppProgram['uSampler' + 0], 0);
+        gl.activeTexture(gl['TEXTURE' + 1]);
+        gl.bindTexture(gl.TEXTURE_2D, this.pingpongTextures[0]);
+        gl.uniform1i(ppProgram['uSampler' + 1], 1);
         
         gl.drawArrays(gl.TRIANGLES, 0, 6);
 
@@ -167,9 +230,9 @@ class Renderer {
         mat4.perspective(this.projectionMatrix, 45, gl.canvas.width / gl.canvas.height, 1, 10000);
     
         //const lightPositions = this.lights.map((light) => {return light.getPosition()}).flat();
-        gl.uniform3fv(program.uLightPosition, this.lights[0].getPosition());
-        gl.uniform4fv(program.uLightDiffuse, [0.4, 0.4, 0.4, 1.0]);
-        gl.uniform4fv(program.uLightSpecular, [0.4, 0.4, 0.4, 1.0]);
+        gl.uniform3fv(program['uLight.position'], this.lights[0].getPosition());
+        gl.uniform4fv(program['uLight.diffuse'], [0.4, 0.4, 0.4, 1.0]);
+        gl.uniform4fv(program['uLight.specular'], [0.4, 0.4, 0.4, 1.0]);
         gl.uniform4fv(program.uLightAmbient, [0.1, 0.1, 0.1, 1.0]);
         gl.uniformMatrix4fv(program.uProjectionMatrix, false, this.projectionMatrix);
         this.drawables.forEach((entity) => {

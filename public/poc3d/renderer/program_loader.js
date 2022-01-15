@@ -86,5 +86,6 @@ async function initProgram() {
     // for easy access later in the code
     ppProgram.aVertexPosition = gl.getAttribLocation(ppProgram, 'aVertexPosition');
     ppProgram.aVertexTextureCoords = gl.getAttribLocation(ppProgram, 'aVertexTextureCoords');
-    ppProgram.uSampler = gl.getUniformLocation(ppProgram, 'uSampler');
+    ppProgram.uSampler0 = gl.getUniformLocation(ppProgram, 'uSampler0');
+    ppProgram.uSampler1 = gl.getUniformLocation(ppProgram, 'uSampler1');
 }

@@ -52,7 +52,7 @@ void main(void) {
         if (brightness > 1.0) {
             brightColor = fragColor;
         } else {
-            brightColor = vec4(0.0, 0.0, 0.0, 1.0);
+            brightColor = vec4(1.0, 0.0, 0.0, 1.0);
         }
     }
 }

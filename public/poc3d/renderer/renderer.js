@@ -28,20 +28,22 @@ class Renderer {
     }
 
     setup_textures() {
-        // Texture
-        this.texture = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
-        
-        // Set up texture so we can render any size image and so we are
-        // working with pixels.
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        
-        gl.texImage2D(
-            gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0,
-            gl.RGBA, gl.UNSIGNED_BYTE, null);
+        // Textures
+        for (var i = 0; i < 2; i++) {
+            var texture = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, texture);
+            
+            // Set up texture so we can render any size image and so we are
+            // working with pixels.
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+            
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+            
+            this.offscreenTextures.push(texture);
+        }
 
         // Render buffer
         this.renderbuffer = gl.createRenderbuffer();
@@ -51,7 +53,9 @@ class Renderer {
         // Frame buffer
         this.framebuffer = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.texture, 0);
+        for (var i = 0; i < 2; i++) {
+            gl.framebufferTexture2D(gl.FRAMEBUFFER, gl['COLOR_ATTACHMENT' + i], gl.TEXTURE_2D, this.offscreenTextures[i], 0);
+        }
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderbuffer);
 
         // Clean up
@@ -79,8 +83,10 @@ class Renderer {
 
     validateSize() {
         // 1. Resize Color Texture
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        for (var i = 0; i < 2; i++) {
+            gl.bindTexture(gl.TEXTURE_2D, this.offscreenTextures[i]);
+            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.canvas.width, gl.canvas.height, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+        }
 
         // 2. Resize Render Buffer
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderbuffer);
@@ -92,8 +98,6 @@ class Renderer {
     }
 
     draw_post_process() {
-
-
         // Use the Post Process shader
         gl.useProgram(ppProgram);
 
@@ -106,12 +110,18 @@ class Renderer {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
         gl.vertexAttribPointer(ppProgram.aVertexTextureCoords, 2, gl.FLOAT, false, 0, 0);
 
-        // Bind the texture from the framebuffer
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, this.texture);
-        gl.uniform1i(ppProgram.uSampler, 0);
-
+        // Bind the textures from the framebuffer
+        for (var i = 0; i < 2; i++) {
+            gl.activeTexture(gl['TEXTURE' + i]);
+            gl.bindTexture(gl.TEXTURE_2D, this.offscreenTextures[i]);
+            gl.uniform1i(ppProgram['uSampler' + i], i);
+        }
+        
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        // Cleanup
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
 
     configureGeometry() {
@@ -145,7 +155,7 @@ class Renderer {
     
         // Clean up
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
-      }
+    }
 
     draw() {
         gl.useProgram(program);

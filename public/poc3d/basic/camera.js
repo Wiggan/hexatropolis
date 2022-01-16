@@ -13,6 +13,13 @@ class Camera {
         return viewMatrix;
     }
 
+    getPosition() {
+        var position = vec3.create(); 
+        mat4.getTranslation(position, this.transform.get());
+        return position;
+    }
+
+
     activate() {
         active_camera.deactivate();
         active_camera = this;

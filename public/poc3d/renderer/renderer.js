@@ -216,13 +216,21 @@ class Renderer {
         mat4.perspective(this.projectionMatrix, 45, gl.canvas.width / gl.canvas.height, 1, 10000);
     
         //const lightPositions = this.lights.map((light) => {return light.getPosition()}).flat();
-        var pos = this.lights[0].getPosition();
-        gl.uniform3fv(program['uLight.position'], pos);
-        gl.uniform4fv(program['uLight.diffuse'], [0.4, 0.4, 0.4, 1.0]);
-        gl.uniform4fv(program['uLight.specular'], [0.4, 0.4, 0.4, 1.0]);
-        gl.uniform4fv(program.uLightAmbient, [0.01, 0.01, 0.01, 1.0]);
+        for (var i = 0; i < 4 && i < this.lights.length; i++) {
+            gl.uniform3fv(program['uLight[' + i + '].position'], this.lights[i].getPosition());
+            gl.uniform3fv(program['uLight[' + i + '].ambient'], this.lights[i].ambient);
+            gl.uniform3fv(program['uLight[' + i + '].diffuse'], this.lights[i].diffuse);
+            gl.uniform3fv(program['uLight[' + i + '].specular'], this.lights[i].specular);
+            gl.uniform1f(program['uLight[' + i + '].constant'], this.lights[i].constant);
+            gl.uniform1f(program['uLight[' + i + '].linear'], this.lights[i].linear);
+            gl.uniform1f(program['uLight[' + i + '].quadratic'], this.lights[i].quadratic);
+        }
+        gl.uniform3fv(program.uCameraPos, active_camera.getPosition()); 
         gl.uniformMatrix4fv(program.uProjectionMatrix, false, this.projectionMatrix);
+        gl.uniformMatrix4fv(program.uViewMatrix, false, active_camera.getViewMatrix());
         this.drawables.forEach((entity) => {
+            gl.uniformMatrix4fv(program.uModelMatrix, false, entity.getWorldTransform());
+            
             var modelViewMatrix = mat4.create();
             mat4.copy(modelViewMatrix, active_camera.getViewMatrix());
             mat4.multiply(modelViewMatrix, modelViewMatrix, entity.getWorldTransform());
@@ -232,12 +240,12 @@ class Renderer {
             mat4.invert(normalMatrix, normalMatrix);
             mat4.transpose(normalMatrix, normalMatrix);
     
-            gl.uniformMatrix4fv(program.uModelViewMatrix, false, modelViewMatrix);   
+            gl.uniformMatrix4fv(program.uModelViewMatrix, false, modelViewMatrix);
             gl.uniformMatrix4fv(program.uNormalMatrix, false, normalMatrix);
-            gl.uniform4fv(program.uMaterialDiffuse, [1.0, 1.0, 1.0, 1.0]);
-            gl.uniform4fv(program.uMaterialAmbient, [1.0, 1.0, 1.0, 1.0]); 
-            gl.uniform4fv(program.uMaterialSpecular, [1.0, 1.0, 1.0, 1.0]); 
-            gl.uniform1f(program.uShininess, 4.0); 
+            gl.uniform3fv(program.uMaterialDiffuse, [0.6, 0.5, 0.4]);
+            gl.uniform3fv(program.uMaterialAmbient, [0.1, 0.1, 0.1]); 
+            gl.uniform3fv(program.uMaterialSpecular, [0.1, 0.1, 0.1]); 
+            gl.uniform1f(program.uMaterialShininess, 4.0); 
             gl.uniform1i(program.uDebug, entity.debug);
         
             // Use the buffers we've constructed

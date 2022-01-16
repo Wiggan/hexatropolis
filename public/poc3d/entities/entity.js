@@ -14,6 +14,10 @@ class Entity {
         this.children.forEach(child => child.draw(renderer));
     }
 
+    update(elapsed) {
+        this.children.forEach(child => child.update(elapsed));   
+    }
+
     getLocalTransform() {
         return this.transform.get();
     }

@@ -5,6 +5,12 @@ class PointLight extends Entity {
         super(parent, local_position);
         this.debug = true;
         this.model = models.block;
+        this.ambient = [0.01, 0.01, 0.01];
+        this.diffuse = [0.6, 0.6, 0.4];
+        this.specular = [0.6, 0.6, 0.4];
+        this.constant = 1.0;
+        this.linear = 0.7;
+        this.quadratic = 1.8;
     }
 
     getPosition() {

@@ -5,7 +5,6 @@ var debug = false;
 class DebugCamera extends Camera {
     constructor(position) {
         super(position);
-
     }
 
     updatePosition(e) {

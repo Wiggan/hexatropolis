@@ -9,9 +9,14 @@ let renderer,
     lightDirection = [0, -1, -1],
     sphereColor = [0.5, 0.8, 0.1];
 
+var then = Date.now();
+var now = Date.now();
 function render() {
     try {
         requestAnimationFrame(render);
+        now = Date.now();
+        scene.update(now - then);
+        then = now;
         scene.draw(renderer);
         //renderer.draw_with_bloom();
         renderer.render();

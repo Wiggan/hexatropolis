@@ -9,7 +9,7 @@ class Camera {
     getViewMatrix() {
         var viewMatrix = mat4.create();
         //mat4.identity(viewMatrix);
-        mat4.invert(viewMatrix, this.transform.getWorldMatrix());
+        mat4.invert(viewMatrix, this.transform.get());
         return viewMatrix;
     }
 

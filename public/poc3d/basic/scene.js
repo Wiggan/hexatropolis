@@ -10,19 +10,20 @@ function getHexPosition(ix, y, iz) {
 class Scene {
     constructor() {
         this.entities = [];
-        this.entities.push(new Hex(getHexPosition(0, 3, 0)));
-        this.entities.push(new Hex(getHexPosition(1, 3, 0)));
-        this.entities.push(new Hex(getHexPosition(2, 3, 0)));
-        this.entities.push(new Hex(getHexPosition(3, 3, 0)));
-        this.entities.push(new Hex(getHexPosition(4, 3, 0)));
-        this.entities.push(new Hex(getHexPosition(0, 3, 3)));
-        this.entities.push(new Hex(getHexPosition(0, 3, 1)));
-        this.entities.push(new Hex(getHexPosition(0, 3, 2)));
-        this.entities.push(new Hex(getHexPosition(1, 0, 1)));
-        this.entities.push(new Hex(getHexPosition(1, 0, 2)));
-        this.entities.push(new Hex(getHexPosition(2, 0, 1)));
-        this.entities.push(new Hex(getHexPosition(2, 0, 2)));
-        this.entities.push(new PointLight([6, 2, 8]));
+        this.entities.push(new Hex(null, getHexPosition(0, 3, 0)));
+        this.entities.push(new Hex(null, getHexPosition(1, 3, 0)));
+        this.entities.push(new Hex(null, getHexPosition(2, 3, 0)));
+        this.entities.push(new Hex(null, getHexPosition(3, 3, 0)));
+        this.entities.push(new Hex(null, getHexPosition(4, 3, 0)));
+        this.entities.push(new Hex(null, getHexPosition(0, 3, 3)));
+        this.entities.push(new Hex(null, getHexPosition(0, 3, 1)));
+        this.entities.push(new Hex(null, getHexPosition(0, 3, 2)));
+        this.entities.push(new Hex(null, getHexPosition(1, 0, 1)));
+        this.entities.push(new Hex(null, getHexPosition(1, 0, 2)));
+        this.entities.push(new Hex(null, getHexPosition(2, 0, 1)));
+        this.entities.push(new Hex(null, getHexPosition(2, 0, 2)));
+        //this.entities.push(new PointLight(null, [6, 2, 8]));
+        this.entities.push(new Lantern(null, getHexPosition(3, 0, 2)));
     }
 
     

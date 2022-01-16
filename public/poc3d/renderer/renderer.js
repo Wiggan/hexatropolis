@@ -216,15 +216,16 @@ class Renderer {
         mat4.perspective(this.projectionMatrix, 45, gl.canvas.width / gl.canvas.height, 1, 10000);
     
         //const lightPositions = this.lights.map((light) => {return light.getPosition()}).flat();
-        gl.uniform3fv(program['uLight.position'], this.lights[0].getPosition());
+        var pos = this.lights[0].getPosition();
+        gl.uniform3fv(program['uLight.position'], pos);
         gl.uniform4fv(program['uLight.diffuse'], [0.4, 0.4, 0.4, 1.0]);
         gl.uniform4fv(program['uLight.specular'], [0.4, 0.4, 0.4, 1.0]);
-        gl.uniform4fv(program.uLightAmbient, [0.1, 0.1, 0.1, 1.0]);
+        gl.uniform4fv(program.uLightAmbient, [0.01, 0.01, 0.01, 1.0]);
         gl.uniformMatrix4fv(program.uProjectionMatrix, false, this.projectionMatrix);
         this.drawables.forEach((entity) => {
             var modelViewMatrix = mat4.create();
             mat4.copy(modelViewMatrix, active_camera.getViewMatrix());
-            mat4.multiply(modelViewMatrix, modelViewMatrix, entity.transform.getWorldMatrix());
+            mat4.multiply(modelViewMatrix, modelViewMatrix, entity.getWorldTransform());
     
             var normalMatrix = mat4.create();
             mat4.copy(normalMatrix, modelViewMatrix);

@@ -66,6 +66,9 @@ function initControls() {
     window.addEventListener('keyup', (e) => {
         active_camera.onKeyUp(e);
     });
+    window.addEventListener('keydown', (e) => {
+        active_camera.onKeyDown(e);
+    });
 }
 
 // De-normalize colors from 0-1 to 0-255

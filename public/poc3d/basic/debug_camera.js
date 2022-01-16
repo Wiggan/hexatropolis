@@ -1,5 +1,7 @@
 'use strict'
 
+var debug = false;
+
 class DebugCamera extends Camera {
     constructor(position) {
         super(position);
@@ -9,6 +11,13 @@ class DebugCamera extends Camera {
     updatePosition(e) {
         this.transform.yaw(-e.movementX/10);
         this.transform.pitch(-e.movementY/10);
+    }
+
+    onKeyDown(e) {
+        if (e.key == 'F1') {
+            debug = !debug;
+            e.preventDefault();
+        }
     }
 
     onKeyUp(e) {

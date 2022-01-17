@@ -30,15 +30,19 @@ class DebugCamera extends Camera {
     }
 
     updatePosition(e) {
-        active_camera.transform.yaw(-e.movementX/10);
-        active_camera.transform.pitch(-e.movementY/10);
+        var yaw = -e.movementX/10;
+        var pitch = -e.movementY/10;
+        active_camera.transform.yaw(yaw);
+        if (-80 < active_camera.transform.getPitch() + pitch && 
+            active_camera.transform.getPitch() + pitch < 80) {
+            active_camera.transform.pitch(pitch);
+
+        }
     }
 
     onKeyDown(e) {
-        if (e.key == 'F1') {
-            debug = !debug;
-            e.preventDefault();
-        } else if (e.key == 'ArrowDown' || e.key == 's' || e.key == 'S') {
+        super.onKeyDown(e);
+        if (e.key == 'ArrowDown' || e.key == 's' || e.key == 'S') {
             this.velocity[1] = this.speed;
             e.preventDefault();
         } else if (e.key == 'ArrowLeft' || e.key == 'a' || e.key == 'A') {
@@ -49,6 +53,9 @@ class DebugCamera extends Camera {
             e.preventDefault();
         } else if (e.key == 'ArrowUp' || e.key == 'w' || e.key == 'W') {
             this.velocity[1] = -this.speed;
+            e.preventDefault();
+        } else if (e.key == ' ') {
+            //this.transform.lookAt([0,0,0]);
             e.preventDefault();
         }
     }
@@ -76,13 +83,17 @@ class DebugCamera extends Camera {
 
     update(elapsed) {
         const viewMatrix = this.getViewMatrix();
+        //var translation = vec3.fromValues(this.velocity[0]*elapsed, 0.0, this.velocity[1]*elapsed);
+        //this.transform.translate(translation);
         var forward = vec3.fromValues(viewMatrix[2], viewMatrix[6], viewMatrix[10]);
         var right = vec3.fromValues(viewMatrix[0], viewMatrix[4], viewMatrix[8]);
+        //var forward = vec3.fromValues(0, 0, 1);
+        //var right = vec3.fromValues(1, 0, 0);
         var translation = vec3.create();
         vec3.scale(forward, forward, this.velocity[1]*elapsed);
         vec3.scale(right, right, this.velocity[0]*elapsed);
         vec3.add(translation, forward, right);
-        //console.log(this.velocity);
+        ////console.log(this.velocity);
         this.transform.translate(translation);
         super.update(elapsed);
     }

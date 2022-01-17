@@ -51,6 +51,10 @@ class Transform {
         this.#pitch += delta;
     }
 
+    getPitch() {
+        return this.#pitch;
+    }
+
     roll(delta) {
         this.#dirty = true;
         this.#roll += delta;

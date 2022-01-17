@@ -52,22 +52,23 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 } 
 
 
-void main()
-{
-    // properties
-    vec3 norm = normalize(vNormal);
-    vec3 viewDir = normalize(uCameraPos - vFragPos);
+void main() {
+    if (uDebug){
+        fragColor = vec4(1.0, 0.0, 1.0, 1.0);
+        brightColor = fragColor;
+    } else {
+        // properties
+        vec3 norm = normalize(vNormal);
+        vec3 viewDir = normalize(uCameraPos - vFragPos);
 
-    // phase 1: Directional lighting
-    vec3 result = vec3(0); //CalcDirLight(dirLight, norm, viewDir);
-    // phase 2: Point lights
-    for(int i = 0; i < numLights; i++)
-        result += CalcPointLight(uLight[i], norm, vFragPos, viewDir);    
-    // phase 3: Spot light
-    //result += CalcSpotLight(spotLight, norm, FragPos, viewDir);    
-    
-    fragColor = vec4(result, 1.0);
-    brightColor = vec4(0.0, 0.0, 0.0, 1.0);
+        vec3 result = vec3(0); 
+        // phase 2: Point lights
+        for(int i = 0; i < numLights; i++)
+            result += CalcPointLight(uLight[i], norm, vFragPos, viewDir);
+        
+        fragColor = vec4(result, 1.0);
+        brightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
 }
 
 //void main(void) {

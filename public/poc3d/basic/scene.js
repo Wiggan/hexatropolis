@@ -10,6 +10,7 @@ function getHexPosition(ix, y, iz) {
 class Scene {
     constructor() {
         this.entities = [];
+        this.entities.push(new DebugCamera([6, 3, 8]));
         this.entities.push(new Hex(null, getHexPosition(0, 3, 0)));
         this.entities.push(new Hex(null, getHexPosition(1, 3, 0)));
         this.entities.push(new Hex(null, getHexPosition(2, 3, 0)));
@@ -33,8 +34,10 @@ class Scene {
         this.entities.at(-1).light.diffuse = [0.0, 0.0, 1.0];
         //this.entities.push(new Lantern(null, getHexPosition(14, 0, 14)));
         //this.entities.at(-1).light.diffuse = [0.0, 1.0, 0.0];
-        active_camera = new DebugCamera([6, 3, 8]);
-        this.entities.push(active_camera);
+        var actor = new Lantern(null, getHexPosition(2, 6, 1));
+        actor.light.children.push(new TrackingCamera(actor.light, [0.0, 3.0, -2.0]))
+        this.entities.push(actor);
+        //this.entities.push(new TrackingCamera(null, [6, 3, 8]));
     }
 
     draw(renderer) {

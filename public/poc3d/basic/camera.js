@@ -1,9 +1,16 @@
 'use strict';
 
+var cameras = [];
+var active_camera;
+
 
 class Camera extends Entity {
     constructor(parent, local_position) {
         super(parent, local_position);
+        cameras.push(this);
+        active_camera = this;
+        this.model = models.block;
+        this.debug = true;
     }
 
     getViewMatrix() {
@@ -19,11 +26,19 @@ class Camera extends Entity {
         return position;
     }
 
-
-    activate() {
-        active_camera.deactivate();
-        active_camera = this;
+    onKeyDown(e) {
+        if (e.key == 'F1') {
+            debug = !debug;
+            e.preventDefault();
+        } else if (e.key == 'F2') {
+            active_camera = cameras[(cameras.indexOf(active_camera)+1) % cameras.length];
+            e.preventDefault();
+        } 
     }
 
-    deactivate() {}
+    draw(renderer) {
+        if (debug && active_camera != this) {
+            renderer.add_drawable(this);
+        }
+    }
 }

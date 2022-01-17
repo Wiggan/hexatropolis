@@ -20,6 +20,7 @@ class PointLight extends Entity {
     }
 
     draw(renderer) {
+        super.draw(renderer);
         renderer.add_light(this);
         if (debug) {
             renderer.add_drawable(this);

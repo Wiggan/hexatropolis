@@ -4,7 +4,6 @@
 // across the application
 let renderer,
     scene,
-    active_camera,
     lightDiffuseColor = [1, 1, 1],
     lightDirection = [0, -1, -1],
     sphereColor = [0.5, 0.8, 0.1];
@@ -38,10 +37,8 @@ async function init() {
 }
 
 function initControls() {     
+    
     var canvas = utils.getCanvas('game_canvas');
-
-    canvas.requestPointerLock = canvas.requestPointerLock || canvas.mozRequestPointerLock;
-    document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
     canvas.onclick = function(e) {
         active_camera.onclick(e);
     }

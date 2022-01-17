@@ -97,8 +97,4 @@ class DebugCamera extends Camera {
         this.transform.translate(translation);
         super.update(elapsed);
     }
-
-    activate() {
-        super.activate();
-    }
 }

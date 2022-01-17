@@ -1,7 +1,5 @@
 'use strict'
 
-var debug = false;
-
 class TrackingCamera extends Camera {
     constructor(parent, local_position) {
         super(parent, local_position);

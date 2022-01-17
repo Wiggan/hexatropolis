@@ -1,21 +1,21 @@
 'use strict';
 
 
-class Camera {
-    constructor(position) {
-        this.transform = new Transform(position);
+class Camera extends Entity {
+    constructor(parent, local_position) {
+        super(parent, local_position);
     }
 
     getViewMatrix() {
         var viewMatrix = mat4.create();
         //mat4.identity(viewMatrix);
-        mat4.invert(viewMatrix, this.transform.get());
+        mat4.invert(viewMatrix, this.getWorldTransform());
         return viewMatrix;
     }
 
     getPosition() {
         var position = vec3.create(); 
-        mat4.getTranslation(position, this.transform.get());
+        mat4.getTranslation(position, this.getWorldTransform());
         return position;
     }
 

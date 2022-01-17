@@ -33,9 +33,9 @@ class Scene {
         this.entities.at(-1).light.diffuse = [0.0, 0.0, 1.0];
         //this.entities.push(new Lantern(null, getHexPosition(14, 0, 14)));
         //this.entities.at(-1).light.diffuse = [0.0, 1.0, 0.0];
+        active_camera = new DebugCamera([6, 3, 8]);
+        this.entities.push(active_camera);
     }
-
-    
 
     draw(renderer) {
         this.entities.forEach(entity => {

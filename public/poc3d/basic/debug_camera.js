@@ -29,6 +29,11 @@ class DebugCamera extends Camera {
         }
     }
 
+    deactivate() {
+        document.exitPointerLock();
+        document.removeEventListener("mousemove", active_camera.updatePosition, false);
+    }
+
     updatePosition(e) {
         var yaw = -e.movementX/10;
         var pitch = -e.movementY/10;

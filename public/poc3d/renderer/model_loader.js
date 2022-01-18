@@ -1,6 +1,11 @@
 'use strict'
 
 var models = {};
+var materials = {
+    wall: {diffuse: [0.6, 0.5, 0.4], ambient: [0.6, 0.5, 0.4], specular: [0.1, 0.1, 0.1], shininess: 4.0},
+    player: {diffuse: [0.6, 0.5, 0.4], ambient: [0.6, 0.5, 0.4], specular: [0.1, 0.1, 0.1], shininess: 4.0},
+    light: {diffuse: [0.2, 0.2, 1.0], ambient: [0.6, 0.5, 0.4], specular: [0.1, 0.1, 0.1], shininess: 4.0, isLight: true},
+}
 
 async function load_model(path) {
     return fetch(path)

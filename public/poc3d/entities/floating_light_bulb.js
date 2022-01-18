@@ -4,6 +4,7 @@ class FloatingLightBulb extends Entity {
     constructor(parent, local_position) {
         super(parent, local_position);
         this.model = models.block;
+        this.material = materials.light;
         this.transform.pitch(45);
         this.transform.yaw(45);
         this.transform.roll(45);

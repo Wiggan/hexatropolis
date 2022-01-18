@@ -5,6 +5,9 @@ class Lantern extends Entity {
         super(parent, local_position);
         this.light = new FloatingLightBulb(this, [0,3,0]);
         this.hex = new Hex(this, [0,0,0]);
+        this.active = true;
+        this.light.transform.yaw(Math.random()*2*Math.PI);
+        this.float_offset = Math.random()*2*Math.PI;
     }
 
     draw(renderer) {
@@ -13,6 +16,9 @@ class Lantern extends Entity {
 
     update(elapsed) {
         super.update(elapsed);
-        this.light.transform.setPosition([0, 3 + Math.sin(Date.now()*0.005)*0.1, 0]);
+        if (this.active) {
+            this.light.transform.setPosition([0, 3 + Math.sin(Date.now()*0.005 + this.float_offset)*0.1, 0]);
+            this.light.transform.yaw(elapsed * 0.05);
+        }
     }
 }

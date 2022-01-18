@@ -206,6 +206,14 @@ class Renderer {
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
 
+    setMaterial(program, material) {
+        gl.uniform3fv(program['uMaterial.diffuse'], material.diffuse);
+        gl.uniform3fv(program['uMaterial.ambient'], material.ambient); 
+        gl.uniform3fv(program['uMaterial.specular'], material.specular); 
+        gl.uniform1f(program['uMaterial.shininess'], material.shininess); 
+        gl.uniform1i(program['uMaterial.isLight'], material.isLight);
+    }
+
     draw() {
         gl.useProgram(program);
         // Clear the scene
@@ -242,11 +250,9 @@ class Renderer {
     
             gl.uniformMatrix4fv(program.uModelViewMatrix, false, modelViewMatrix);
             gl.uniformMatrix4fv(program.uNormalMatrix, false, normalMatrix);
-            gl.uniform3fv(program.uMaterialDiffuse, [0.6, 0.5, 0.4]);
-            gl.uniform3fv(program.uMaterialAmbient, [0.1, 0.1, 0.1]); 
-            gl.uniform3fv(program.uMaterialSpecular, [0.1, 0.1, 0.1]); 
-            gl.uniform1f(program.uMaterialShininess, 4.0); 
+            this.setMaterial(program, entity.material);
             gl.uniform1i(program.uDebug, entity.debug);
+
         
             // Use the buffers we've constructed
             gl.bindVertexArray(entity.model.vao);

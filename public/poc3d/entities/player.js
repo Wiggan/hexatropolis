@@ -1,17 +1,30 @@
 'use strict'
 
 class Player extends Entity {
-    constructor(position) {
-        super(null, position);
-        this.model = models.sphere;
-        this.transform.scale(3);
-        this.camera = new TrackingCamera(this, [0, 2, 1]);
-        this.children.push(this.camera);
-    }
-
-    draw(renderer) {
-        super.draw(renderer);
-        renderer.add_drawable(this);
+    constructor(local_position) {
+        super(null, local_position);
+        this.base = new Base(this, [0, 0, 0]);
+        this.body = new Body(this, [0, 0, 0]);
+        this.head = new Head(this, [0, 0, 0]);
+        this.camera = new TrackingCamera(this, [0, 10, 4]);
+        this.transform.scale(0.3);
     }
 }
 
+class Base extends Drawable {
+    constructor(parent, local_position) {
+        super(parent, local_position, models.robot.crawlers);
+    }
+}
+
+class Body extends Drawable {
+    constructor(parent, local_position) {
+        super(parent, local_position, models.robot.body);
+    }
+}
+
+class Head extends Drawable {
+    constructor(parent, local_position) {
+        super(parent, local_position, models.robot.head);
+    }
+}

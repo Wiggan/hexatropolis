@@ -250,8 +250,10 @@ class Renderer {
     
             gl.uniformMatrix4fv(program.uModelViewMatrix, false, modelViewMatrix);
             gl.uniformMatrix4fv(program.uNormalMatrix, false, normalMatrix);
-            this.setMaterial(program, entity.material);
             gl.uniform1i(program.uDebug, entity.debug);
+            if (!entity.debug) {
+                this.setMaterial(program, entity.material);
+            }
 
         
             // Use the buffers we've constructed

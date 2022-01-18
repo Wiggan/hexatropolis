@@ -4,7 +4,6 @@ class Entity {
     constructor(parent, local_position) {
         this.parent = parent;
         this.children = [];
-        this.material = materials.wall;
         this.transform = new Transform(local_position);
         if (this.parent) {
             this.parent.children.push(this);

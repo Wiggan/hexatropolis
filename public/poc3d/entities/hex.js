@@ -1,12 +1,7 @@
 'use strict';
 
-class Hex extends Entity {
+class Hex extends Drawable {
     constructor(parent, local_position) {
-        super(parent, local_position);
-        this.model = models.hex;
-    }
-
-    draw(renderer) {
-        renderer.add_drawable(this);
+        super(parent, local_position, models.hex);
     }
 }

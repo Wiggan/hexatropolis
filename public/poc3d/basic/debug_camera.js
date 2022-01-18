@@ -19,8 +19,7 @@ class DebugCamera extends Camera {
     }
 
     lockChangeAlert() {
-        if (document.pointerLockElement === gl.canvas ||
-            document.mozPointerLockElement === gl.canvas) {
+        if (document.pointerLockElement === gl.canvas || document.mozPointerLockElement === gl.canvas) {
           console.log('The pointer lock status is now locked');
           document.addEventListener("mousemove", active_camera.updatePosition, false);
         } else {

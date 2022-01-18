@@ -22,5 +22,7 @@ for f in file_list:
     sys.argv = [sys.argv[0], output_obj_filename, output_mtl_filename]
     
     subprocess.call(['python', 'objparser.py', output_obj_filename, output_mtl_filename])
-    
+
+    os.remove(output_obj_filename)
+    os.remove(output_mtl_filename)
 

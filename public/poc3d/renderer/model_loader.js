@@ -57,4 +57,6 @@ async function load_all_models() {
     models.block = await load_model('/models/block/part1.json');
     models.sphere = await load_model('/models/sphere/part1.json');
     models.hex = await load_model('/models/hex/part1.json');
+    models.prism = await load_model('/models/prism/part1.json');
+    models.lantern = await load_model('/models/lantern/part1.json');
 }

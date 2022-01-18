@@ -33,6 +33,7 @@ class Camera extends Entity {
         } else if (e.key == 'F2') {
             active_camera.deactivate();
             active_camera = cameras[(cameras.indexOf(active_camera)+1) % cameras.length];
+            active_camera.activate();
             e.preventDefault();
         } 
     }
@@ -44,4 +45,5 @@ class Camera extends Entity {
     }
 
     deactivate() {}
+    activate() {}
 }

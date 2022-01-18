@@ -31,6 +31,7 @@ async function init() {
     await initProgram();
     await load_all_models();
     scene = new Scene();
+    active_camera.activate();
 
     render();
     initControls();

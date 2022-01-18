@@ -1,5 +1,7 @@
 'use strict';
 
+var player;
+
 function getHexPosition(ix, y, iz) {
     const size = 1;
     return [size * Math.sqrt(3) * (ix + 0.5 * (iz&1)),
@@ -26,7 +28,8 @@ class Scene {
             ]
         });
         this.entities.push(new DebugCamera([6, 3, 8]));
-        this.entities.push(new Player(getHexPosition(3, 0, 2)));
+        player = new Player(getHexPosition(3, 0, 2));
+        this.entities.push(player);
     }
 
     parse_level(level) {

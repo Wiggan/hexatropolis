@@ -1,6 +1,6 @@
 'use strict';
 
-var gl;
+var gl, projection_matrix = mat4.create();
 
 class Renderer {
     constructor() {
@@ -8,7 +8,6 @@ class Renderer {
         this.framebuffer;
         this.pingpongTextures = [];
         this.pingpongFramebuffers = [];
-        this.projectionMatrix = mat4.create();
         this.drawables = [];
         this.lights = [];
 
@@ -221,7 +220,7 @@ class Renderer {
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     
         // We will discuss these operations in later chapters
-        mat4.perspective(this.projectionMatrix, 45, gl.canvas.width / gl.canvas.height, 1, 10000);
+        mat4.perspective(projection_matrix, 45, gl.canvas.width / gl.canvas.height, 1, 10000);
     
         //const lightPositions = this.lights.map((light) => {return light.getPosition()}).flat();
         for (var i = 0; i < 4 && i < this.lights.length; i++) {
@@ -234,7 +233,7 @@ class Renderer {
             gl.uniform1f(program['uLight[' + i + '].quadratic'], this.lights[i].quadratic);
         }
         gl.uniform3fv(program.uCameraPos, active_camera.getPosition()); 
-        gl.uniformMatrix4fv(program.uProjectionMatrix, false, this.projectionMatrix);
+        gl.uniformMatrix4fv(program.uProjectionMatrix, false, projection_matrix);
         gl.uniformMatrix4fv(program.uViewMatrix, false, active_camera.getViewMatrix());
         this.drawables.forEach((entity) => {
             gl.uniformMatrix4fv(program.uModelMatrix, false, entity.getWorldTransform());

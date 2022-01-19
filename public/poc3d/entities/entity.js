@@ -35,4 +35,10 @@ class Entity {
     getWorldTransform() {
         return this.world_transform;
     }
+
+    getWorldPosition() {
+        var location = vec3.create();
+        mat4.getTranslation(location, this.world_transform);
+        return location;
+    }
 }

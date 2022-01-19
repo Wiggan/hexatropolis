@@ -14,10 +14,10 @@ class Scene {
         this.entities = [];
         this.parse_level({
             tiles: [
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [0, 1, 1, 2, 1, 1, 2, 1, 2, 2, 1, 0],
+                [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [1, 1, 1, 2, 1, 1, 2, 1, 2, 2, 1, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                 [0, 0, 0, 0, 0, 0, 1, 2, 1, 1, 1, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -28,9 +28,9 @@ class Scene {
             ]
         });
         this.entities.push(new DebugCamera([6, 6, 8]));
-        //player = new Player(getHexPosition(5, 0, 3));
-        //this.entities.push(player);
-        //this.entities.push(new TrackingCamera(null, [0, 0, 0]));
+        player = new Player(getHexPosition(0, 0, 0));
+        this.entities.push(player);
+        //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
     }
 
     parse_level(level) {

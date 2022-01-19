@@ -1,6 +1,8 @@
 'use strict';
 
-var gl, projection_matrix = mat4.create();
+var gl, 
+    projection_matrix = mat4.create(), 
+    view_matrix = mat4.create();
 
 class Renderer {
     constructor() {
@@ -238,12 +240,13 @@ class Renderer {
         }
         gl.uniform3fv(program.uCameraPos, active_camera.getPosition()); 
         gl.uniformMatrix4fv(program.uProjectionMatrix, false, projection_matrix);
-        gl.uniformMatrix4fv(program.uViewMatrix, false, active_camera.getViewMatrix());
+        view_matrix = active_camera.getViewMatrix();
+        gl.uniformMatrix4fv(program.uViewMatrix, false, view_matrix);
         this.drawables.forEach((drawable) => {
             gl.uniformMatrix4fv(program.uModelMatrix, false, drawable.world_transform);
             
             var modelViewMatrix = mat4.create();
-            mat4.copy(modelViewMatrix, active_camera.getViewMatrix());
+            mat4.copy(modelViewMatrix, view_matrix);
             mat4.multiply(modelViewMatrix, modelViewMatrix, drawable.world_transform);
     
             var normalMatrix = mat4.create();

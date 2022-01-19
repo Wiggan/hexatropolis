@@ -10,12 +10,13 @@ class FloatingLightBulb extends Drawable {
         this.active = true;
         this.transform.yaw(Math.random()*2*Math.PI);
         this.float_offset = Math.random()*2*Math.PI;
+        this.active_height = 2;
     }
 
     update(elapsed) {
         super.update(elapsed);
         if (this.active) {
-            this.transform.setPosition([0, Math.sin(Date.now()*0.005 + this.float_offset)*0.1, 0]);
+            this.transform.setPosition([0, this.active_height + Math.sin(Date.now()*0.005 + this.float_offset)*0.1, 0]);
             this.transform.yaw(elapsed * 0.05);
         }
     }

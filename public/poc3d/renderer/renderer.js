@@ -77,8 +77,12 @@ class Renderer {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
-    add_drawable(drawable) {
-        this.drawables.push(drawable);
+    add_drawable(model, material, world_transform) {
+        this.drawables.push({
+            model: model,
+            material: material,
+            world_transform: world_transform
+        });
     }
 
     add_light(light) {
@@ -235,12 +239,12 @@ class Renderer {
         gl.uniform3fv(program.uCameraPos, active_camera.getPosition()); 
         gl.uniformMatrix4fv(program.uProjectionMatrix, false, projection_matrix);
         gl.uniformMatrix4fv(program.uViewMatrix, false, active_camera.getViewMatrix());
-        this.drawables.forEach((entity) => {
-            gl.uniformMatrix4fv(program.uModelMatrix, false, entity.getWorldTransform());
+        this.drawables.forEach((drawable) => {
+            gl.uniformMatrix4fv(program.uModelMatrix, false, drawable.world_transform);
             
             var modelViewMatrix = mat4.create();
             mat4.copy(modelViewMatrix, active_camera.getViewMatrix());
-            mat4.multiply(modelViewMatrix, modelViewMatrix, entity.getWorldTransform());
+            mat4.multiply(modelViewMatrix, modelViewMatrix, drawable.world_transform);
     
             var normalMatrix = mat4.create();
             mat4.copy(normalMatrix, modelViewMatrix);
@@ -249,18 +253,17 @@ class Renderer {
     
             gl.uniformMatrix4fv(program.uModelViewMatrix, false, modelViewMatrix);
             gl.uniformMatrix4fv(program.uNormalMatrix, false, normalMatrix);
-            gl.uniform1i(program.uDebug, entity.debug);
-            if (!entity.debug) {
-                this.setMaterial(program, entity.material);
-            }
+            
+            this.setMaterial(program, drawable.material);
+
 
         
             // Use the buffers we've constructed
-            gl.bindVertexArray(entity.model.vao);
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, entity.model.indexBuffer);
+            gl.bindVertexArray(drawable.model.vao);
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, drawable.model.indexBuffer);
     
             // Draw to the scene using triangle primitives
-            gl.drawElements(gl.TRIANGLES, entity.model.indices.length, gl.UNSIGNED_SHORT, 0);
+            gl.drawElements(gl.TRIANGLES, drawable.model.indices.length, gl.UNSIGNED_SHORT, 0);
 
             // Clean
             gl.bindVertexArray(null);

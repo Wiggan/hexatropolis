@@ -8,7 +8,7 @@ class Drawable extends Entity {
     }
 
     draw(renderer) {
+        renderer.add_drawable(this.model, this.material, this.getWorldTransform());
         super.draw(renderer);
-        renderer.add_drawable(this);
     }
 }

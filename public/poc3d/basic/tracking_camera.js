@@ -3,8 +3,9 @@
 class TrackingCamera extends Camera {
     constructor(parent, local_position) {
         super(parent, local_position);
-        this.transform.pitch(-60);//.lookAt([0,0,0]);
-        this.transform.yaw(0);
+        this.local_transform.pitch(-60);
+        this.x = 0;
+        this.y = 0;
     }
 
     activate() {
@@ -16,12 +17,8 @@ class TrackingCamera extends Camera {
     }
 
     updatePosition(e) {
-        console.log(`X: ${e.offsetX}, Y: ${e.offsetY}`);
-        var unproj = mat4.create();
-        mat4.mul(unproj, projection_matrix, this.getViewMatrix());
-        mat4.invert(unproj, unproj);
-        var world = vec4.fromValues(e.offsetX, e.offsetY, 0.0, 1.0);
-        vec4.transformMat4(world, world, unproj);
+        active_camera.x = e.clientX;
+        active_camera.y = e.clientY;
     }
 
     onKeyDown(e) {
@@ -36,12 +33,25 @@ class TrackingCamera extends Camera {
 
     }
 
-    update(elapsed) {
-        super.update(elapsed);
-
-    }
-
     draw(renderer) {
+        const rect = gl.canvas.getBoundingClientRect();
+        const clipX = (this.x - rect.left) / rect.width  *  2 - 1;
+        const clipY = (this.y - rect.top) / rect.height * -2 + 1;
 
+        //console.log(`clipX: ${clipX}, clipY: ${clipY}`);
+
+        var unproj = mat4.create();
+        mat4.mul(unproj, projection_matrix, this.getViewMatrix());
+        mat4.invert(unproj, unproj);
+        var world = vec4.fromValues(clipX, clipY, Math.sin(Date.now()*0.005) * 5.0 + 2.5, 1.0);
+        
+        vec4.transformMat4(world, world, unproj);
+        
+        
+        var world_transform = mat4.create();
+        mat4.fromTranslation(world_transform, world);
+
+        renderer.add_drawable(models.sphere, materials.light, world_transform);
+        console.log(`X: ${world[0]}, Y: ${world[1]}, Z: ${world[2]}`);
     }
 }

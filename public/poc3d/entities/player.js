@@ -6,8 +6,8 @@ class Player extends Entity {
         this.base = new Base(this, [0, 0, 0]);
         this.body = new Body(this, [0, 0, 0]);
         this.head = new Head(this, [0, 0, 0]);
-        this.camera = new TrackingCamera(this, [0, 10, 4]);
-        this.transform.scale(0.3);
+        this.camera = new TrackingCamera(this, [0, 14, 4]);
+        this.local_transform.scale(0.3);
     }
 }
 

@@ -27,9 +27,10 @@ class Scene {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             ]
         });
-        this.entities.push(new DebugCamera([6, 3, 8]));
-        player = new Player(getHexPosition(3, 0, 2));
-        this.entities.push(player);
+        this.entities.push(new DebugCamera([6, 6, 8]));
+        //player = new Player(getHexPosition(5, 0, 3));
+        //this.entities.push(player);
+        //this.entities.push(new TrackingCamera(null, [0, 0, 0]));
     }
 
     parse_level(level) {
@@ -54,7 +55,7 @@ class Scene {
 
     update(elapsed) {
         this.entities.forEach(entity => {
-            entity.update(elapsed);
+            entity.update(elapsed, false);
         });
     }
 }

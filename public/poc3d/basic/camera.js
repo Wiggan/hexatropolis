@@ -40,7 +40,7 @@ class Camera extends Entity {
 
     draw(renderer) {
         if (debug && active_camera != this) {
-            renderer.add_drawable(this);
+            //renderer.add_drawable(this);
         }
     }
 

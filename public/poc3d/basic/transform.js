@@ -7,7 +7,7 @@ class Transform {
     #pitch;
     #roll;
     #dirty;
-    #worldMatrix;
+    #transform;
     constructor(position) {
         this.#position = vec3.fromValues(position[0], position[1], position[2]);
         this.#scale = vec3.fromValues(1, 1, 1);
@@ -15,20 +15,20 @@ class Transform {
         this.#pitch = 0;
         this.#roll = 0;
         this.#dirty = true;
-        this.#worldMatrix = mat4.create();
+        this.#transform = mat4.create();
     }
     
     get() {
         if (this.#dirty) {
-            mat4.identity(this.#worldMatrix);
-            mat4.translate(this.#worldMatrix, this.#worldMatrix, this.#position);
-            mat4.rotateZ(this.#worldMatrix, this.#worldMatrix, this.#roll * Math.PI / 180);
-            mat4.rotateY(this.#worldMatrix, this.#worldMatrix, this.#yaw * Math.PI / 180);
-            mat4.rotateX(this.#worldMatrix, this.#worldMatrix, this.#pitch * Math.PI / 180);
-            mat4.scale(this.#worldMatrix, this.#worldMatrix, this.#scale);
+            mat4.identity(this.#transform);
+            mat4.translate(this.#transform, this.#transform, this.#position);
+            mat4.rotateZ(this.#transform, this.#transform, this.#roll * Math.PI / 180);
+            mat4.rotateY(this.#transform, this.#transform, this.#yaw * Math.PI / 180);
+            mat4.rotateX(this.#transform, this.#transform, this.#pitch * Math.PI / 180);
+            mat4.scale(this.#transform, this.#transform, this.#scale);
             this.#dirty = false;
         }
-        return this.#worldMatrix;
+        return this.#transform;
     }
 
     setPosition(position) {
@@ -63,5 +63,9 @@ class Transform {
     scale(scale) {
         this.#dirty = true;
         this.#scale = vec3.fromValues(scale, scale, scale);
+    }
+
+    isDirty() {
+        return this.#dirty;
     }
 }

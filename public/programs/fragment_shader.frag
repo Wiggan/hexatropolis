@@ -24,6 +24,7 @@ struct Material {
 };
 
 uniform vec3 uCameraPos;
+uniform uint uIdColor;
 uniform bool uDebug;
 uniform PointLight uLight[numLights];
 uniform Material uMaterial;
@@ -33,9 +34,9 @@ in vec3 vNormal;
 
 layout(location = 0) out vec4 fragColor;
 layout(location = 1) out vec4 brightColor;
+layout(location = 2) out uint idColor;
 
-vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
-{
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     vec3 lightDir = normalize(light.position - fragPos);
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
@@ -58,6 +59,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
 
 
 void main() {
+    idColor = uIdColor;//vec4(1.0, 0.0, 1.0, 1.0);
     if (uDebug){
         fragColor = vec4(1.0, 0.0, 1.0, 1.0);
         brightColor = fragColor;

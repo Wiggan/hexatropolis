@@ -30,6 +30,7 @@ class Scene {
         this.entities.push(new DebugCamera([6, 6, 8]));
         player = new Player(getHexPosition(0, 0, 0));
         this.entities.push(player);
+        this.entities.push(new Pickable(null, [2, 0, 2], models.sphere));
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
     }
 

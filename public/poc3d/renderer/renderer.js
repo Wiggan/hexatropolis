@@ -43,10 +43,24 @@ class Renderer {
         return texture;
     }
 
+    create_id_texture() {
+        var texture = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.R32UI, gl.canvas.width, gl.canvas.height, 0, gl.RED_INTEGER, gl.UNSIGNED_INT, null);
+        return texture;
+    }
+
     setup_textures() {
         // Textures
         this.offscreenTextures.push(this.create_texture());
         this.offscreenTextures.push(this.create_texture());
+        this.offscreenTextures.push(this.create_id_texture());
 
         // Render buffer
         this.renderbuffer = gl.createRenderbuffer();
@@ -56,11 +70,11 @@ class Renderer {
         // Frame buffer
         this.framebuffer = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < 3; i++) {
             gl.framebufferTexture2D(gl.FRAMEBUFFER, gl['COLOR_ATTACHMENT' + i], gl.TEXTURE_2D, this.offscreenTextures[i], 0);
         }
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderbuffer);
-        gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1]);
+        gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2]);
 
 
         // Textures for ping pong
@@ -79,11 +93,12 @@ class Renderer {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     }
 
-    add_drawable(model, material, world_transform) {
+    add_drawable(model, material, world_transform, id) {
         this.drawables.push({
             model: model,
             material: material,
-            world_transform: world_transform
+            world_transform: world_transform,
+            id: id
         });
     }
 
@@ -91,11 +106,26 @@ class Renderer {
         this.lights.push(light);
     }
 
+    savePixelUnderCursor() {
+        const rect = gl.canvas.getBoundingClientRect();
+        var x = active_camera.x - rect.left;
+        var y = rect.height - (active_camera.y - rect.top);
+        var data = new Uint32Array(1);
+        gl.readBuffer(gl.COLOR_ATTACHMENT2);
+        gl.readPixels(x, y, 1, 1, gl.RED_INTEGER, gl.UNSIGNED_INT, data);
+        //console.log("Pixel x: " + x + ", y: " + y + " has color " + data);
+        console.log("Pixel has color " + data);
+        selected_id = data;
+    }
+    
     render() {
         this.validateSize();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         this.draw();
 
+        this.savePixelUnderCursor();
+
+        // Perform blur
         var horizontal = true, first_iteration = true;
         var amount = 10;
         gl.useProgram(gaussian_blur_program);
@@ -244,7 +274,9 @@ class Renderer {
         gl.uniformMatrix4fv(program.uViewMatrix, false, view_matrix);
         this.drawables.forEach((drawable) => {
             gl.uniformMatrix4fv(program.uModelMatrix, false, drawable.world_transform);
-            
+            //gl.uniform4fv(program.uIdColor, [0, 1, 2, 3]);
+            gl.uniform1ui(program.uIdColor, drawable.id);
+            gl.uniform1ui(program.uDebug, drawable.id == selected_id);
             var modelViewMatrix = mat4.create();
             mat4.copy(modelViewMatrix, view_matrix);
             mat4.multiply(modelViewMatrix, modelViewMatrix, drawable.world_transform);

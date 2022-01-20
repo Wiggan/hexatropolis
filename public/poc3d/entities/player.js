@@ -4,12 +4,11 @@ class Player extends Entity {
     #goto = undefined;
     constructor(local_position) {
         super(null, local_position);
-        this.base = new Base(this, [0, 0, 0]);
-        this.body = new Body(this, [0, 0, 0]);
-        this.head = new Head(this, [0, 0, 0]);
-        this.camera = new TrackingCamera(this, [0, 14, 4]);
-        this.local_transform.scale(0.3);
-        this.movement_speed = 0.001;
+        this.base = new Base(this);
+        this.body = new Body(this);
+        this.head = new Head(this);
+        this.camera = new TrackingCamera(this, [0, 14, 8]);
+        this.movement_speed = 0.003;
     }
 
     goto(point) {
@@ -43,22 +42,39 @@ class Player extends Entity {
     }
 }
 
+class BodyLamp extends Drawable {
+    constructor(parent) {
+        super(parent, [0,0,0], models.robot.body_lamp);
+        this.material = materials.red_led;
+    }
+}
+class HeadLamp extends Drawable {
+    constructor(parent) {
+        super(parent, [0,0,0], models.robot.head_lamp);
+        this.material = materials.red_led;
+    }
+}
+
 class Base extends Drawable {
-    constructor(parent, local_position) {
-        super(parent, local_position, models.robot.crawlers);
+    constructor(parent) {
+        super(parent, [0,0,0], models.robot.crawlers);
+        this.material = materials.player;
     }
 }
 
 class Body extends Drawable {
-    constructor(parent, local_position) {
-        super(parent, local_position, models.robot.body);
+    constructor(parent) {
+        super(parent, [0,0,0], models.robot.body);
+        this.material = materials.player;
+        this.lamp = new BodyLamp(this);
     }
 }
 
 class Head extends Drawable {
-    constructor(parent, local_position) {
-        super(parent, local_position, models.robot.head);
-        this.local_transform.setYaw(0);
+    constructor(parent) {
+        super(parent, [0,0,0], models.robot.head);
+        this.material = materials.player;
+        this.lamp = new HeadLamp(this);
     }
 
     update(elapsed, dirty) {

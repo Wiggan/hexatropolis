@@ -9,8 +9,8 @@ class PointLight extends Entity {
         this.diffuse = [0.6, 0.6, 0.4];
         this.specular = [0.6, 0.6, 0.4];
         this.constant = 1.0;
-        this.linear = 0.7;
-        this.quadratic = 1.8;
+        this.linear = 0.35;
+        this.quadratic = 0.9;
     }
 
     getPosition() {

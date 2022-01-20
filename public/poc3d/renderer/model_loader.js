@@ -4,7 +4,8 @@ var models = {};
 var materials = {
     wall: {diffuse: [0.6, 0.5, 0.4], ambient: [0.6, 0.5, 0.4], specular: [0.3, 0.3, 0.3], shininess: 4.0},
     player: {diffuse: [0.7, 0.7, 0.7], ambient: [0.7, 0.7, 0.7], specular: [0.5, 0.5, 0.5], shininess: 14.0},
-    light: {diffuse: [0.2, 0.2, 1.0], ambient: [0.6, 0.5, 0.4], specular: [0.1, 0.1, 0.1], shininess: 4.0, isLight: true},
+    light: {diffuse: [0.2, 0.2, 1.0], ambient: [0.6, 0.5, 0.4], specular: [0.8, 0.8, 0.8], shininess: 4.0, isLight: true},
+    light_inactive: {diffuse: [0.1, 0.1, 0.5], ambient: [0.6, 0.5, 0.4], specular: [0.8, 0.8, 0.8], shininess: 24.0, isLight: true},
     red_led: {diffuse: [1.0, 0.0, 0.0], ambient: [0.6, 0.5, 0.4], specular: [0.1, 0.1, 0.1], shininess: 4.0, isLight: true},
 }
 

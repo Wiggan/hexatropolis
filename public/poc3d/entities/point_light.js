@@ -1,9 +1,12 @@
 'use strict';
 
+var lights = [];
+
 class PointLight extends Entity {
     constructor(parent, local_position) {
         super(parent, local_position);
-        this.debug = true;
+        lights.push(this);
+        this.active = true;
         this.model = models.block;
         this.ambient = [0.01, 0.01, 0.01];
         this.diffuse = [0.6, 0.6, 0.4];
@@ -21,7 +24,9 @@ class PointLight extends Entity {
 
     draw(renderer) {
         super.draw(renderer);
-        renderer.add_light(this);
+        if (this.active) {
+            renderer.add_light(this);
+        }
         if (debug) {
             //renderer.add_drawable(this);
         }

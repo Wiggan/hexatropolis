@@ -54,6 +54,15 @@ class Scene {
     }
 
     update(elapsed) {
+        // Ensure only 4 lights are active.
+        lights.sort((a, b) => { return a.getSquaredHorizontalDistanceToPlayer() - b.getSquaredHorizontalDistanceToPlayer();});
+        lights.forEach((light, i) => {
+            if (i<4) {
+                light.active = true;
+            } else {
+                light.active = false;
+            }
+        })
         this.entities.forEach(entity => {
             entity.update(elapsed, false);
         });

@@ -68,7 +68,7 @@ class Transition {
     update(elapsed) {
         this.elapsed += elapsed;
         const t = 0.5 + 0.5 * (Math.cos(this.elapsed / this.time * Math.PI - Math.PI));
-        console.log("t: " + t);
+        //console.log("t: " + t);
         for (const [key, value] of Object.entries(this.to)) {
             switch (typeof (value)) {
                 case 'object':

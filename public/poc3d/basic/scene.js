@@ -27,14 +27,10 @@ class Scene {
                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             ]
         });
+        
         this.entities.push(new DebugCamera([6, 6, 8]));
         player = new Player(getHexPosition(0, 0, 0));
         this.entities.push(player);
-        this.entities.push(new Chest(null, [2, 0, 2]));
-        this.entities.push(new Chest(null, [2, 0, 3]));
-        this.entities.push(new Chest(null, [2, 0, 4]));
-        this.entities.push(new Chest(null, [1, 0, 2]));
-        this.entities.push(new Chest(null, [3, 0, 2]));
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
     }
 
@@ -45,6 +41,9 @@ class Scene {
                     this.entities.push(new Hex(null, getHexPosition(x, 3, y)));
                 } else  if (level.tiles[y][x] == 1) {
                     this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
+                    if (Math.random() < 0.2) {
+                        this.entities.push(new Chest(null, getHexPosition(x, 0, y)));
+                    }
                 } else  if (level.tiles[y][x] == 2) {
                     this.entities.push(new Lantern(null, getHexPosition(x, 0, y)));
                 } 

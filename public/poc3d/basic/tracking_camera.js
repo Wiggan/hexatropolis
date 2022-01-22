@@ -24,6 +24,15 @@ class TrackingCamera extends Camera {
 
     onKeyDown(e) {
         super.onKeyDown(e);
+        if (e.key == 'u') {
+            lights.forEach(light => {
+                    light.activate();
+            });
+        } else if (e.key == 'd') {
+            lights.forEach(light => {
+                    light.inactivate();
+            });
+        }
     }
 
     onKeyUp(e) {

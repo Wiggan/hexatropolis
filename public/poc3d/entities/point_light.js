@@ -31,4 +31,11 @@ class PointLight extends Entity {
             //renderer.add_drawable(this);
         }
     }
+
+    activate() {
+        this.active = true;
+    }
+    inactivate() {
+        this.active = false;
+    }
 }

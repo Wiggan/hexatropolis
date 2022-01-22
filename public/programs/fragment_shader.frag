@@ -25,6 +25,7 @@ struct Material {
 
 uniform vec3 uCameraPos;
 uniform uint uIdColor;
+uniform int uNumLights;
 uniform bool uDebug;
 uniform PointLight uLight[numLights];
 uniform Material uMaterial;
@@ -73,7 +74,7 @@ void main() {
 
         vec3 result = vec3(0); 
         // phase 2: Point lights
-        for(int i = 0; i < numLights; i++)
+        for(int i = 0; i < uNumLights; i++)
             result += CalcPointLight(uLight[i], norm, vFragPos, viewDir);
         
         fragColor = vec4(result, 1.0);

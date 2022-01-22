@@ -114,7 +114,7 @@ class Renderer {
         gl.readBuffer(gl.COLOR_ATTACHMENT2);
         gl.readPixels(x, y, 1, 1, gl.RED_INTEGER, gl.UNSIGNED_INT, data);
         //console.log("Pixel x: " + x + ", y: " + y + " has color " + data);
-        console.log("Pixel has color " + data);
+        //console.log("Pixel has color " + data);
         selected_id = data;
     }
     
@@ -268,6 +268,8 @@ class Renderer {
             gl.uniform1f(program['uLight[' + i + '].linear'], this.lights[i].linear);
             gl.uniform1f(program['uLight[' + i + '].quadratic'], this.lights[i].quadratic);
         }
+        gl.uniform1i(program.uNumLights, Math.min(4, this.lights.length));
+
         gl.uniform3fv(program.uCameraPos, active_camera.getPosition()); 
         gl.uniformMatrix4fv(program.uProjectionMatrix, false, projection_matrix);
         view_matrix = active_camera.getViewMatrix();

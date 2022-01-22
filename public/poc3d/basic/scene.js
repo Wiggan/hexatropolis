@@ -17,9 +17,9 @@ class Scene {
                 [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [1, 1, 1, 2, 1, 1, 2, 1, 2, 2, 1, 0],
+                [1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 0, 0, 0, 0, 0, 1, 2, 1, 1, 1, 0],
+                [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                 [0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0],
                 [0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -31,6 +31,10 @@ class Scene {
         player = new Player(getHexPosition(0, 0, 0));
         this.entities.push(player);
         this.entities.push(new Pickable(null, [2, 0, 2], models.sphere));
+        this.entities.push(new Pickable(null, [2, 0, 3], models.sphere));
+        this.entities.push(new Pickable(null, [2, 0, 4], models.sphere));
+        this.entities.push(new Pickable(null, [1, 0, 2], models.sphere));
+        this.entities.push(new Pickable(null, [3, 0, 2], models.sphere));
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
     }
 
@@ -59,11 +63,11 @@ class Scene {
         lights.sort((a, b) => { return a.getSquaredHorizontalDistanceToPlayer() - b.getSquaredHorizontalDistanceToPlayer();});
         lights.forEach((light, i) => {
             if (i<4) {
-                light.active = true;
+                //light.activate();
             } else {
-                light.active = false;
+                //light.inactivate();
             }
-        })
+        });
         this.entities.forEach(entity => {
             entity.update(elapsed, false);
         });

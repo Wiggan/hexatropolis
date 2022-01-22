@@ -42,6 +42,10 @@ class Entity {
         return location;
     }
 
+    getLocalPosition() {
+        return this.local_transform.getPosition();
+    }
+
     getSquaredHorizontalDistanceToPlayer() {
         return vec2.sqrDist(vec2.fromValues(this.getWorldPosition()[0], this.getWorldPosition()[2]),
                             vec2.fromValues(player.getWorldPosition()[0], player.getWorldPosition()[2]));
@@ -49,5 +53,46 @@ class Entity {
 
     getDistanceToPlayer() {
         return vec3.dist(this.getWorldPosition(), player.getWorldPosition());
+    }
+}
+
+class Transition {
+    constructor(entity, from, to, time) {
+        this.entity = entity;
+        this.elapsed = 0;
+        this.time = time;
+        this.from = from;
+        this.to = to;
+    }
+
+    update(elapsed) {
+        this.elapsed += elapsed;
+        const t = 0.5 + 0.5 * (Math.cos(this.elapsed / this.time * Math.PI - Math.PI));
+        console.log("t: " + t);
+        for (const [key, value] of Object.entries(this.to)) {
+            switch (typeof (value)) {
+                case 'object':
+                    if (Array.isArray(value)) {
+                        if (value.length == 2) {
+                            vec2.lerp(this.entity[key], this.from[key], this.to[key], t);
+                        } else if (value.length == 3) {
+                            vec3.lerp(this.entity[key], this.from[key], this.to[key], t);
+                        } else if (value.length == 4) {
+                            vec4.lerp(this.entity[key], this.from[key], this.to[key], t);
+                        }
+                    } else {
+                        if (this.elapsed >= this.time) {
+                            this.entity[key] = this.to[key];
+                        }
+                    }
+                    break;
+                case 'boolean':
+                case 'string':
+                    if (this.elapsed >= this.time) {
+                        this.entity[key] = this.to[key];
+                    }
+                    break;
+            }
+        }
     }
 }

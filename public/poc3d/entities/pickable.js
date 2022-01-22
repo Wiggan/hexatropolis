@@ -10,17 +10,15 @@ function getNextPickableId() {
 }
 var selected_id = 0;
 
-class Pickable extends Drawable {
-    constructor(parent, local_position, model) {
-        super(parent, local_position, model);
-        this.model = model;
-        this.material = materials.wall;
+class Pickable extends Entity {
+    constructor(parent, local_position) {
+        super(parent, local_position);
         this.id = getNextPickableId();
         pickable_map.set(this.id, this);
     }
 
-    draw(renderer) {
-        renderer.add_drawable(this.model, this.material, this.getWorldTransform(), this.id);
-        super.draw(renderer);
+    make_unpickable() {
+        pickable_map.delete(this.id);
+        this.id = undefined;
     }
 }

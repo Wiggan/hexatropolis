@@ -115,7 +115,7 @@ class Renderer {
         gl.readPixels(x, y, 1, 1, gl.RED_INTEGER, gl.UNSIGNED_INT, data);
         //console.log("Pixel x: " + x + ", y: " + y + " has color " + data);
         //console.log("Pixel has color " + data);
-        selected_id = data;
+        selected_id = Number(data);
     }
     
     render() {

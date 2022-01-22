@@ -41,7 +41,12 @@ class TrackingCamera extends Camera {
 
     onclick(e) {
         if (e.button == 0) {
-            this.parent.goto(this.pointing_at);
+            if (selected_id != 0) {
+                const pickable = pickable_map.get(selected_id);
+                pickable.onClick();
+            } else {
+                this.parent.goto(this.pointing_at);
+            }
         }
     }
 

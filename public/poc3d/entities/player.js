@@ -22,8 +22,8 @@ class Player extends Entity {
         vec3.sub(target_vector, point, position(this.getWorldTransform()));
         var forward_vector = forward(this.base.getWorldTransform());
         var angle = getHorizontalAngle(target_vector, forward_vector);
-        
-        this.base.local_transform.yaw(rad2deg(angle));
+        this.base.turn(rad2deg(angle));
+        //this.base.local_transform.yaw(rad2deg(angle));
     }
 
     update(elapsed, dirty) {
@@ -59,6 +59,26 @@ class Base extends Drawable {
     constructor(parent) {
         super(parent, [0,0,0], models.robot.crawlers);
         this.material = materials.player;
+        this.turning = false;
+        this.transition = new Transition(this, {}, {}, 0);
+        this.yaw = 0;
+    }
+
+    turn(angle) {
+        this.turning = true;
+        this.transition.from = {yaw: this.local_transform.getYaw(), turning: true};
+        this.transition.to = {yaw: this.local_transform.getYaw() + angle, turning: false};
+        this.transition.time = 300;
+        this.transition.elapsed = 0;
+    }
+
+    update(elapsed, dirty) {
+        if (this.turning) {
+            this.transition.update(elapsed);
+            this.local_transform.setYaw(this.yaw);
+            dirty = true;
+        }
+        super.update(elapsed, dirty);
     }
 }
 

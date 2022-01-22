@@ -92,6 +92,9 @@ class Transition {
                         this.entity[key] = this.to[key];
                     }
                     break;
+                case 'number':
+                    this.entity[key] = this.from[key] + t * (this.to[key] - this.from[key]);
+                    break;
             }
         }
     }

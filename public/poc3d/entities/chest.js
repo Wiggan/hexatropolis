@@ -19,6 +19,7 @@ class Chest extends Pickable {
             side.light.id = undefined;
         });
         this.make_unpickable();
+        new Loot(this.getWorldPosition(), {});
     }
 }
 

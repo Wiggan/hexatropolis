@@ -6,7 +6,7 @@ class PointLight extends Entity {
     constructor(parent, local_position) {
         super(parent, local_position);
         lights.push(this);
-        this.active = true;
+        this.active = false;
         this.model = models.block;
         this.ambient = [0.01, 0.01, 0.01];
         this.diffuse = [0.6, 0.6, 0.4];

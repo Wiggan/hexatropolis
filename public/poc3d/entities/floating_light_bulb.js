@@ -7,6 +7,13 @@ const States = {
     FiringUp: 'FiringUp'
 };
 
+const LanternLight = {
+    Ambient: [0.2, 0.2, 0.3],
+    Diffuse: [0.4, 0.4, 0.6],
+    Specular: [0.8, 0.8, 0.8],
+    Off: [0, 0, 0],
+};
+
 class Prism extends Drawable {
     constructor(parent, local_position) {
         super(parent, local_position, models.prism);
@@ -53,9 +60,10 @@ class FloatingLightBulb extends PointLight {
         if (this.state == States.Inactive) {
             this.state = States.FiringUp;
             this.active = true;
+            // TODO this could probably lead to excessive garbage collection. reuse like turning base of player?
             this.transition = new Transition(this,
-                {state: this.state, active: true, position: this.getLocalPosition(), diffuse: [0, 0, 0], ambient: [0, 0, 0]},
-                {state: States.Active, active: true, position: [0, 2.0, 0], diffuse: [0.2, 0.2, 0.6], ambient: [0.2, 0.2, 0.3]},
+                {state: this.state, active: true, position: this.getLocalPosition(), diffuse: LanternLight.Off, ambient: LanternLight.Off, specular: LanternLight.Off},
+                {state: States.Active, active: true, position: [0, 2.0, 0], diffuse: LanternLight.Diffuse, ambient: LanternLight.Ambient, specular: LanternLight.Specular},
                 1000);
         }
     }
@@ -64,8 +72,8 @@ class FloatingLightBulb extends PointLight {
         if (this.state == States.Active) {
             this.state = States.ShuttingDown;
             this.transition = new Transition(this,
-                {state: this.state, active: true, position: this.getLocalPosition(), diffuse: [0.2, 0.2, 0.6], ambient: [0.2, 0.2, 0.3]},
-                {state: States.Inactive, active: false, position: [0, 1.5, 0], diffuse: [0, 0, 0], ambient: [0, 0, 0]},
+                {state: this.state, active: true, position: this.getLocalPosition(), diffuse: LanternLight.Diffuse, ambient: LanternLight.Ambient, specular: LanternLight.Specular},
+                {state: States.Inactive, active: false, position: [0, 1.5, 0], diffuse: LanternLight.Off, ambient: LanternLight.Off, specular: LanternLight.Off},
                 1000);
         }
 

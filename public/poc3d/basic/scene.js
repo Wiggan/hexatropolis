@@ -19,7 +19,7 @@ class Scene {
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
                 [1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0],
+                [0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 2, 0],
                 [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
                 [0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0],
                 [0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
@@ -59,13 +59,16 @@ class Scene {
     }
 
     update(elapsed) {
-        // Ensure only 4 lights are active.
+        // Ensure only 4 lights are active. This should probably be done less often...
         lights.sort((a, b) => { return a.getSquaredHorizontalDistanceToPlayer() - b.getSquaredHorizontalDistanceToPlayer();});
+        var activeLightCount = lights.filter((light) => light.active).length;
         lights.forEach((light, i) => {
             if (i<4) {
-                //light.activate();
+                if (activeLightCount < 4) {
+                    light.activate();
+                }
             } else {
-                //light.inactivate();
+                light.inactivate();
             }
         });
         this.entities.forEach(entity => {

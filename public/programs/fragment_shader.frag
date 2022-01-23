@@ -28,6 +28,7 @@ uniform uint uIdColor;
 uniform int uNumLights;
 uniform bool uDebug;
 uniform bool uSelected;
+uniform bool uObject;
 uniform PointLight uLight[numLights];
 uniform Material uMaterial;
 
@@ -37,6 +38,7 @@ in vec3 vNormal;
 layout(location = 0) out vec4 fragColor;
 layout(location = 1) out vec4 brightColor;
 layout(location = 2) out uint idColor;
+layout(location = 3) out vec4 objectColor;
 
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     vec3 lightDir = normalize(light.position - fragPos);
@@ -84,5 +86,10 @@ void main() {
     if (uSelected) {
         fragColor += vec4(0.2, 0.2, 0.4, 1.0);
         brightColor = fragColor;
+    }
+    if (uObject) {
+        objectColor = fragColor;
+    } else {
+        objectColor = vec4(0.0, 0.0, 0.0, 1.0);
     }
 }

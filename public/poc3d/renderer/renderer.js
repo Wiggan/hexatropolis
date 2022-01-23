@@ -68,6 +68,7 @@ class Renderer {
         this.offscreenTextures.push(this.create_texture());
         this.offscreenTextures.push(this.create_texture());
         this.offscreenTextures.push(this.create_id_texture());
+        this.offscreenTextures.push(this.create_texture());
 
         // Render buffer
         this.renderbuffer = gl.createRenderbuffer();
@@ -77,11 +78,11 @@ class Renderer {
         // Frame buffer
         this.framebuffer = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < 4; i++) {
             gl.framebufferTexture2D(gl.FRAMEBUFFER, gl['COLOR_ATTACHMENT' + i], gl.TEXTURE_2D, this.offscreenTextures[i], 0);
         }
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderbuffer);
-        gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2]);
+        gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2, gl.COLOR_ATTACHMENT3]);
 
 
         // Textures for ping pong
@@ -214,6 +215,9 @@ class Renderer {
         gl.activeTexture(gl['TEXTURE' + 1]);
         gl.bindTexture(gl.TEXTURE_2D, this.pingpongTextures[1]);
         gl.uniform1i(ppProgram['uSampler' + 1], 1);
+        gl.activeTexture(gl['TEXTURE' + 2]);
+        gl.bindTexture(gl.TEXTURE_2D, this.offscreenTextures[3]);
+        gl.uniform1i(ppProgram['uSampler' + 2], 2);
         
         this.render_quad(ppProgram);
     }
@@ -289,6 +293,7 @@ class Renderer {
             //gl.uniform4fv(program.uIdColor, [0, 1, 2, 3]);
             gl.uniform1ui(program.uIdColor, drawable.id);
             gl.uniform1ui(program.uSelected, drawable.id == selected_id);
+            gl.uniform1ui(program.uObject, drawable.model != models.hex);
             var modelViewMatrix = mat4.create();
             mat4.copy(modelViewMatrix, view_matrix);
             mat4.multiply(modelViewMatrix, modelViewMatrix, drawable.world_transform);

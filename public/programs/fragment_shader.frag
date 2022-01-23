@@ -27,6 +27,7 @@ uniform vec3 uCameraPos;
 uniform uint uIdColor;
 uniform int uNumLights;
 uniform bool uDebug;
+uniform bool uSelected;
 uniform PointLight uLight[numLights];
 uniform Material uMaterial;
 
@@ -79,5 +80,9 @@ void main() {
         
         fragColor = vec4(result, 1.0);
         brightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    }
+    if (uSelected) {
+        fragColor += vec4(0.2, 0.2, 0.4, 1.0);
+        brightColor = fragColor;
     }
 }

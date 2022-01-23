@@ -1,5 +1,7 @@
 'use strict'
 
+var alt_pressed = false;
+
 class TrackingCamera extends Camera {
     constructor(parent, local_position) {
         super(parent, local_position);
@@ -28,17 +30,26 @@ class TrackingCamera extends Camera {
             lights.forEach(light => {
                     light.activate();
             });
+            e.preventDefault();
         } else if (e.key == 'd') {
             lights.forEach(light => {
                     light.inactivate();
             });
+            e.preventDefault();
         } else if (e.key == 'l') {
             new Loot(player.getWorldPosition(), drop_consumable({max_drop: 5, level:10}));
+            e.preventDefault();
+        } else if (e.key == 'Alt') {
+            alt_pressed = true;
+            e.preventDefault();
         }
     }
 
     onKeyUp(e) {
-
+        if (e.key == 'Alt') {
+            alt_pressed = false;
+            e.preventDefault();
+        }
     }
 
     onclick(e) {

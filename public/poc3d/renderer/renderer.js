@@ -288,7 +288,7 @@ class Renderer {
             gl.uniformMatrix4fv(program.uModelMatrix, false, drawable.world_transform);
             //gl.uniform4fv(program.uIdColor, [0, 1, 2, 3]);
             gl.uniform1ui(program.uIdColor, drawable.id);
-            gl.uniform1ui(program.uDebug, drawable.id == selected_id);
+            gl.uniform1ui(program.uSelected, drawable.id == selected_id);
             var modelViewMatrix = mat4.create();
             mat4.copy(modelViewMatrix, view_matrix);
             mat4.multiply(modelViewMatrix, modelViewMatrix, drawable.world_transform);

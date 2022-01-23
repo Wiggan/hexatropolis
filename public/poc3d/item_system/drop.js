@@ -8,13 +8,13 @@ function drop(dropper) {
     const drop_count = Math.round(Math.random()*dropper.max_drop);
     for (var i = 0; i < drop_count; i++) {
         if (Math.random() < skill_drop_chance) {
-            new Loot(dropper.getWorldPosition(), drop_skill(dropper));
+            //new Loot(dropper.getWorldPosition(), drop_skill(dropper));
         } else if (Math.random() < item_drop_chance) {
-            new Loot(dropper.getWorldPosition(), drop_item(dropper));
+            //new Loot(dropper.getWorldPosition(), drop_item(dropper));
         } else if (Math.random() < consumable_drop_chance) {
             new Loot(dropper.getWorldPosition(), drop_consumable(dropper));
         } else if (Math.random() < cash_drop_chance) {
-            new Loot(dropper.getWorldPosition(), drop_cash(dropper));
+            //new Loot(dropper.getWorldPosition(), drop_cash(dropper));
         }
     }   
 }

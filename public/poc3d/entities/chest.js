@@ -33,11 +33,12 @@ class ChestSide extends Drawable {
         this.id = id;
         this.opening = false;
         this.pitch = 0;
+        this.lamp_material = materials.green_led;
     }
 
     open() {
         this.opening = true;
-        this.transition = new Transition(this, {pitch: 0, opening: true}, {pitch: -104, opening: false}, 1000);
+        this.transition = new Transition(this, {pitch: 0, opening: true, lamp_material: materials.green_led}, {pitch: -104, opening: false, lamp_material: materials.red_led}, 1000);
     }
 
     update(elapsed, dirty) {
@@ -53,7 +54,11 @@ class ChestSide extends Drawable {
 class ChestLamp extends Drawable {
     constructor(parent, local_position, id) {
         super(parent, local_position, models.chest.side_lamp);
-        this.material = materials.green_led;
         this.id = id;
+    }
+
+    draw(renderer) {
+        this.material = this.parent.lamp_material;
+        super.draw(renderer);
     }
 }

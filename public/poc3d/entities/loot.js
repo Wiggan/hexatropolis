@@ -18,6 +18,8 @@ class Loot extends Pickable {
 
     draw(renderer) {
         super.draw(renderer);
-        renderer.add_textbox({pos: this.getWorldPosition(), text: this.item.name});
+        if (alt_pressed || selected_id == this.id) {
+            renderer.add_textbox({pos: this.getWorldPosition(), text: this.item.name});
+        }
     }
 }

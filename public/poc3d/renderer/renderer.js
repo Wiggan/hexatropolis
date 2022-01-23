@@ -1,6 +1,7 @@
 'use strict';
 
 var gl, 
+    d2,
     projection_matrix = mat4.create(), 
     view_matrix = mat4.create();
 
@@ -12,16 +13,22 @@ class Renderer {
         this.pingpongFramebuffers = [];
         this.drawables = [];
         this.lights = [];
+        this.textboxes = [];
 
         // Retrieve the canvas
         const canvas = utils.getCanvas('game_canvas');
+        const canvas_text = utils.getCanvas('text_canvas');
 
         // Set the canvas to the size of the screen
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        canvas_text.width = window.innerWidth;
+        canvas_text.height = window.innerHeight;
 
         // Retrieve a WebGL context
         gl = utils.getGLContext(canvas);
+        d2 = canvas_text.getContext('2d');
+
         // Set the clear color to be black
         gl.clearColor(0, 0, 0, 1);
         gl.enable(gl.DEPTH_TEST);
@@ -146,6 +153,9 @@ class Renderer {
 
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
         this.draw_post_process();
+
+        // UI
+        this.draw_textboxes();
     }
 
 
@@ -309,5 +319,29 @@ class Renderer {
         });
         this.drawables.length = 0;
         this.lights.length = 0;
+    }
+
+    add_textbox(textbox) {
+        this.textboxes.push(textbox);
+    }
+
+    draw_textboxes() {
+        d2.clearRect(0, 0, d2.canvas.clientWidth, d2.canvas.clientHeight); 
+        this.textboxes.forEach(textbox => {
+            var pos = getWorldLocationScreenSpace(textbox.pos);
+            d2.save();
+            d2.font = "10px Courier New";
+            d2.globalAlpha = 0.4;
+            d2.fillStyle = "gold";
+            var text_measure = d2.measureText(textbox.text);
+            d2.translate(pos[0] - text_measure.width/2, pos[1]-25);
+            d2.fillRect(0, 0, text_measure.width, 14);
+            
+            d2.globalAlpha = 0.8;
+            d2.fillStyle = "white";
+            d2.fillText(textbox.text, 0, 9);
+            d2.restore();
+        });
+        this.textboxes.length = 0;
     }
 }

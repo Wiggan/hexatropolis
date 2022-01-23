@@ -10,6 +10,8 @@ class Chest extends Pickable {
         this.side2.local_transform.yaw(90);
         this.side3.local_transform.yaw(180);
         this.side4.local_transform.yaw(-90);
+        this.max_drop = 3;
+        this.level = 5;
     }
 
     onClick() {
@@ -19,7 +21,7 @@ class Chest extends Pickable {
             side.light.id = undefined;
         });
         this.make_unpickable();
-        new Loot(this.getWorldPosition(), {});
+        drop(this);
     }
 }
 

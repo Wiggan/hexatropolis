@@ -39,7 +39,7 @@ async function init() {
 
 function initControls() {     
     
-    var canvas = utils.getCanvas('game_canvas');
+    var canvas = utils.getCanvas('text_canvas');
     canvas.onclick = function(e) {
         active_camera.onclick(e);
     }

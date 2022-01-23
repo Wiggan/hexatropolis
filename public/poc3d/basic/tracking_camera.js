@@ -32,6 +32,8 @@ class TrackingCamera extends Camera {
             lights.forEach(light => {
                     light.inactivate();
             });
+        } else if (e.key == 'l') {
+            new Loot(player.getWorldPosition(), drop_consumable({max_drop: 5, level:10}));
         }
     }
 

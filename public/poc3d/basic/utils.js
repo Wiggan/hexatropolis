@@ -16,6 +16,22 @@ function getScreenSpaceToWorldLocation(position) {
     return world;
 }
 
+function getWorldLocationScreenSpace(world) {
+    var proj = mat4.create();
+    mat4.mul(proj, projection_matrix, view_matrix);
+    var pos = vec4.fromValues(world[0], world[1], world[2], 1);
+    vec4.transformMat4(pos, pos, proj);
+
+    // divide X and Y by W just like the GPU does.
+    pos[0] /= pos[3];
+    pos[1] /= pos[3];
+
+    // convert from clipspace to pixels
+    var pixelX = (pos[0] *  0.5 + 0.5) * gl.canvas.width;
+    var pixelY = (pos[1] * -0.5 + 0.5) * gl.canvas.height;
+    return [pixelX, pixelY];
+}
+
 function getHorizontalIntersection(p1, p2, y) {
     return [
         p1[0] - (p2[0]-p1[0])*(p1[1]-y)/(p2[1]-p1[1]),

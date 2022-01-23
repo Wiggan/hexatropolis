@@ -23,6 +23,10 @@ block head
   script(type='text/javascript', src='/poc3d/entities/player.js')
   script(type='text/javascript', src='/poc3d/entities/chest.js')
   script(type='text/javascript', src='/poc3d/entities/loot.js')
+  script(type='text/javascript', src='/poc3d/item_system/drop.js')
+  script(type='text/javascript', src='/poc3d/item_system/consumable.js')
+  script(type='text/javascript', src='/poc3d/item_system/skills.js')
+  
   script(type='text/javascript', src='/poc3d/index.js')
   style.
     #stack {
@@ -42,4 +46,5 @@ block head
 block content
   #stack
     canvas#game_canvas
+    canvas#text_canvas
 

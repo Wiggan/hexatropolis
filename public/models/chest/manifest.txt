@@ -1,0 +1,3 @@
+original OBJ file: C:\ProgramData\projects\hexatropolis\public\models\chest\chest.obj
+part1.json > alias: Chest_Cube_Material
+part2.json > alias: ChestLight_Cube.002_Material

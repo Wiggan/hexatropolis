@@ -107,5 +107,4 @@ dist
 .vscode/
 hexatropolis.db
 *.blend1
-public/models/
 public/common/models/

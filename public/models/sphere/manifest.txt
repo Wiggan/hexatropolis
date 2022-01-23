@@ -1,0 +1,2 @@
+original OBJ file: C:\ProgramData\projects\hexatropolis\public\models\sphere\sphere.obj
+part1.json > alias: GD_mesh_GD_mesh_None

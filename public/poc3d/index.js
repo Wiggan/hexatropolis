@@ -37,6 +37,19 @@ async function init() {
     initControls();
 }
 
+function download(filename, text) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    element.setAttribute('download', filename);
+  
+    element.style.display = 'none';
+    document.body.appendChild(element);
+  
+    element.click();
+  
+    document.body.removeChild(element);
+}
+
 function initControls() {     
     
     var canvas = utils.getCanvas('text_canvas');
@@ -47,8 +60,43 @@ function initControls() {
         active_camera.onKeyUp(e);
     });
     window.addEventListener('keydown', (e) => {
+        if (e.key == 's' && e.ctrlKey) {
+            download('materials.json', JSON.stringify(materials))
+            //console.log(JSON.stringify(materials));
+            e.preventDefault();
+        }
         active_camera.onKeyDown(e);
     });
+
+    var controls = {};
+    for (const [key, value] of Object.entries(materials)) {
+            controls[key] = {
+                'Diffuse': {
+                    value: denormalizeColor(value.diffuse),
+                    onChange: v => value.diffuse = normalizeColor(v)
+                },
+                'Ambient': {
+                    value: denormalizeColor(value.ambient),
+                    onChange: v => value.ambient = normalizeColor(v)
+                },
+                'Specular': {
+                    value: denormalizeColor(value.specular),
+                    onChange: v => value.specular = normalizeColor(v)
+                },
+                'Shininess': {
+                    value: value.shininess,
+                    min: 1, max: 50, step: 0.1,
+                    onChange: v => value.shininess = v
+                },
+                'Light': {
+                    value: value.isLight,
+                    onChange: v => value.isLight = v
+                },
+            }
+    }
+
+
+    utils.configureControls(controls);
 }
 
 // De-normalize colors from 0-1 to 0-255

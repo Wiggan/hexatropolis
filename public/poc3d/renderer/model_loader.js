@@ -1,15 +1,10 @@
 'use strict'
 
 var models = {};
-var materials = {
-    wall: {diffuse: [0.6, 0.5, 0.4], ambient: [0.6, 0.5, 0.4], specular: [0.3, 0.3, 0.3], shininess: 4.0},
-    metall: {diffuse: [0.6, 0.5, 0.4], ambient: [0.6, 0.5, 0.4], specular: [0.9, 0.9, 0.9], shininess: 24.0},
-    dirt: {diffuse: [0.4, 0.4, 0.1], ambient: [0.4, 0.4, 0.1], specular: [0.01, 0.01, 0.01], shininess: 1.0},
-    player: {diffuse: [0.7, 0.7, 0.7], ambient: [0.7, 0.7, 0.7], specular: [0.5, 0.5, 0.5], shininess: 14.0},
-    light: {diffuse: [0.2, 0.2, 1.0], ambient: [0.6, 0.5, 0.4], specular: [0.8, 0.8, 0.8], shininess: 4.0, isLight: true},
-    light_inactive: {diffuse: [0.1, 0.1, 0.5], ambient: [0.6, 0.5, 0.4], specular: [0.8, 0.8, 0.8], shininess: 24.0, isLight: true},
-    red_led: {diffuse: [1.0, 0.0, 0.0], ambient: [0.6, 0.5, 0.4], specular: [0.1, 0.1, 0.1], shininess: 4.0, isLight: true},
-    green_led: {diffuse: [0.0, 1.0, 0.0], ambient: [0.4, 0.6, 0.4], specular: [0.1, 0.1, 0.1], shininess: 4.0, isLight: true},
+var materials;
+
+async function load_materials(path) {
+    return fetch(path).then(response => response.json()).then(mats => materials = mats);
 }
 
 async function load_model(path) {
@@ -59,6 +54,7 @@ async function load_model(path) {
 }
 
 async function load_all_models() {
+    materials = await load_materials('/models/materials.json');
     models.block = await load_model('/models/block/part1.json');
     models.sphere = await load_model('/models/sphere/part1.json');
     models.hex = await load_model('/models/hex/part1.json');

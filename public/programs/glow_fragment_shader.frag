@@ -3,19 +3,15 @@ precision mediump float;
 
 uniform sampler2D uSampler0;
 uniform sampler2D uSampler1;
-uniform sampler2D uSampler2;
 
 in vec2 vTextureCoords;
 
 out vec4 fragColor;
 
 void main(void) {
-    const float gamma = 2.2;
 
-    vec3 hdrColor = texture(uSampler0, vTextureCoords).rgb;    
-    if ((int(vTextureCoords[0]) + int(vTextureCoords[1])) % 2 == 0) {
-        hdrColor = texture(uSampler2, vTextureCoords).rgb;   
-    }
+    const float gamma = 2.2;
+    vec3 hdrColor = texture(uSampler0, vTextureCoords).rgb;      
     vec3 bloomColor = texture(uSampler1, vTextureCoords).rgb;
     hdrColor += bloomColor; // additive blending
     // tone mapping

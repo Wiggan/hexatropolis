@@ -42,7 +42,10 @@ class Scene {
                 } else  if (level.tiles[y][x] == 1) {
                     this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
                     if (Math.random() < 0.2) {
-                        this.entities.push(new Chest(null, getHexPosition(x, 0, y)));
+                        this.entities.push(new Chest(getHexPosition(x, 0, y)));
+                    }
+                    if (Math.random() < 0.1) {
+                        this.entities.push(new Drone(getHexPosition(x, 0, y)));
                     }
                 } else  if (level.tiles[y][x] == 2) {
                     this.entities.push(new Lantern(null, getHexPosition(x, 0, y)));

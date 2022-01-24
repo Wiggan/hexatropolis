@@ -42,7 +42,7 @@ class FloatingLightBulb extends PointLight {
             case States.Active:
                 this.elapsed += elapsed;
                 var pos = vec3.create();
-                vec3.add(pos, this.position, [0,  + Math.sin(this.elapsed*0.005)*0.1, 0]);
+                vec3.add(pos, this.position, [0, Math.sin(this.elapsed*0.005)*0.1, 0]);
                 this.local_transform.setPosition(pos);
                 this.local_transform.yaw(elapsed * 0.05);
                 dirty = true;

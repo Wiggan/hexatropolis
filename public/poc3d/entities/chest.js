@@ -1,8 +1,8 @@
 'use strict';
 
 class Chest extends Pickable {
-    constructor(parent, local_position) {
-        super(parent, local_position);
+    constructor(local_position) {
+        super(null, local_position);
         this.side1 = new ChestSide(this, [0, 0, -0.25], this.id);
         this.side2 = new ChestSide(this, [-0.25, 0, 0], this.id);
         this.side3 = new ChestSide(this, [0, 0, 0.25], this.id);
@@ -14,7 +14,7 @@ class Chest extends Pickable {
         this.level = 5;
     }
 
-    on_click() {
+    interact() {
         this.children.forEach(side => {
             side.open();
             side.id = undefined;

@@ -253,10 +253,10 @@ class Renderer {
 
     setMaterial(program, material) {
         gl.uniform3fv(program['uMaterial.diffuse'], material.diffuse);
+        gl.uniform1i(program['uMaterial.isLight'], material.isLight);
         gl.uniform3fv(program['uMaterial.ambient'], material.ambient); 
         gl.uniform3fv(program['uMaterial.specular'], material.specular); 
-        gl.uniform1f(program['uMaterial.shininess'], material.shininess); 
-        gl.uniform1i(program['uMaterial.isLight'], material.isLight);
+        gl.uniform1f(program['uMaterial.shininess'], material.shininess);
     }
 
     draw() {

@@ -32,6 +32,7 @@ class Scene {
         player = new Player(getHexPosition(0, 0, 0));
         this.entities.push(player);
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
+        //this.entities.push(new FireBlock(null, [0, 4, 0]));
     }
 
     parse_level(level) {

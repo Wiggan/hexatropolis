@@ -70,29 +70,58 @@ function initControls() {
 
     var controls = {};
     for (const [key, value] of Object.entries(materials)) {
-            controls[key] = {
-                'Diffuse': {
-                    value: denormalizeColor(value.diffuse),
-                    onChange: v => value.diffuse = normalizeColor(v)
-                },
-                'Ambient': {
-                    value: denormalizeColor(value.ambient),
-                    onChange: v => value.ambient = normalizeColor(v)
-                },
-                'Specular': {
-                    value: denormalizeColor(value.specular),
-                    onChange: v => value.specular = normalizeColor(v)
-                },
-                'Shininess': {
-                    value: value.shininess,
-                    min: 1, max: 50, step: 0.1,
-                    onChange: v => value.shininess = v
-                },
-                'Light': {
-                    value: value.isLight,
-                    onChange: v => value.isLight = v
-                },
-            }
+        controls[key] = {
+            'Diffuse': {
+                value: denormalizeColor(value.diffuse),
+                onChange: v => value.diffuse = normalizeColor(v)
+            },
+            'Ambient': {
+                value: denormalizeColor(value.ambient),
+                onChange: v => value.ambient = normalizeColor(v)
+            },
+            'Specular': {
+                value: denormalizeColor(value.specular),
+                onChange: v => value.specular = normalizeColor(v)
+            },
+            'Shininess': {
+                value: value.shininess,
+                min: 1, max: 50, step: 0.1,
+                onChange: v => value.shininess = v
+            },
+            'Light': {
+                value: value.isLight,
+                onChange: v => value.isLight = v
+            },
+        }
+    }
+    controls.lights = {
+        'Diffuse': {
+            value: denormalizeColor(LanternLight.Diffuse),
+            onChange: v => lights.forEach(light => light.diffuse = normalizeColor(v))
+        },
+        'Ambient': {
+            value: denormalizeColor(LanternLight.Ambient),
+            onChange: v => lights.forEach(light => light.ambient = normalizeColor(v))
+        },
+        'Specular': {
+            value: denormalizeColor(LanternLight.Specular),
+            onChange: v => lights.forEach(light => light.specular = normalizeColor(v))
+        },
+        'Constant': {
+            value: 1,
+            min: 0, max: 2, step: 0.1,
+            onChange: v => lights.forEach(light => light.constant = v)
+        },
+        'Linear': {
+            value: 0.35,
+            min: 0, max: 10, step: 0.05,
+            onChange: v => lights.forEach(light => light.linear = v)
+        },
+        'Quadratic': {
+            value: 0.9,
+            min: 0, max: 10, step: 0.05,
+            onChange: v => lights.forEach(light => light.quadratic = v)
+        },
     }
 
 

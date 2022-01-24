@@ -8,14 +8,14 @@ class PointLight extends Entity {
         lights.push(this);
         this.active = false;
         this.model = models.block;
-        this.ambient = [0.01, 0.01, 0.01];
-        this.diffuse = [0.6, 0.6, 0.4];
-        this.specular = [0.6, 0.6, 0.4];
+        this.ambient = [0.2, 0.2, 0.3];
+        this.diffuse = [0.4, 0.4, 0.6];
+        this.specular = [0.8, 0.8, 0.8];
         this.constant = 1.0;
         this.linear = 0.35;
         this.quadratic = 0.9;
     }
-
+    
     getPosition() {
         var position = vec3.create(); 
         mat4.getTranslation(position, this.getWorldTransform());

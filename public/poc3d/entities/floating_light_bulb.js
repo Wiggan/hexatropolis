@@ -11,6 +11,9 @@ const LanternLight = {
     Ambient: [0.2, 0.2, 0.3],
     Diffuse: [0.4, 0.4, 0.6],
     Specular: [0.8, 0.8, 0.8],
+    Constant: 1.0,
+    Linear: 1.1,
+    Quadratic: 0.65,
     Off: [0, 0, 0],
 };
 
@@ -25,6 +28,9 @@ class Prism extends Drawable {
 class FloatingLightBulb extends PointLight {
     constructor(parent, local_position) {
         super(parent, local_position);
+        this.constant = LanternLight.Constant;
+        this.linear = LanternLight.Linear;
+        this.quadratic = LanternLight.Quadratic;
         this.prism = new Prism(this, [0, 0, 0]);
         this.position = [0, 1.5, 0];
         this.state = States.Inactive;

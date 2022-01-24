@@ -1,2 +1,2 @@
-original OBJ file: C:\ProgramData\projects\hexatropolis\public\models\hex\hex.obj
+original OBJ file: C:\Users\Fredrik\Documents\hexatropolis\public\models\hex\hex.obj
 part1.json > alias: Cylinder_Cylinder_None

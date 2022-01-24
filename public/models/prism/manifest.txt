@@ -1,2 +1,2 @@
-original OBJ file: C:\ProgramData\projects\hexatropolis\public\models\prism\prism.obj
+original OBJ file: C:\Users\Fredrik\Documents\hexatropolis\public\models\prism\prism.obj
 part1.json > alias: Cylinder_Cylinder_None

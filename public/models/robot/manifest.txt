@@ -1,4 +1,4 @@
-original OBJ file: C:\ProgramData\projects\hexatropolis\public\models\robot\robot.obj
+original OBJ file: C:\Users\Fredrik\Documents\hexatropolis\public\models\robot\robot.obj
 part1.json > alias: Wheels_Cube_Material
 part2.json > alias: Head_Cube.003_None
 part3.json > alias: HeadLED_Cube.001_None

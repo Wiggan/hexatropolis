@@ -53,7 +53,7 @@ function download(filename, text) {
 function initControls() {     
     
     var canvas = utils.getCanvas('text_canvas');
-    canvas.onclick = function(e) {
+    canvas.onmousedown = function(e) {
         active_camera.onclick(e);
     }
     window.addEventListener('keyup', (e) => {

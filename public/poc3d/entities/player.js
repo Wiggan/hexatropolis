@@ -1,43 +1,89 @@
 'use strict'
 
+const PlayerState = {
+    GotoInteractible: 'GotoInteractible',
+    Goto: 'Goto',
+    Idle: 'Idle'
+}
+
 class Player extends Entity {
-    #goto = undefined;
     constructor(local_position) {
         super(null, local_position);
-        this.base = new Base(this);
-        this.body = new Body(this);
-        this.head = new Head(this);
-        this.camera = new TrackingCamera(this, [0, 10, 6]);
-        this.movement_speed = 0.003;
-        this.inventory = [];
-    }
-
-    goto(point) {
-        this.#goto = {
-            start_point: this.getWorldPosition(),
-            target: point,
-            time: 0,
-            duration: vec3.dist(this.getWorldPosition(), point)/this.movement_speed
+        this.models = {
+            base: new Base(this),
+            body: new Body(this),
+            head: new Head(this)
         };
-        var target_vector = vec3.create();
-        vec3.sub(target_vector, point, position(this.getWorldTransform()));
-        var forward_vector = forward(this.base.getWorldTransform());
-        var angle = getHorizontalAngle(target_vector, forward_vector);
-        this.base.turn(rad2deg(angle));
-        //this.base.local_transform.yaw(rad2deg(angle));
+        this.camera = new TrackingCamera(this, [0, 10, 6]);
+        this.stats = {
+            movement_speed: 0.003,
+            pickup_range: 1,
+
+        };
+        this.inventory = [];
+        this.equipment = {
+            right_arm: undefined,
+            left_arm: undefined,
+        };
+        this.state = PlayerState.Idle;
+        this.state_context = {};
     }
 
-    update(elapsed, dirty) {
-        if (this.#goto) {
-            var t = this.#goto.time/this.#goto.duration;
-            this.#goto.time += elapsed;
-            var new_location = vec3.create();
-            vec3.lerp(new_location, this.#goto.start_point, this.#goto.target, t);
-            this.local_transform.setPosition(new_location);
-            if(t >= 0.999) {
-                this.#goto = undefined; // Finished
+    left_click(point, object) {
+        if (object == undefined) {
+            this.state = PlayerState.Goto;
+            this.state_context = {
+                position: point,
+                tolerance: 0.05
+            };
+        } else {
+            switch(object.type) {
+                case PickableType.Default:
+                    if (object.getDistanceToPlayer() < this.stats.pickup_range) {
+                        object.on_click();
+                    } else {
+                        this.state = PlayerState.GotoInteractible;
+                        this.state_context = {
+                            target: object,
+                            position: object.getWorldPosition(),
+                            tolerance: this.stats.pickup_range
+                        };
+                    }
+                    break;
+                    case PickableType.Enemy:
+                        
+                        break;
+                    }
+                }
             }
-            dirty = true;
+            
+    right_click(point, object) {
+        
+    }
+    
+    update(elapsed, dirty) {
+        switch (this.state) {
+            case PlayerState.GotoInteractible:
+                var forward_vector = forward(this.models.base.getWorldTransform());
+                var movement = vec3.create();
+                vec3.scale(movement, forward_vector, elapsed * this.stats.movement_speed);
+                this.local_transform.translate(movement);
+                if(vec3.dist(this.state_context.position, this.getWorldPosition()) < this.state_context.tolerance) {
+                    this.state_context.target.on_click();
+                    this.state = PlayerState.Idle;
+                }
+                dirty = true;
+                break;
+            case PlayerState.Goto:
+                var forward_vector = forward(this.models.base.getWorldTransform());
+                var movement = vec3.create();
+                vec3.scale(movement, forward_vector, elapsed * this.stats.movement_speed);
+                this.local_transform.translate(movement);
+                if(vec3.dist(this.state_context.position, this.getWorldPosition()) < this.state_context.tolerance) {
+                    this.state = PlayerState.Idle;
+                }
+                dirty = true;
+                break;
         }
         super.update(elapsed, dirty);
     }
@@ -60,24 +106,22 @@ class Base extends Drawable {
     constructor(parent) {
         super(parent, [0,0,0], models.robot.crawlers);
         this.material = materials.player;
-        this.turning = false;
-        this.transition = new Transition(this, {}, {}, 0);
-        this.yaw = 0;
-    }
-
-    turn(angle) {
-        this.turning = true;
-        this.transition.from = {yaw: this.local_transform.getYaw(), turning: true};
-        this.transition.to = {yaw: this.local_transform.getYaw() + angle, turning: false};
-        this.transition.time = 300;
-        this.transition.elapsed = 0;
+        this.stats = {
+            turning_speed: 0.5
+        }
     }
 
     update(elapsed, dirty) {
-        if (this.turning) {
-            this.transition.update(elapsed);
-            this.local_transform.setYaw(this.yaw);
-            dirty = true;
+        if (this.parent.state == PlayerState.Goto || this.parent.state == PlayerState.GotoInteractible) {
+            var target_vector = vec3.create();
+            vec3.sub(target_vector, this.parent.state_context.position, position(this.parent.getWorldTransform()));
+            var forward_vector = forward(this.getWorldTransform());
+            var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
+            if (Math.abs(angle) > 0.005) {
+                var angle_increment = Math.sign(angle) * Math.min(Math.abs(angle), this.stats.turning_speed * elapsed);
+                this.local_transform.yaw(angle_increment)
+                dirty = true;
+            }
         }
         super.update(elapsed, dirty);
     }

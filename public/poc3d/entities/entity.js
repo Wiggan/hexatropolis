@@ -54,6 +54,10 @@ class Entity {
     getDistanceToPlayer() {
         return vec3.dist(this.getWorldPosition(), player.getWorldPosition());
     }
+
+    getForwardVector() {
+        return vec3.fromValues(this.world_transform[8], this.world_transform[9], this.world_transform[10]);
+    }
 }
 
 class Transition {

@@ -10,10 +10,16 @@ function getNextPickableId() {
 }
 var selected_id = 0;
 
+const PickableType = {
+    Enemy: 'Enemy',
+    Default: 'Default'
+}
+
 class Pickable extends Entity {
     constructor(parent, local_position) {
         super(parent, local_position);
         this.id = getNextPickableId();
+        this.type = PickableType.Default;
         pickable_map.set(this.id, this);
     }
 

@@ -14,7 +14,7 @@ class Chest extends Pickable {
         this.level = 5;
     }
 
-    onClick() {
+    on_click() {
         this.children.forEach(side => {
             side.open();
             side.id = undefined;

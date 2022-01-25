@@ -26,6 +26,8 @@ class FireBlock extends Drawable {
             isLight: true
         }
         this.reset();
+        // Start a little randomly
+        this.elapsed = Math.random()*this.life_time;
     }
     
     reset() {
@@ -45,7 +47,7 @@ class FireBlock extends Drawable {
         this.elapsed += elapsed;
         vec3.lerp(this.material.diffuse, FireColors.Start, FireColors.Stop, this.elapsed/this.life_time);
         //console.log(this.material.diffuse);
-        this.local_transform.scale(0.1 - 0.1 * this.elapsed / this.life_time);
+        this.local_transform.scale(0.1 - 0.1 * Math.min(this.elapsed / this.life_time, 1));
         var translation = vec3.clone(this.velocity);
         vec3.scale(translation, translation, elapsed);
         this.local_transform.translate(translation);

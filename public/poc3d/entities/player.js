@@ -51,7 +51,11 @@ class Player extends Entity {
     right_click(point, object) {
         var start = this.getWorldPosition();
         start[1] = 1;
-        new Rocket(start, getHorizontalAngle(this.getWorldPosition(), point));
+        var target_vector = vec3.create();
+        vec3.sub(target_vector, point, this.getWorldPosition());
+        var forward_vector = forward(this.getWorldTransform());
+        var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
+        new Rocket(start, angle);
     }
     
     attack(object) {

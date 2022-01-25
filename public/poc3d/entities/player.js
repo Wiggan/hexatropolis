@@ -49,8 +49,9 @@ class Player extends Entity {
     }
 
     right_click(point, object) {
-        var start = this.getWorldPosition();
-        start[1] = 1;
+        var start = this.models.body.right_arm.getWorldPosition();
+        start[1] += 0.8;
+        start[2] += 0.4;
         var target_vector = vec3.create();
         vec3.sub(target_vector, point, this.getWorldPosition());
         var forward_vector = forward(this.getWorldTransform());
@@ -144,6 +145,7 @@ class Body extends Drawable {
         this.material = materials.player;
         this.lamp = new BodyLamp(this);
         this.left_arm = new Wrench(this);
+        this.right_arm = new RocketLauncher(this);
         this.stats = {
             turning_speed: 1
         }
@@ -207,4 +209,15 @@ class Wrench extends Drawable {
         }
         super.update(elapsed, dirty);
     }
+}
+
+
+class RocketLauncher extends Drawable {
+    constructor(parent) {
+        super(parent, [0.4,0.8,0], models.robot.rocket_launcher);
+        this.material = materials.player;
+        this.lamp = new Drawable(this, [0, 0, 0], models.robot.rocket_launcher_lamp);
+        this.lamp.material = materials.green_led;
+    }
+
 }

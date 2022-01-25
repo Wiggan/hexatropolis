@@ -67,6 +67,8 @@ async function load_all_models() {
     models.robot.head_lamp = await load_model('/models/robot/part3.json');
     models.robot.body_lamp = await load_model('/models/robot/part5.json');
     models.robot.wrench = await load_model('/models/robot/part6.json');
+    models.robot.rocket_launcher = await load_model('/models/robot/part7.json');
+    models.robot.rocket_launcher_lamp = await load_model('/models/robot/part8.json');
     models.chest = {};
     models.chest.side = await load_model('/models/chest/part1.json');
     models.chest.side_lamp = await load_model('/models/chest/part2.json');

@@ -49,7 +49,7 @@ class Player extends Entity {
     }
 
     right_click(point, object) {
-
+        new Rocket(vec3.fromValues(point[0], 1, point[2]), getHorizontalAngle(this.getWorldPosition(), point));
     }
     
     attack(object) {

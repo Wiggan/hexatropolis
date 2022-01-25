@@ -55,12 +55,8 @@ class TrackingCamera extends Camera {
     onclick(e) {
         if (e.button == 0) {
             player.left_click(this.pointing_at, pickable_map.get(selected_id));
-            /* if (selected_id != 0) {
-                const pickable = pickable_map.get(selected_id);
-                pickable.onClick();
-            } else {
-                this.parent.goto(this.pointing_at);
-            } */
+        } else if (e.button == 2) {
+            player.right_click(this.pointing_at, pickable_map.get(selected_id));
         }
     }
 

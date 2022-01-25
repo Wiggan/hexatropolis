@@ -52,12 +52,20 @@ class TrackingCamera extends Camera {
         }
     }
 
-    onclick(e) {
+    onmousedown(e) {
         if (e.button == 0) {
             player.left_click(this.pointing_at, pickable_map.get(selected_id));
         } else if (e.button == 2) {
             player.right_click(this.pointing_at, pickable_map.get(selected_id));
         }
+        e.preventDefault();
+    }
+    onmouseup(e) {
+        e.preventDefault();
+    } 
+
+    onclick(e) {
+        e.preventDefault();
     }
 
     update(elapsed, dirty) {

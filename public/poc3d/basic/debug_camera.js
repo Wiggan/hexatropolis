@@ -85,6 +85,14 @@ class DebugCamera extends Camera {
         var canvas = utils.getCanvas('game_canvas');
         canvas.requestPointerLock();
     }
+    
+    onmousedown(e) {
+        e.preventDefault();
+    }
+    onmouseup(e) {
+        e.preventDefault();
+    } 
+
 
     update(elapsed, dirty) {
         const viewMatrix = this.getViewMatrix();

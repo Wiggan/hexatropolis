@@ -2,14 +2,14 @@
 
 class Rocket extends Drawable {
     constructor(position, yaw) {
-        console.log(yaw);
+        //console.log(yaw);
         super(null, position);
         this.local_transform.yaw(yaw);
         this.model = models.sphere;
         this.material = materials.metall;
         this.fire = new Fire(this, [0, 0, 0]);
         this.velocity = forward(this.local_transform.get());
-        console.log(this.velocity);
+        //console.log(this.velocity);
         this.fire.local_transform.setPitch(-90);
         this.elapsed = 0;
         this.stats = {

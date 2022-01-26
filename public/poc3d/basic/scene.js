@@ -13,6 +13,7 @@ function getHexPosition(ix, y, iz) {
 class Scene {
     constructor() {
         this.entities = [];
+        this.entities_to_draw = [];
        /*  this.parse_level({
             tiles: [
                 [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -32,7 +33,7 @@ class Scene {
         var level = {tiles: this.generate([[1, 1], [50, 90], [20, 20], [50, 50], [90, 90], [2, 5]])};
         this.parse_level(level);
         this.entities.push(new DebugCamera([6, 6, 8]));
-        player = new Player(getHexPosition(0, 0, 0));
+        player = new Player(getHexPosition(5, 0, 2));
         this.entities.push(player);
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
         //this.entities.push(new FireBlock(null, [0, 4, 0]));
@@ -52,7 +53,7 @@ class Scene {
     generate(points_of_interest) {
         var level = this.makeArray(100, 100, 0);
         var tail = points_of_interest.pop();
-        level[tail[0]][tail[1]] = 1;
+        level[tail[0]][tail[1]] = 2;
         const max_attempts = 200;
         var attempts = 0;
         while (points_of_interest.length > 0) {
@@ -71,14 +72,18 @@ class Scene {
                     tail[1] += Math.round(dir.y);
                 }
                 //this.add(Array.from(tail));
-                level[tail[0]][tail[1]] = 1;
-                if (Math.random() < 0.2) {
+                if (tail[0] == target[0] && tail[1] == target[1]) {
                     level[tail[0]][tail[1]] = 2; 
-                } else if (Math.random() < 0.1) {
-                    level[tail[0]][tail[1]] = 3; 
-                } else if (Math.random() < 0.1) {
-                    level[tail[0]][tail[1]] = 4; 
-                } 
+                } else {
+                    level[tail[0]][tail[1]] = 1;
+                    if (Math.random() < 0.2) {
+                        level[tail[0]][tail[1]] = 2; 
+                    } else if (Math.random() < 0.4) {
+                        level[tail[0]][tail[1]] = 3; 
+                    } else if (Math.random() < 0.1) {
+                        level[tail[0]][tail[1]] = 4; 
+                    } 
+                }
                 // Sometimes fatten up around the newly added tile
                 if (Math.random() < 0.9) {
                     var tile1 = Array.from(tail);
@@ -129,8 +134,11 @@ class Scene {
     }
 
     draw(renderer) {
-        this.entities.forEach(entity => {
+        this.entities_to_draw.forEach(entity => {
             entity.draw(renderer);
+        });
+        lights.forEach((light) => {
+            light.draw(renderer);
         });
     }
 
@@ -147,6 +155,7 @@ class Scene {
                 light.inactivate();
             }
         });
+        this.entities_to_draw = this.entities.filter(entity => entity.getSquaredHorizontalDistanceToPlayer() < 120);
         this.entities.forEach(entity => {
             entity.update(elapsed, false);
         });

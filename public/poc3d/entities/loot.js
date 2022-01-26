@@ -11,7 +11,7 @@ class Loot extends Pickable {
         scene.entities.push(this);
     }
 
-    onClick() {
+    interact() {
         player.inventory.push(this.item);
         scene.entities.splice(scene.entities.lastIndexOf(this), 1);
     }

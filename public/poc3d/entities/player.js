@@ -4,7 +4,8 @@ const PlayerState = {
     GotoInteractible: 'GotoInteractible',
     Goto: 'Goto',
     Idle: 'Idle',
-    Attack: 'Attack'
+    Attack: 'Attack',
+    Firing: 'Firing'
 }
 
 class Player extends Entity {
@@ -15,7 +16,7 @@ class Player extends Entity {
             body: new Body(this),
             head: new Head(this)
         };
-        this.camera = new TrackingCamera(this, [0, 10, 6]);
+        this.camera = new TrackingCamera(this, [0, 8, 4]);
         this.stats = {
             movement_speed: 0.003,
             pickup_range: 1,
@@ -28,7 +29,9 @@ class Player extends Entity {
         };
 
         this.state = PlayerState.Idle;
-        this.state_context = {};
+        this.state_context = {
+            position: [local_position[0], local_position[1], local_position[2] - 1]
+        };
     }
 
     left_click(point, object) {
@@ -49,18 +52,9 @@ class Player extends Entity {
     }
 
     right_click(point, object) {
-        var start = this.models.body.right_arm.getWorldPosition();
-        start[1] += 0.8;
-        start[2] += 0.4;
-        var target_vector = vec3.create();
-        vec3.sub(target_vector, point, this.getWorldPosition());
-        var forward_vector = forward(this.getWorldTransform());
-        var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
-        new Rocket(start, angle);
-    }
-    
-    attack(object) {
-
+        if (this.state != PlayerState.Firing) {
+            this.models.body.right_arm.fire(point);
+        }
     }
 
     update(elapsed, dirty) {
@@ -69,7 +63,6 @@ class Player extends Entity {
                 if(vec3.dist(this.state_context.position, this.getWorldPosition()) < this.state_context.tolerance) {
                     if (this.state_context.target.type == PickableType.Enemy) {
                         this.state = PlayerState.Attack;
-                        this.attack(this.state_context.target);
                     } else {
                         this.state = PlayerState.Idle;
                         this.state_context.target.interact();
@@ -93,6 +86,8 @@ class Player extends Entity {
                 dirty = true;
                 break;
             case PlayerState.Attack:
+            case PlayerState.Firing:
+                dirty = true;
 
                 break;
         }
@@ -152,17 +147,19 @@ class Body extends Drawable {
     }
 
     update(elapsed, dirty) {
-        if (this.parent.state == PlayerState.Goto || this.parent.state == PlayerState.GotoInteractible || this.parent.state == PlayerState.Attack) {
+        if (this.parent.state != PlayerState.Idle) {
             var target_vector = vec3.create();
             vec3.sub(target_vector, this.parent.state_context.position, position(this.parent.getWorldTransform()));
             var forward_vector = forward(this.getWorldTransform());
             var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
+            console.log(angle);
             if (Math.abs(angle) > 0.005) {
                 var angle_increment = Math.sign(angle) * Math.min(Math.abs(angle), this.stats.turning_speed * elapsed);
                 this.local_transform.yaw(angle_increment)
                 dirty = true;
             }
         }
+
         super.update(elapsed, dirty);
     }
 }
@@ -218,6 +215,36 @@ class RocketLauncher extends Drawable {
         this.material = materials.player;
         this.lamp = new Drawable(this, [0, 0, 0], models.robot.rocket_launcher_lamp);
         this.lamp.material = materials.green_led;
+        this.stats = {
+            damage: 1,
+            attack_duration: 500
+        }
+        this.time = 0;
     }
 
+    fire(point) {
+        var start = this.getWorldPosition();
+        var target_vector = vec3.create();
+        vec3.sub(target_vector, point, player.getWorldPosition());
+        var forward_vector = forward(player.getWorldTransform());
+        var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
+        player.state_context.position = point;
+        new Rocket(start, angle);
+        console.log("start: " + start);
+        player.state = PlayerState.Firing;
+        this.lamp.material = materials.red_led;
+    }
+
+    update(elapsed, dirty) {
+        if (player.state == PlayerState.Firing) {
+            this.time += elapsed;
+            if (this.time >= this.stats.attack_duration) {
+                player.state = PlayerState.Idle;
+                this.time = 0;
+                this.lamp.material = materials.green_led;
+            }
+            dirty = true;
+        }
+        super.update(elapsed, dirty);
+    }
 }

@@ -113,22 +113,13 @@ class Base extends Drawable {
     constructor(parent) {
         super(parent, [0,0,0], models.robot.crawlers);
         this.material = materials.player;
-        this.stats = {
-            turning_speed: 0.5
-        }
     }
 
     update(elapsed, dirty) {
         if (this.parent.state == PlayerState.Goto || this.parent.state == PlayerState.GotoInteractible) {
-            var target_vector = vec3.create();
-            vec3.sub(target_vector, this.parent.state_context.position, position(this.parent.getWorldTransform()));
-            var forward_vector = forward(this.getWorldTransform());
-            var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
-            if (Math.abs(angle) > 0.005) {
-                var angle_increment = Math.sign(angle) * Math.min(Math.abs(angle), this.stats.turning_speed * elapsed);
-                this.local_transform.yaw(angle_increment)
-                dirty = true;
-            }
+            this.look_at = this.parent.state_context.position;
+        } else {
+            this.look_at = undefined;
         }
         super.update(elapsed, dirty);
     }
@@ -141,23 +132,14 @@ class Body extends Drawable {
         this.lamp = new BodyLamp(this);
         this.left_arm = new Wrench(this);
         this.right_arm = new RocketLauncher(this);
-        this.stats = {
-            turning_speed: 1
-        }
+        this.rotation_speed = 1;
     }
 
     update(elapsed, dirty) {
         if (this.parent.state != PlayerState.Idle) {
-            var target_vector = vec3.create();
-            vec3.sub(target_vector, this.parent.state_context.position, position(this.parent.getWorldTransform()));
-            var forward_vector = forward(this.getWorldTransform());
-            var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
-            console.log(angle);
-            if (Math.abs(angle) > 0.005) {
-                var angle_increment = Math.sign(angle) * Math.min(Math.abs(angle), this.stats.turning_speed * elapsed);
-                this.local_transform.yaw(angle_increment)
-                dirty = true;
-            }
+            this.look_at = this.parent.state_context.position;
+        } else {
+            this.look_at = undefined;
         }
 
         super.update(elapsed, dirty);
@@ -173,13 +155,7 @@ class Head extends Drawable {
 
     update(elapsed, dirty) {
         super.update(elapsed, dirty);
-
-        var target_vector = vec3.create();
-        vec3.sub(target_vector, this.parent.camera.pointing_at, position(this.getWorldTransform()));
-        var forward_vector = forward(this.getWorldTransform());
-        var angle = getHorizontalAngle(target_vector, forward_vector);
-        
-        this.local_transform.yaw(rad2deg(angle));
+        this.look_at = this.parent.camera.pointing_at;
     }
 }
 

@@ -9,5 +9,6 @@ class Hex extends Drawable {
             this.local_transform.roll(180);
             this.local_transform.translate([0, -4, 0]);
         }
+        this.collider.type = CollisionTypes.Level;
     }
 }

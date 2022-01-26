@@ -32,9 +32,13 @@ class Player extends Entity {
         this.state_context = {
             position: [local_position[0], local_position[1], local_position[2] - 1]
         };
+        
+        this.collider.type = CollisionTypes.Actor;
+        this.collider.radius = 0.5;
     }
 
     left_click(point, object) {
+        this.velocity = vec3.create();
         if (object == undefined) {
             this.state = PlayerState.Goto;
             this.state_context = {
@@ -61,6 +65,7 @@ class Player extends Entity {
         switch (this.state) {
             case PlayerState.GotoInteractible:
                 if(vec3.dist(this.state_context.position, this.getWorldPosition()) < this.state_context.tolerance) {
+                    this.velocity = undefined;
                     if (this.state_context.target.type == PickableType.Enemy) {
                         this.state = PlayerState.Attack;
                     } else {
@@ -68,27 +73,22 @@ class Player extends Entity {
                         this.state_context.target.interact();
                     }
                 } else {
-                    var forward_vector = forward(this.models.base.getWorldTransform());
-                    var movement = vec3.create();
-                    vec3.scale(movement, forward_vector, elapsed * this.stats.movement_speed);
-                    this.local_transform.translate(movement);
+                    vec3.scale(this.velocity, forward(this.models.base.getWorldTransform()), this.stats.movement_speed);
                 }
                 dirty = true;
                 break;
             case PlayerState.Goto:
-                var forward_vector = forward(this.models.base.getWorldTransform());
-                var movement = vec3.create();
-                vec3.scale(movement, forward_vector, elapsed * this.stats.movement_speed);
-                this.local_transform.translate(movement);
+                
+                vec3.scale(this.velocity, forward(this.models.base.getWorldTransform()), this.stats.movement_speed);
                 if(vec3.dist(this.state_context.position, this.getWorldPosition()) < this.state_context.tolerance) {
                     this.state = PlayerState.Idle;
+                    this.velocity = undefined;
                 }
                 dirty = true;
                 break;
             case PlayerState.Attack:
             case PlayerState.Firing:
                 dirty = true;
-
                 break;
         }
         super.update(elapsed, dirty);

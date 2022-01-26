@@ -1,5 +1,12 @@
 'use strict';
 
+const CollisionTypes = {
+    NoCollision: 'NoCollision',
+    Level: 'Level',
+    Actor: 'Actor',
+    Projectile: 'Projectile'
+};
+
 class Entity {
     constructor(parent, local_position) {
         this.parent = parent;
@@ -12,6 +19,11 @@ class Entity {
         }
         this.look_at = undefined;
         this.rotation_speed = 0.5;
+        this.velocity = undefined;
+        this.collider = {
+            radius: 1,
+            type: CollisionTypes.NoCollision
+        };
     }
 
     draw(renderer) {
@@ -32,6 +44,22 @@ class Entity {
                 dirty = true;
             }
         }
+        if (this.velocity) {
+            var movement = vec3.create();
+            vec3.scale(movement, this.velocity, elapsed);
+            this.local_transform.translate(movement);
+            if (this.collider.type != CollisionTypes.NoCollision) {
+                this.last_movement = movement;
+                scene.entities.forEach((other) => {
+                    if (this != other && other.collider.type != CollisionTypes.NoCollision) {
+                        if (vec3.dist(this.local_transform.getPosition(), other.getWorldPosition()) < this.collider.radius + other.collider.radius) {
+                            console.log(this.collider.type + " collided with " + other.collider.type);
+                            this.onCollision(other);
+                        } 
+                    }
+                });
+            }
+        }
         if(dirty) {
             if (this.parent) {
                 mat4.mul(this.world_transform, this.parent.world_transform, this.local_transform.get());
@@ -40,6 +68,12 @@ class Entity {
             }
         }
         this.children.forEach(child => child.update(elapsed, dirty));   
+    }
+
+    onCollision(other) {
+        // Revert movement that caused collision
+        vec3.scale(this.last_movement, this.last_movement, -1.1);
+        this.local_transform.translate(this.last_movement);
     }
 
     getLocalTransform() {

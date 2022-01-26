@@ -114,7 +114,9 @@ class Scene {
                         this.entities.push(new Hex(null, getHexPosition(x, 3, y)));
                         break;
                     case 1:
-                        this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
+                        var hex = new Hex(null, getHexPosition(x, 0, y));
+                        hex.collider.type = CollisionTypes.NoCollision;
+                        this.entities.push(hex);
                         break;
                     case 2:
                         this.entities.push(new Lantern(null, getHexPosition(x, 0, y)));

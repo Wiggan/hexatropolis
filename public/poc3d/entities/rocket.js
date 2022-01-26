@@ -21,6 +21,7 @@ class Rocket extends Drawable {
         this.collider.type = CollisionTypes.Projectile;
         this.collider.radius = 0.1;
         scene.entities.push(this);
+        this.dmg = 20;
     }
 
     update(elapsed, dirty) {
@@ -39,6 +40,7 @@ class Rocket extends Drawable {
         if (other != this.instigator) {
             console.log(this.collider.type + " collided with " + other.collider.type);
             this.explode();
+            other.takeDamage(this.dmg);
         }
     }
 }

@@ -336,6 +336,11 @@ class Renderer {
             var text_measure = d2.measureText(textbox.text);
             d2.translate(pos[0] - text_measure.width/2, pos[1]-25);
             d2.fillRect(0, 0, text_measure.width, 14);
+
+            if (textbox.health != undefined) {
+                d2.fillStyle = "red";
+                d2.fillRect(text_measure.width * textbox.health, 0, text_measure.width - text_measure.width * textbox.health, 14);
+            }
             
             d2.globalAlpha = 0.8;
             d2.fillStyle = "white";

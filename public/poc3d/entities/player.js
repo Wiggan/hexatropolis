@@ -93,6 +93,12 @@ class Player extends Entity {
         }
         super.update(elapsed, dirty);
     }
+
+    onCollision(other) {
+        this.state = PlayerState.Idle;
+        this.velocity = undefined;
+        super.onCollision(other);
+    }
 }
 
 class BodyLamp extends Drawable {

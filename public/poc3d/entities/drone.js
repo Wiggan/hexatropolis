@@ -14,6 +14,13 @@ class Drone extends Pickable {
         this.fire = new Fire(this, [0, 0.5, 0]);
         this.collider.type = CollisionTypes.Actor;
         this.collider.radius = 0.4;
+        this.name = "Drone";
+        this.max_health = 50;
+        this.health = 50;
+    }
+
+    takeDamage(amount) {
+        this.health = Math.max(0, this.health - amount);
     }
 
     update(elapsed, dirty) {
@@ -21,5 +28,14 @@ class Drone extends Pickable {
         vec3.add(pos, this.getLocalPosition(), [0, Math.sin(Date.now()*0.005)*0.005, 0]);
         this.local_transform.setPosition(pos);
         super.update(elapsed, dirty);
+    }
+    
+    draw(renderer) {
+        super.draw(renderer);
+        if (alt_pressed || selected_id == this.id) {
+            var pos = this.getWorldPosition();
+            pos[1] += 1;
+            renderer.add_textbox({pos: pos, text: this.name, health: this.health / this.max_health});
+        }
     }
 }

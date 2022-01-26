@@ -30,10 +30,17 @@ class Scene {
             ]
         }); */
 
-        var level = {tiles: this.generate([[1, 1], [50, 90], [20, 20], [50, 50], [90, 90], [2, 5]])};
-        this.parse_level(level);
+        //var level = {tiles: this.generate([[1, 1], [50, 90], [20, 20], [50, 50], [90, 90], [2, 5]])};
+        this.parse_level({
+            tiles: [
+                [1, 1, 0],
+                [1, 1, 2],
+                [1, 4, 3],
+            ]
+        });
+        //this.parse_level(level);
         this.entities.push(new DebugCamera([6, 6, 8]));
-        player = new Player(getHexPosition(5, 0, 2));
+        player = new Player(getHexPosition(1, 0, 1));
         this.entities.push(player);
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
         //this.entities.push(new FireBlock(null, [0, 4, 0]));
@@ -111,12 +118,12 @@ class Scene {
             for (var y = 0; y < level.tiles.length; y++) {
                 switch(level.tiles[y][x]) {
                     case 0:
-                        this.entities.push(new Hex(null, getHexPosition(x, 3, y)));
+                        var hex = new Hex(null, getHexPosition(x, 3, y));
+                        hex.collider.type = CollisionTypes.Level;
+                        this.entities.push(hex);
                         break;
                     case 1:
-                        var hex = new Hex(null, getHexPosition(x, 0, y));
-                        hex.collider.type = CollisionTypes.NoCollision;
-                        this.entities.push(hex);
+                        this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
                         break;
                     case 2:
                         this.entities.push(new Lantern(null, getHexPosition(x, 0, y)));

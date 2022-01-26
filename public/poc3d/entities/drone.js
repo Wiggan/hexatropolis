@@ -13,7 +13,7 @@ class Drone extends Pickable {
         this.local_transform.yaw(Math.random()*360);
         this.fire = new Fire(this, [0, 0.5, 0]);
         this.collider.type = CollisionTypes.Actor;
-        this.collider.radius = 0.5;
+        this.collider.radius = 0.4;
     }
 
     update(elapsed, dirty) {

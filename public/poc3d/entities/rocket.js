@@ -19,7 +19,7 @@ class Rocket extends Drawable {
         vec3.scale(this.velocity, this.velocity, this.stats.speed);
         this.instigator = instigator;
         this.collider.type = CollisionTypes.Projectile;
-        this.collider.radius = 0.2;
+        this.collider.radius = 0.1;
         scene.entities.push(this);
     }
 

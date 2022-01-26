@@ -52,8 +52,8 @@ class Entity {
                 this.last_movement = movement;
                 scene.entities.forEach((other) => {
                     if (this != other && other.collider.type != CollisionTypes.NoCollision) {
-                        if (vec3.dist(this.local_transform.getPosition(), other.getWorldPosition()) < this.collider.radius + other.collider.radius) {
-                            console.log(this.collider.type + " collided with " + other.collider.type);
+                        if (getHorizontalDistance(this.local_transform.getPosition(), other.getWorldPosition()) < this.collider.radius + other.collider.radius) {
+                            //console.log(this.collider.type + " collided with " + other.collider.type);
                             this.onCollision(other);
                         } 
                     }
@@ -71,6 +71,7 @@ class Entity {
     }
 
     onCollision(other) {
+        console.log("entity collided");
         // Revert movement that caused collision
         vec3.scale(this.last_movement, this.last_movement, -1.1);
         this.local_transform.translate(this.last_movement);

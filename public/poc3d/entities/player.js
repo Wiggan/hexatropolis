@@ -205,7 +205,7 @@ class RocketLauncher extends Drawable {
         var forward_vector = forward(player.getWorldTransform());
         var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
         player.state_context.position = point;
-        new Rocket(start, angle);
+        new Rocket(start, angle, player);
         console.log("start: " + start);
         player.state = PlayerState.Firing;
         this.lamp.material = materials.red_led;

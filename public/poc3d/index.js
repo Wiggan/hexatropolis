@@ -131,6 +131,67 @@ function initControls() {
         },
     }
 
+    controls.particles = {
+        'Count': {
+            value: 10,
+            min: 1, max: 50, step: 1,
+            onChange: v => scene.particles.setParticleCount(v)
+        },
+        'Spread': {
+            value: scene.particles.spread,
+            min: 0, max: 1, step: 0.01,
+            onChange: v => scene.particles.spread = v
+        },
+        'Particle life time': {
+            value: scene.particles.particle_life_time,
+            min: 0, max: 5000, step: 10,
+            onChange: v => scene.particles.particle_life_time = v
+        },
+        'Minimal particle speed': {
+            value: scene.particles.min_speed,
+            min: 0, max: 0.01, step: 0.0001,
+            onChange: v => scene.particles.min_speed = Math.min(scene.particles.max_speed, v)
+        },
+        'Maximal particle speed': {
+            value: scene.particles.max_speed,
+            min: 0, max: 0.01, step: 0.0001,
+            onChange: v => scene.particles.max_speed = Math.max(scene.particles.min_speed, v)
+        },
+        'Continuous': {
+            value: scene.particles.continuous,
+            onChange: v => {
+                scene.particles.continuous = v;
+            }
+        },
+        'Start randomly': {
+            value: scene.particles.start_randomly,
+            onChange: v => scene.particles.start_randomly = v
+        },
+        'Direction': {
+            value: scene.particles.direction,
+            onChange: v => scene.particles.direction = v
+        },
+        'Start Color': {
+            value: denormalizeColor(scene.particles.start.color),
+            onChange: v => scene.particles.start.color = normalizeColor(v)
+        },
+        'Start Scale': {
+            value: scene.particles.start.scale,
+            min: 0, max: 1, step: 0.01,
+            onChange: v => scene.particles.start.scale = v
+        },
+        'Stop Color': {
+            value: denormalizeColor(scene.particles.stop.color),
+            onChange: v => scene.particles.stop.color = normalizeColor(v)
+        },
+        'Stop Scale': {
+            value: scene.particles.stop.scale,
+            min: 0, max: 1, step: 0.01,
+            onChange: v => scene.particles.stop.scale = v
+        },
+    }
+    
+    
 
     utils.configureControls(controls);
 }

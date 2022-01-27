@@ -5,7 +5,7 @@ var debug = false;
 class DebugCamera extends Camera {
     constructor(position) {
         super(null, position);
-        this.velocity = [0, 0];
+        this.vel = [0, 0];
         this.speed = 0.01;
         this.local_transform.yaw(-60);
 
@@ -48,16 +48,16 @@ class DebugCamera extends Camera {
     onKeyDown(e) {
         super.onKeyDown(e);
         if (e.key == 'ArrowDown' || e.key == 's' || e.key == 'S') {
-            this.velocity[1] = this.speed;
+            this.vel[1] = this.speed;
             e.preventDefault();
         } else if (e.key == 'ArrowLeft' || e.key == 'a' || e.key == 'A') {
-            this.velocity[0] = -this.speed;
+            this.vel[0] = -this.speed;
             e.preventDefault();
         } else if (e.key == 'ArrowRight' || e.key == 'd' || e.key == 'D') {
-            this.velocity[0] = this.speed;
+            this.vel[0] = this.speed;
             e.preventDefault();
         } else if (e.key == 'ArrowUp' || e.key == 'w' || e.key == 'W') {
-            this.velocity[1] = -this.speed;
+            this.vel[1] = -this.speed;
             e.preventDefault();
         } else if (e.key == ' ') {
             //this.local_transform.lookAt([0,0,0]);
@@ -67,16 +67,16 @@ class DebugCamera extends Camera {
 
     onKeyUp(e) {
         if (e.key == 'ArrowDown' || e.key == 's' || e.key == 'S') {
-            this.velocity[1] = 0;
+            this.vel[1] = 0;
             e.preventDefault();
         } else if (e.key == 'ArrowLeft' || e.key == 'a' || e.key == 'A') {
-            this.velocity[0] = 0;
+            this.vel[0] = 0;
             e.preventDefault();
         } else if (e.key == 'ArrowRight' || e.key == 'd' || e.key == 'D') {
-            this.velocity[0] = 0;
+            this.vel[0] = 0;
             e.preventDefault();
         } else if (e.key == 'ArrowUp' || e.key == 'w' || e.key == 'W') {
-            this.velocity[1] = 0;
+            this.vel[1] = 0;
             e.preventDefault();
         }
     }
@@ -96,17 +96,17 @@ class DebugCamera extends Camera {
 
     update(elapsed, dirty) {
         const viewMatrix = this.getViewMatrix();
-        //var translation = vec3.fromValues(this.velocity[0]*elapsed, 0.0, this.velocity[1]*elapsed);
+        //var translation = vec3.fromValues(this.vel[0]*elapsed, 0.0, this.vel[1]*elapsed);
         //this.local_transform.translate(translation);
         var forward = vec3.fromValues(viewMatrix[2], viewMatrix[6], viewMatrix[10]);
         var right = vec3.fromValues(viewMatrix[0], viewMatrix[4], viewMatrix[8]);
         //var forward = vec3.fromValues(0, 0, 1);
         //var right = vec3.fromValues(1, 0, 0);
         var translation = vec3.create();
-        vec3.scale(forward, forward, this.velocity[1]*elapsed);
-        vec3.scale(right, right, this.velocity[0]*elapsed);
+        vec3.scale(forward, forward, this.vel[1]*elapsed);
+        vec3.scale(right, right, this.vel[0]*elapsed);
         vec3.add(translation, forward, right);
-        ////console.log(this.velocity);
+        ////console.log(this.vel);
         this.local_transform.translate(translation);
         dirty = true;
         super.update(elapsed, dirty);

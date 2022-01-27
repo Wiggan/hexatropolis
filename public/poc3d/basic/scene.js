@@ -42,6 +42,10 @@ class Scene {
         this.entities.push(new DebugCamera([6, 6, 8]));
         player = new Player(getHexPosition(1, 0, 1));
         this.entities.push(player);
+        this.particles = new ParticleSystem(null, [0, 1, 0], 10);
+        this.particles.ended_callback = () => this.particles.reset();
+        this.entities.push(this.particles);
+
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
         //this.entities.push(new FireBlock(null, [0, 4, 0]));
     }

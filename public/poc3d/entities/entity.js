@@ -71,10 +71,16 @@ class Entity {
     }
 
     onCollision(other) {
-        console.log("entity collided");
         // Revert movement that caused collision
-        vec3.scale(this.last_movement, this.last_movement, -1.1);
+        vec3.scale(this.last_movement, this.last_movement, -1);
         this.local_transform.translate(this.last_movement);
+
+        var collision_normal = vec3.create();
+        vec3.sub(collision_normal, this.getWorldPosition(), other.getWorldPosition());
+        vec3.normalize(collision_normal, collision_normal);
+        vec3.scale(collision_normal, collision_normal, 0.05);
+        collision_normal[1] = 0;
+        this.local_transform.translate(collision_normal);
     }
 
     getLocalTransform() {

@@ -78,7 +78,6 @@ class Player extends Entity {
                 dirty = true;
                 break;
             case PlayerState.Goto:
-                
                 vec3.scale(this.velocity, forward(this.models.base.getWorldTransform()), this.stats.movement_speed);
                 if(vec3.dist(this.state_context.position, this.getWorldPosition()) < this.state_context.tolerance) {
                     this.state = PlayerState.Idle;
@@ -95,8 +94,8 @@ class Player extends Entity {
     }
 
     onCollision(other) {
-        this.state = PlayerState.Idle;
-        this.velocity = undefined;
+        //this.state = PlayerState.Idle;
+        //this.velocity = undefined;
         super.onCollision(other);
     }
 }

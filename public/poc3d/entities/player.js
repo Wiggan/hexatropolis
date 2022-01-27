@@ -43,7 +43,7 @@ class Player extends Entity {
             this.state = PlayerState.Goto;
             this.state_context = {
                 position: point,
-                tolerance: 0.05
+                tolerance: 0.1
             };
         } else {
             this.state = PlayerState.GotoInteractible;

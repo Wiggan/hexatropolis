@@ -40,7 +40,9 @@ class Rocket extends Drawable {
         if (other != this.instigator) {
             console.log(this.collider.type + " collided with " + other.collider.type);
             this.explode();
-            other.takeDamage(this.dmg);
+            if (this.collider.type == CollisionTypes.Actor) {
+                other.takeDamage(this.dmg);
+            }
         }
     }
 }

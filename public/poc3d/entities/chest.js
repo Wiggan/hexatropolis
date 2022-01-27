@@ -33,18 +33,24 @@ class ChestSide extends Drawable {
         this.id = id;
         this.opening = false;
         this.pitch = 0;
+        this.position = local_position;
         this.lamp_material = materials.green_led;
     }
 
     open() {
         this.opening = true;
-        this.transition = new Transition(this, {pitch: 0, opening: true, lamp_material: materials.green_led}, {pitch: -104, opening: false, lamp_material: materials.red_led}, 1000);
+        var end_position = [this.position[0], this.position[1] -0.1, this.position[2]];
+        this.transition = new Transition(this, [
+            {time: 1000, to: {pitch: -104, lamp_material: materials.red_led}},
+            {time: 1000, to: {position: end_position, opening: false}}
+        ]);
     }
 
     update(elapsed, dirty) {
         if (this.opening) {
             this.transition.update(elapsed);
             this.local_transform.setPitch(this.pitch);
+            this.local_transform.setPosition(this.position);
             dirty = true;
         }
         super.update(elapsed, dirty);

@@ -14,7 +14,7 @@ class Entity {
         this.local_transform = new Transform(local_position);
         this.world_transform = mat4.clone(this.local_transform.get());
         if (this.parent) {
-            mat4.mul(this.world_transform, this.parent.world_transform, this. local_transform.get());
+            mat4.mul(this.world_transform, this.parent.world_transform, this.local_transform.get());
             this.parent.children.push(this);
         }
         this.look_at = undefined;
@@ -55,19 +55,19 @@ class Entity {
                         if (getHorizontalDistance(this.local_transform.getPosition(), other.getWorldPosition()) < this.collider.radius + other.collider.radius) {
                             //console.log(this.collider.type + " collided with " + other.collider.type);
                             this.onCollision(other);
-                        } 
+                        }
                     }
                 });
             }
         }
-        if(dirty) {
+        if (dirty) {
             if (this.parent) {
                 mat4.mul(this.world_transform, this.parent.world_transform, this.local_transform.get());
             } else {
                 mat4.copy(this.world_transform, this.local_transform.get());
             }
         }
-        this.children.forEach(child => child.update(elapsed, dirty));   
+        this.children.forEach(child => child.update(elapsed, dirty));
     }
 
     onCollision(other) {
@@ -97,7 +97,7 @@ class Entity {
 
     getSquaredHorizontalDistanceToPlayer() {
         return vec2.sqrDist(vec2.fromValues(this.getWorldPosition()[0], this.getWorldPosition()[2]),
-                            vec2.fromValues(player.getWorldPosition()[0], player.getWorldPosition()[2]));
+            vec2.fromValues(player.getWorldPosition()[0], player.getWorldPosition()[2]));
     }
 
     getDistanceToPlayer() {
@@ -110,45 +110,66 @@ class Entity {
 }
 
 class Transition {
-    constructor(entity, from, to, time) {
+    constructor(entity, keypoints) {
         this.entity = entity;
+        this.keypoints = keypoints;
         this.elapsed = 0;
-        this.time = time;
-        this.from = from;
-        this.to = to;
+        this.keypoint_index = 0;
+        this.done = false;
+        this.original_state = {};
+        this.getOriginalStateForKeyPoint();
+    }
+
+    getOriginalStateForKeyPoint() {
+        this.elapsed = 0;
+        this.original_state = {};
+        for (const [key, value] of Object.entries(this.keypoints[this.keypoint_index].to)) {
+            this.original_state[key] = this.entity[key];
+        }
     }
 
     update(elapsed) {
-        this.elapsed += elapsed;
-        const t = 0.5 + 0.5 * (Math.cos(this.elapsed / this.time * Math.PI - Math.PI));
-        //console.log("t: " + t);
-        for (const [key, value] of Object.entries(this.to)) {
+        var keypoint = this.keypoints[this.keypoint_index];
+        const t = 0.5 + 0.5 * (Math.cos(this.elapsed / keypoint.time * Math.PI - Math.PI));
+        for (const [key, value] of Object.entries(keypoint.to)) {
             switch (typeof (value)) {
                 case 'object':
                     if (Array.isArray(value)) {
                         if (value.length == 2) {
-                            vec2.lerp(this.entity[key], this.from[key], this.to[key], t);
+                            vec2.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
                         } else if (value.length == 3) {
-                            vec3.lerp(this.entity[key], this.from[key], this.to[key], t);
+                            vec3.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
                         } else if (value.length == 4) {
-                            vec4.lerp(this.entity[key], this.from[key], this.to[key], t);
+                            vec4.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
                         }
                     } else {
-                        if (this.elapsed >= this.time) {
-                            this.entity[key] = this.to[key];
+                        if (this.elapsed >= keypoint.time) {
+                            this.entity[key] = keypoint.to[key];
                         }
                     }
                     break;
                 case 'boolean':
                 case 'string':
-                    if (this.elapsed >= this.time) {
-                        this.entity[key] = this.to[key];
+                    if (this.elapsed >= keypoint.time) {
+                        this.entity[key] = keypoint.to[key];
                     }
                     break;
                 case 'number':
-                    this.entity[key] = this.from[key] + t * (this.to[key] - this.from[key]);
+                    this.entity[key] = this.original_state[key] + t * (keypoint.to[key] - this.original_state[key]);
                     break;
             }
         }
+        if (this.elapsed >= keypoint.time) {
+            if (keypoint.callback != undefined) {
+                keypoint.callback();
+            }
+            this.keypoint_index++;
+            if (this.keypoints.length > this.keypoint_index) {
+                this.getOriginalStateForKeyPoint();
+            } else {
+                this.done = true;
+            }
+        }
+        this.elapsed += elapsed;
     }
 }

@@ -30,6 +30,20 @@ class Entity {
         this.children.forEach(child => child.draw(renderer));
     }
 
+    lookAtInstantly(point) {
+        this.look_at = point;
+        var target_vector = vec3.create();
+        vec3.sub(target_vector, this.look_at, position(this.getWorldTransform()));
+        var forward_vector = forward(this.getWorldTransform());
+        var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
+        this.local_transform.yaw(angle);
+        if (this.parent) {
+            mat4.mul(this.world_transform, this.parent.world_transform, this.local_transform.get());
+        } else {
+            mat4.copy(this.world_transform, this.local_transform.get());
+        }
+    }
+
     update(elapsed, dirty) {
         dirty |= this.local_transform.isDirty();
         if (this.look_at) {

@@ -50,6 +50,10 @@ class Scene {
         //this.entities.push(new FireBlock(null, [0, 4, 0]));
     }
 
+    remove(object) {
+        scene.entities.splice(scene.entities.lastIndexOf(object), 1);
+    }
+
     makeArray(w, h, val) {
         var arr = [];
         for(let i = 0; i < h; i++) {

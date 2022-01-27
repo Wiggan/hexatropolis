@@ -155,6 +155,7 @@ class Renderer {
         this.draw_post_process();
 
         // UI
+        this.add_textbox({text: "FPS: " + fps, screen_pos: [200, 100]});
         this.draw_textboxes();
     }
 
@@ -328,7 +329,12 @@ class Renderer {
     draw_textboxes() {
         d2.clearRect(0, 0, d2.canvas.clientWidth, d2.canvas.clientHeight); 
         this.textboxes.forEach(textbox => {
-            var pos = getWorldLocationScreenSpace(textbox.pos);
+            var pos;
+            if (textbox.screen_pos != undefined) {
+                pos = textbox.screen_pos;
+            } else {
+                pos = getWorldLocationScreenSpace(textbox.pos);
+            }
             d2.save();
             d2.font = "10px Courier New";
             d2.globalAlpha = 0.4;

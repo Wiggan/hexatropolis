@@ -1,7 +1,7 @@
 'use strict'
 
 class ParticleSystem extends Entity {
-    constructor(parent, local_position, particle_count) {
+    constructor(parent, local_position) {
         super(parent, local_position);
         this.direction = [0, 1, 0];
         this.continuous = true;
@@ -13,7 +13,6 @@ class ParticleSystem extends Entity {
         this.ended_callback = undefined;
         this.start = {color: [1.0, 0.0, 0.0], scale: 0.1};
         this.stop = {color: [1.0, 0.6, 0.0], scale: 0};
-        this.setParticleCount(particle_count);
     }
 
     setParticleCount(count) {
@@ -62,6 +61,8 @@ class Particle extends Drawable {
         if (this.elapsed > this.life_time) {
             if (this.parent.continuous) {
                 this.reset();
+            } else {
+                this.parent.children.splice(this.parent.children.indexOf(this), 1);
             }
         }
         this.elapsed += elapsed;

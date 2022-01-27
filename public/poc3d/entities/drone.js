@@ -21,6 +21,11 @@ class Drone extends Pickable {
 
     takeDamage(amount) {
         this.health = Math.max(0, this.health - amount);
+        if (this.health == 0) {
+            scene.remove(this);
+            scene.entities.push(new FirePuff(null, this.getWorldPosition(), [0, 1, 0]));
+            scene.entities.push(new Smoke(null, this.getWorldPosition()));
+        }
     }
 
     update(elapsed, dirty) {

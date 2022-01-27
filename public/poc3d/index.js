@@ -8,16 +8,23 @@ let renderer,
     lightDirection = [0, -1, -1],
     sphereColor = [0.5, 0.8, 0.1];
 
+var frame_intervals = [];
+var fps = 0;
 var then = Date.now();
 var now = Date.now();
 function render() {
     try {
         requestAnimationFrame(render);
         now = Date.now();
-        scene.update(now - then);
+        var elapsed = now - then;
+        frame_intervals.push(elapsed);
+        scene.update(elapsed);
         then = now;
         scene.draw(renderer);
-        //renderer.draw_with_bloom();
+        if (frame_intervals.length == 60) {
+            fps = Math.floor(60000 / frame_intervals.reduce((total, interval) => total + interval));
+            frame_intervals.length = 0;
+        }
         renderer.render();
     } catch (error) {
         console.error(error);

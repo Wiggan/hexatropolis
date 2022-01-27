@@ -33,7 +33,12 @@ class Rocket extends Drawable {
     }
 
     explode() {
-        scene.entities.splice(scene.entities.lastIndexOf(this), 1);
+        scene.remove(this);
+        var direction = vec3.clone(this.velocity);
+        vec3.scale(direction, direction, -1);
+        vec3.normalize(direction, direction);
+        scene.entities.push(new FirePuff(null, this.getWorldPosition(), direction));
+        scene.entities.push(new Smoke(null, this.getWorldPosition()));
     }
 
     onCollision(other) {

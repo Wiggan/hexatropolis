@@ -39,6 +39,7 @@ class Player extends Entity {
 
     left_click(point, object) {
         this.velocity = vec3.create();
+        this.models.body.look_at = point;
         if (object == undefined) {
             this.state = PlayerState.Goto;
             this.state_context = {
@@ -56,9 +57,14 @@ class Player extends Entity {
     }
 
     right_click(point, object) {
-        if (this.state != PlayerState.Firing) {
-            this.models.body.right_arm.fire(point);
+        var pos = point;
+        if (object) {
+            pos = object.getWorldPosition();
         }
+        this.models.body.look_at = pos;
+        this.velocity = undefined;
+        this.state = PlayerState.Idle;
+        this.models.body.right_arm.fire(pos);
     }
 
     update(elapsed, dirty) {
@@ -95,8 +101,6 @@ class Player extends Entity {
     }
 
     onCollision(other) {
-        //this.state = PlayerState.Idle;
-        //this.velocity = undefined;
         super.onCollision(other);
     }
 }
@@ -137,7 +141,7 @@ class Body extends Drawable {
         this.material = materials.player;
         this.lamp = new BodyLamp(this);
         this.left_arm = new Wrench(this);
-        this.right_arm = new RocketLauncher(this);
+        this.right_arm = new Launcher(this);
         this.rotation_speed = 1;
     }
 
@@ -185,42 +189,6 @@ class Wrench extends Drawable {
                 this.local_transform.setPitch(0);
                 this.time = 0;
             }
-        }
-        super.update(elapsed, dirty);
-    }
-}
-
-
-class RocketLauncher extends Drawable {
-    constructor(parent) {
-        super(parent, [0.4,0.8,0], models.robot.rocket_launcher);
-        this.material = materials.player;
-        this.lamp = new Drawable(this, [0, 0, 0], models.robot.rocket_launcher_lamp);
-        this.lamp.material = materials.green_led;
-        this.stats = {
-            damage: 1,
-            cooldown: 500
-        }
-        this.cooldown = 0;
-    }
-
-    fire(point) {
-        if (this.cooldown == 0) {
-            var start = this.getWorldPosition();
-            //player.state_context.position = point;
-            this.parent.look_at = point;
-            player.velocity = undefined;
-            player.state = PlayerState.Idle;
-            new Rocket(start, point, player);
-            this.cooldown = this.stats.cooldown;
-            this.lamp.material = materials.red_led;
-        }
-    }
-
-    update(elapsed, dirty) {
-        this.cooldown = Math.max(0, this.cooldown - elapsed);
-        if (this.cooldown == 0) {
-            this.lamp.material = materials.green_led;
         }
         super.update(elapsed, dirty);
     }

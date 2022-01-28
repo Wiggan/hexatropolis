@@ -68,14 +68,18 @@ class Renderer {
         this.offscreenTextures.push(this.create_texture());
         this.offscreenTextures.push(this.create_texture());
         this.offscreenTextures.push(this.create_id_texture());
+        this.msaaTexture = this.create_texture();
 
         // Render buffer
         this.renderbuffer = gl.createRenderbuffer();
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderbuffer);
-        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
+        //gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
+        gl.renderbufferStorageMultisample(gl.RENDERBUFFER, gl.getParameter(gl.MAX_SAMPLES), gl.RBGA8, gl.canvas.width, gl.canvas.height);
+
 
         // Frame buffer
         this.framebuffer = gl.createFramebuffer();
+        this.blit_framebuffer = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         for (var i = 0; i < 3; i++) {
             gl.framebufferTexture2D(gl.FRAMEBUFFER, gl['COLOR_ATTACHMENT' + i], gl.TEXTURE_2D, this.offscreenTextures[i], 0);
@@ -83,6 +87,9 @@ class Renderer {
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderbuffer);
         gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2]);
 
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.blit_framebuffer);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.msaaTexture, 0);
+        
 
         // Textures for ping pong
         for (var i = 0; i < 2; i++) {
@@ -129,8 +136,19 @@ class Renderer {
         this.validateSize();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         this.draw();
-
         this.savePixelUnderCursor();
+
+        // Offscreen MSAA 
+        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.framebuffer);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.blit_framebuffer);
+        gl.clearBufferfv(gl.COLOR, 0, [1.0, 1.0, 1.0, 1.0]);
+        
+        gl.blitFramebuffer(0, 0, gl.canvas.width, gl.canvas.height,
+                           0, 0, gl.canvas.width, gl.canvas.height,
+                           gl.COLOR_BUFFER_BIT, gl.LINEAR);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.blit_framebuffer);
+
 
         // Perform blur
         var horizontal = true, first_iteration = true;

@@ -17,7 +17,7 @@ const utils = {
 
   // Given a canvas element, return the WebGL2 context
   getGLContext(canvas) {
-    return canvas.getContext('webgl2') || console.error('WebGL2 is not available in your browser.');
+    return canvas.getContext('webgl2', {antialias: false}) || console.error('WebGL2 is not available in your browser.');
   },
 
   // Given a canvas element, expand it to the size of the window

@@ -87,6 +87,7 @@ class Player extends Entity {
                 break;
             case PlayerState.Attack:
             case PlayerState.Firing:
+                this.velocity = undefined;
                 dirty = true;
                 break;
         }
@@ -142,9 +143,9 @@ class Body extends Drawable {
 
     update(elapsed, dirty) {
         if (this.parent.state != PlayerState.Idle) {
-            this.look_at = this.parent.state_context.position;
+            //this.look_at = this.parent.state_context.position;
         } else {
-            this.look_at = undefined;
+            //this.look_at = undefined;
         }
 
         super.update(elapsed, dirty);
@@ -180,7 +181,7 @@ class Wrench extends Drawable {
             this.local_transform.pitch(-90/this.stats.attack_duration*elapsed);
             this.time += elapsed;
             if (this.time >= this.stats.attack_duration) {
-                player.state = PlayerState.Idle;
+                //player.state = PlayerState.Idle;
                 this.local_transform.setPitch(0);
                 this.time = 0;
             }
@@ -198,33 +199,28 @@ class RocketLauncher extends Drawable {
         this.lamp.material = materials.green_led;
         this.stats = {
             damage: 1,
-            attack_duration: 500
+            cooldown: 500
         }
-        this.time = 0;
+        this.cooldown = 0;
     }
 
     fire(point) {
-        var start = this.getWorldPosition();
-        /* var target_vector = vec3.create();
-        vec3.sub(target_vector, point, player.getWorldPosition());
-        var forward_vector = forward(player.getWorldTransform());
-        var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector)); */
-        player.state_context.position = point;
-        new Rocket(start, point, player);
-        console.log("start: " + start);
-        player.state = PlayerState.Firing;
-        this.lamp.material = materials.red_led;
+        if (this.cooldown == 0) {
+            var start = this.getWorldPosition();
+            //player.state_context.position = point;
+            this.parent.look_at = point;
+            player.velocity = undefined;
+            player.state = PlayerState.Idle;
+            new Rocket(start, point, player);
+            this.cooldown = this.stats.cooldown;
+            this.lamp.material = materials.red_led;
+        }
     }
 
     update(elapsed, dirty) {
-        if (player.state == PlayerState.Firing) {
-            this.time += elapsed;
-            if (this.time >= this.stats.attack_duration) {
-                player.state = PlayerState.Idle;
-                this.time = 0;
-                this.lamp.material = materials.green_led;
-            }
-            dirty = true;
+        this.cooldown = Math.max(0, this.cooldown - elapsed);
+        if (this.cooldown == 0) {
+            this.lamp.material = materials.green_led;
         }
         super.update(elapsed, dirty);
     }

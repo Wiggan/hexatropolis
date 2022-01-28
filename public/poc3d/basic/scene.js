@@ -31,11 +31,27 @@ class Scene {
         }); */
 
         //var level = {tiles: this.generate([[1, 1], [50, 90], [20, 20], [50, 50], [90, 90], [2, 5]])};
-        this.parse_level({
+        /* this.parse_level({
             tiles: [
                 [1, 1, 1],
                 [1, 1, 2],
                 [0, 4, 3],
+            ]
+        }); */
+
+        this.parse_level({
+            tiles: [
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 4, 0],
+                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0],
+                [0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 2, 0],
+                [0, 4, 2, 1, 1, 1, 1, 1, 1, 1, 4, 0],
+                [0, 3, 4, 1, 1, 1, 1, 2, 1, 1, 4, 0],
+                [0, 3, 4, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [0, 4, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             ]
         });
         //this.parse_level(level);
@@ -43,7 +59,6 @@ class Scene {
         player = new Player(getHexPosition(1, 0, 1));
         this.entities.push(player);
         this.particles = new ParticleSystem(null, [0, 1, 0], 10);
-        this.particles.ended_callback = () => this.particles.reset();
         this.entities.push(this.particles);
 
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));

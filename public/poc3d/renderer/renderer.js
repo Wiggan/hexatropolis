@@ -281,7 +281,12 @@ class Renderer {
     draw() {
         gl.useProgram(program);
         // Clear the scene
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        //gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        
+        gl.clearBufferfv(gl.COLOR, 0, [0.0, 0.0, 0.0, 0.0]);
+        gl.clearBufferfv(gl.COLOR, 1, [0.0, 0.0, 0.0, 0.0]);
+        gl.clearBufferuiv(gl.COLOR, 2, [0, 0, 0, 0]);
+        gl.clearBufferfi(gl.DEPTH_STENCIL, 0, 1.0, 0);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     
         // We will discuss these operations in later chapters

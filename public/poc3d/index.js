@@ -37,6 +37,7 @@ async function init() {
     renderer = new Renderer();
     await initProgram();
     await load_all_models();
+    await wait_for_all_audio();
     scene = new Scene();
     active_camera.activate();
 

@@ -23,6 +23,7 @@ class Launcher extends Drawable {
             new Rocket(pos, point, 0.01, player);
             this.cooldown = this.stats.cooldown;
             this.lamp.material = materials.red_led;
+            this.sound = getRandomElement(sfx.launch).play();
         }
     }
 

@@ -44,6 +44,14 @@ function forward(transform) {
     return [-transform[8], -transform[9], -transform[10]];
 }
 
+function right(transform) {
+    return [transform[0], transform[1], transform[2]];
+}
+
+function up(transform) {
+    return [transform[4], transform[5], transform[6]];
+}
+
 function position(transform) {
     return [transform[12], transform[13], transform[14]];
 }

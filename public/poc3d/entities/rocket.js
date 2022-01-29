@@ -1,10 +1,10 @@
 'use strict'
 
 class Rocket extends Drawable {
-    constructor(position, point, instigator) {
+    constructor(position, point, speed, instigator) {
         super(null, position);
         //this.local_transform.yaw(yaw);
-        this.lookAtInstantly(point)
+        this.lookAtInstantly(point);
         this.model = models.sphere;
         this.material = materials.metall;
         this.fire = new Fire(this, [0, 0, 0]);
@@ -13,7 +13,7 @@ class Rocket extends Drawable {
         this.elapsed = 0;
         this.stats = {
             life_time: 1000,
-            speed: 0.01
+            speed: speed
         }
         this.velocity = forward(this.local_transform.get());
         vec3.scale(this.velocity, this.velocity, this.stats.speed);
@@ -42,7 +42,7 @@ class Rocket extends Drawable {
     }
 
     onCollision(other) {
-        if (other != this.instigator) {
+        if (other != this.instigator && other.collider.type != CollisionTypes.Projectile) {
             this.explode();
             if (other.collider.type == CollisionTypes.Actor) {
                 other.takeDamage(this.dmg);

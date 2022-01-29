@@ -79,7 +79,7 @@ class Renderer {
 
         // Frame buffer
         this.framebuffer = gl.createFramebuffer();
-        this.blit_framebuffer = gl.createFramebuffer();
+        //this.blit_framebuffer = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         for (var i = 0; i < 3; i++) {
             gl.framebufferTexture2D(gl.FRAMEBUFFER, gl['COLOR_ATTACHMENT' + i], gl.TEXTURE_2D, this.offscreenTextures[i], 0);
@@ -87,8 +87,8 @@ class Renderer {
         gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.renderbuffer);
         gl.drawBuffers([gl.COLOR_ATTACHMENT0, gl.COLOR_ATTACHMENT1, gl.COLOR_ATTACHMENT2]);
 
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.blit_framebuffer);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.msaaTexture, 0);
+        //gl.bindFramebuffer(gl.FRAMEBUFFER, this.blit_framebuffer);
+        //gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.msaaTexture, 0);
         
 
         // Textures for ping pong
@@ -139,7 +139,7 @@ class Renderer {
         this.savePixelUnderCursor();
 
         // Offscreen MSAA 
-        gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.framebuffer);
+        /* gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.framebuffer);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.blit_framebuffer);
         gl.clearBufferfv(gl.COLOR, 0, [1.0, 1.0, 1.0, 1.0]);
@@ -147,7 +147,7 @@ class Renderer {
         gl.blitFramebuffer(0, 0, gl.canvas.width, gl.canvas.height,
                            0, 0, gl.canvas.width, gl.canvas.height,
                            gl.COLOR_BUFFER_BIT, gl.LINEAR);
-        gl.bindFramebuffer(gl.FRAMEBUFFER, this.blit_framebuffer);
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.blit_framebuffer); */
 
 
         // Perform blur

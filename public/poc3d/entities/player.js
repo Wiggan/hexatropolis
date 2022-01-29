@@ -61,7 +61,8 @@ class Player extends Entity {
         if (object) {
             pos = object.getWorldPosition();
         }
-        this.models.body.look_at = pos;
+        
+        this.models.body.lookAtInstantly(pos);
         this.velocity = undefined;
         this.state = PlayerState.Idle;
         this.models.body.right_arm.fire(pos);
@@ -141,18 +142,12 @@ class Body extends Drawable {
         this.material = materials.player;
         this.lamp = new BodyLamp(this);
         this.left_arm = new Wrench(this);
-        this.right_arm = new Launcher(this);
+        this.right_arm = new DoubleLauncher(this);
         this.rotation_speed = 1;
     }
 
     update(elapsed, dirty) {
-        if (this.parent.state != PlayerState.Idle) {
-            //this.look_at = this.parent.state_context.position;
-        } else {
-            //this.look_at = undefined;
-        }
-
-        super.update(elapsed, dirty);
+        super.update(elapsed, true);
     }
 }
 

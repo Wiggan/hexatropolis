@@ -36,12 +36,15 @@ class Entity {
         vec3.sub(target_vector, this.look_at, position(this.getWorldTransform()));
         var forward_vector = forward(this.getWorldTransform());
         var angle = rad2deg(getHorizontalAngle(target_vector, forward_vector));
+        // This does not work for robot.body...
         this.local_transform.yaw(angle);
         if (this.parent) {
             mat4.mul(this.world_transform, this.parent.world_transform, this.local_transform.get());
         } else {
             mat4.copy(this.world_transform, this.local_transform.get());
         }
+        
+        this.children.forEach(child => child.update(0, true));
     }
 
     update(elapsed, dirty) {
@@ -65,7 +68,7 @@ class Entity {
             if (this.collider.type != CollisionTypes.NoCollision) {
                 this.last_movement = movement;
                 scene.entities.forEach((other) => {
-                    if (this != other && other.collider.type != CollisionTypes.NoCollision) {
+                    if (this != other && other.collider.type != CollisionTypes.NoCollision && other.collider.type != CollisionTypes.Projectile) {
                         if (getHorizontalDistance(this.local_transform.getPosition(), other.getWorldPosition()) < this.collider.radius + other.collider.radius) {
                             //console.log(this.collider.type + " collided with " + other.collider.type);
                             this.onCollision(other);

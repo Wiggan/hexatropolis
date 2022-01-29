@@ -68,13 +68,13 @@ class Renderer {
         this.offscreenTextures.push(this.create_texture());
         this.offscreenTextures.push(this.create_texture());
         this.offscreenTextures.push(this.create_id_texture());
-        this.msaaTexture = this.create_texture();
+        //this.msaaTexture = this.create_texture();
 
         // Render buffer
         this.renderbuffer = gl.createRenderbuffer();
         gl.bindRenderbuffer(gl.RENDERBUFFER, this.renderbuffer);
-        //gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
-        gl.renderbufferStorageMultisample(gl.RENDERBUFFER, gl.getParameter(gl.MAX_SAMPLES), gl.RBGA8, gl.canvas.width, gl.canvas.height);
+        gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, gl.canvas.width, gl.canvas.height);
+        //gl.renderbufferStorageMultisample(gl.RENDERBUFFER, gl.getParameter(gl.MAX_SAMPLES), gl.RBGA8, gl.canvas.width, gl.canvas.height);
 
 
         // Frame buffer

@@ -27,16 +27,8 @@ class TrackingCamera extends Camera {
 
     onKeyDown(e) {
         super.onKeyDown(e);
-        if (e.key == 'u') {
-            lights.forEach(light => {
-                    light.activate();
-            });
-            e.preventDefault();
-        } else if (e.key == 'd') {
-            lights.forEach(light => {
-                    light.inactivate();
-            });
-            e.preventDefault();
+        if (e.key == 'i' || e.key == 'I') {
+            show_inventory = !show_inventory;
         } else if (e.key == 'l') {
             new Loot(player.getWorldPosition(), drop_consumable({max_drop: 5, level:10}));
             e.preventDefault();

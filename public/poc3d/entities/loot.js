@@ -2,7 +2,6 @@
 
 class Loot extends Pickable {
     constructor(position, item) {
-        
         super(null, [position[0] + Math.random() - 0.5, position[1], position[2] + Math.random() - 0.5]);
         this.drawable = new Drawable(this, [0, 0, 0], models.sphere);
         this.drawable.material = materials.red_led;

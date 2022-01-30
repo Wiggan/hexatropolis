@@ -26,6 +26,21 @@ class Entity {
         };
     }
 
+    addChild(child) {
+        child.parent = this;
+        this.children.push(child);
+    }
+
+    removeChild(child) {
+        this.children.splice(this.children.lastIndexOf(child), 1);
+        child.parent = undefined;
+    }
+
+    removeAllChildren() {
+        this.children.forEach(child => child.parent = undefined);
+        this.children.length = 0;
+    }
+
     draw(renderer) {
         this.children.forEach(child => child.draw(renderer));
     }

@@ -2,7 +2,7 @@
 
 class Launcher extends Drawable {
     constructor(parent) {
-        super(parent, [0.4,0.8,0], models.weapon.launcher.launcher);
+        super(parent, [0,0,0], models.weapon.launcher.launcher);
         this.material = materials.player;
         this.lamp = new Drawable(this, [0, 0, 0], models.weapon.launcher.launcher_lamp);
         this.lamp.material = materials.green_led;

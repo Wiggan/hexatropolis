@@ -35,6 +35,17 @@ class Player extends Entity {
         
         this.collider.type = CollisionTypes.Actor;
         this.collider.radius = 0.5;
+
+        this.sockets = {
+            left_arm: new Entity(this.models.body, [-0.4,0.8,0]),
+            right_arm: new Entity(this.models.body, [0.4,0.8,0])
+        }
+    }
+
+    equip(item, socket) {
+        socket.removeAllChildren();
+        socket.addChild(item);
+        socket.eq = item;
     }
 
     left_click(point, object) {
@@ -57,15 +68,17 @@ class Player extends Entity {
     }
 
     right_click(point, object) {
-        var pos = point;
-        if (object) {
-            pos = object.getWorldPosition();
+        if (this.sockets.right_arm.eq) {
+            var pos = point;
+            if (object) {
+                pos = object.getWorldPosition();
+            }
+            
+            this.models.body.lookAtInstantly(pos);
+            this.velocity = undefined;
+            this.state = PlayerState.Idle;
+            this.sockets.right_arm.eq.fire(pos);
         }
-        
-        this.models.body.lookAtInstantly(pos);
-        this.velocity = undefined;
-        this.state = PlayerState.Idle;
-        this.models.body.right_arm.fire(pos);
     }
 
     update(elapsed, dirty) {
@@ -141,8 +154,6 @@ class Body extends Drawable {
         super(parent, [0,0,0], models.robot.body);
         this.material = materials.player;
         this.lamp = new BodyLamp(this);
-        this.left_arm = new Wrench(this);
-        this.right_arm = new DoubleLauncher(this);
         this.rotation_speed = 1;
     }
 

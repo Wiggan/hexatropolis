@@ -58,7 +58,7 @@ function download(filename, text) {
     document.body.removeChild(element);
 }
 
-function initControls() {     
+function initControls() {
     
     var canvas = utils.getCanvas('text_canvas');
     canvas.onmousedown = (e) => {
@@ -70,7 +70,7 @@ function initControls() {
     canvas.onclick = (e) => {
         active_camera.onclick(e);
     }
-    canvas.oncontextmenu = function(e) { e.preventDefault(); e.stopPropagation(); }
+    canvas.oncontextmenu = function(e) { e.preventDefault(); e.stopPropagation(); return false;}
     window.addEventListener('keyup', (e) => {
         active_camera.onKeyUp(e);
     });
@@ -81,11 +81,6 @@ function initControls() {
             e.preventDefault();
         }
         active_camera.onKeyDown(e);
-    });
-    window.addEventListener('keypress', (e) => {
-        if (e.key == 'Shift') {
-            e.preventDefault();
-        }
     });
 
     var controls = {};

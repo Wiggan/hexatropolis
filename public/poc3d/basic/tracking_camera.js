@@ -1,6 +1,7 @@
 'use strict'
 
 var alt_pressed = false;
+var shift_pressed = false;
 
 class TrackingCamera extends Camera {
     constructor(parent, local_position) {
@@ -42,12 +43,18 @@ class TrackingCamera extends Camera {
         } else if (e.key == 'Alt') {
             alt_pressed = true;
             e.preventDefault();
+        } else if (e.key == 'Shift') {
+            shift_pressed = true;
+            e.preventDefault();
         }
     }
 
     onKeyUp(e) {
         if (e.key == 'Alt') {
             alt_pressed = false;
+            e.preventDefault();
+        } else if (e.key == 'Shift') {
+            shift_pressed = false;
             e.preventDefault();
         }
     }

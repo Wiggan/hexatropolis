@@ -49,15 +49,35 @@ class Player extends Entity {
     }
 
     left_click(point, object) {
-        this.velocity = vec3.create();
         this.models.body.look_at = point;
-        if (object == undefined) {
+        if (shift_pressed) {
+            if (this.sockets.left_arm.eq) { 
+                this.models.body.lookAtInstantly(point);
+                this.velocity = undefined;
+                this.state = PlayerState.Idle;
+                this.sockets.left_arm.eq.fire(point);
+            }
+        } else if (object == undefined) {
+            this.velocity = vec3.create();
             this.state = PlayerState.Goto;
             this.state_context = {
                 position: point,
                 tolerance: 0.1
             };
+        } else if (object.type == PickableType.Enemy) {
+            if (this.sockets.left_arm.eq) {
+                var pos = point;
+                if (object) {
+                    pos = object.getWorldPosition();
+                }
+                
+                this.models.body.lookAtInstantly(pos);
+                this.velocity = undefined;
+                this.state = PlayerState.Idle;
+                this.sockets.left_arm.eq.fire(pos);
+            }
         } else {
+            this.velocity = vec3.create();
             this.state = PlayerState.GotoInteractible;
             this.state_context = {
                 target: object,

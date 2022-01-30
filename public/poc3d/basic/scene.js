@@ -58,6 +58,7 @@ class Scene {
         this.entities.push(new DebugCamera([6, 6, 8]));
         player = new Player(getHexPosition(1, 0, 1));
         player.equip(new DoubleLauncher(null, [0, 0, 0]), player.sockets.right_arm);
+        player.equip(new Launcher(null, [0, 0, 0]), player.sockets.left_arm);
         this.entities.push(player);
         this.particles = new ParticleSystem(null, [0, 1, 0], 10);
         this.entities.push(this.particles);

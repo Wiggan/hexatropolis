@@ -82,6 +82,11 @@ function initControls() {
         }
         active_camera.onKeyDown(e);
     });
+    window.addEventListener('keypress', (e) => {
+        if (e.key == 'Shift') {
+            e.preventDefault();
+        }
+    });
 
     var controls = {};
     for (const [key, value] of Object.entries(materials)) {

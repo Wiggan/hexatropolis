@@ -19,14 +19,22 @@ class ParticleSystem extends Entity {
         this.particle_count = count;
         this.children.length = 0;
         for (var i = 0; i < this.particle_count; i++) {
-            new Particle(this, [0, 0, 0]);
+            new Particle(this, this.getWorldPosition());
         }
+    }
+
+    draw(renderer) {
+        if (debug) {    
+            renderer.add_drawable(models.sphere, materials.light, this.getWorldTransform());
+        }
+        super.draw(renderer);
     }
 }
 
 class Particle extends Drawable {
     constructor(parent, local_position) {
         super(parent, local_position, models.block);
+        this.independent = true;
         this.original_position = local_position;
         this.material = {
             ambient: [1.0, 1.0, 1.0],
@@ -46,13 +54,13 @@ class Particle extends Drawable {
     
     reset() {
         this.life_time = this.parent.particle_life_time + Math.random()*200;
-        this.velocity = vec3.clone(this.parent.direction);
+        this.velocity = vec3.clone(forward(this.parent.getWorldTransform()));
         vec3.rotateX(this.velocity, this.velocity, [0, 0, 0], (Math.random()-0.5)*this.parent.spread*Math.PI*2);
         vec3.rotateY(this.velocity, this.velocity, [0, 0, 0], (Math.random()-0.5)*this.parent.spread*Math.PI*2);
         vec3.rotateZ(this.velocity, this.velocity, [0, 0, 0], (Math.random()-0.5)*this.parent.spread*Math.PI*2);
         vec3.scale(this.velocity, this.velocity, this.parent.min_speed + Math.random()*(this.parent.max_speed-this.parent.min_speed));
         this.scale = this.parent.start.scale;
-        this.local_transform.setPosition(this.original_position);
+        this.local_transform.setPosition(this.parent.getWorldPosition());
         this.elapsed = 0;
         this.material.diffuse = vec3.clone(this.parent.start.color);
     }

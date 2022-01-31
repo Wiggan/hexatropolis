@@ -3,7 +3,6 @@
 // Global variables that are set and used
 // across the application
 let renderer,
-    scene,
     lightDiffuseColor = [1, 1, 1],
     lightDirection = [0, -1, -1],
     sphereColor = [0.5, 0.8, 0.1];
@@ -18,9 +17,9 @@ function render() {
         now = Date.now();
         var elapsed = now - then;
         frame_intervals.push(elapsed);
-        scene.update(elapsed);
+        game.scene.update(elapsed);
         then = now;
-        scene.draw(renderer);
+        game.scene.draw(renderer);
         if (frame_intervals.length == 60) {
             fps = Math.floor(60000 / frame_intervals.reduce((total, interval) => total + interval));
             frame_intervals.length = 0;
@@ -38,7 +37,7 @@ async function init() {
     await initProgram();
     await load_all_models();
     await wait_for_all_audio();
-    scene = new Scene();
+    game = new Game();
     active_camera.activate();
 
     render();
@@ -112,92 +111,92 @@ function initControls() {
     controls.lights = {
         'Diffuse': {
             value: denormalizeColor(LanternLight.Diffuse),
-            onChange: v => lights.forEach(light => light.diffuse = normalizeColor(v))
+            onChange: v => game.scene.lights.forEach(light => light.diffuse = normalizeColor(v))
         },
         'Ambient': {
             value: denormalizeColor(LanternLight.Ambient),
-            onChange: v => lights.forEach(light => light.ambient = normalizeColor(v))
+            onChange: v => game.scene.lights.forEach(light => light.ambient = normalizeColor(v))
         },
         'Specular': {
             value: denormalizeColor(LanternLight.Specular),
-            onChange: v => lights.forEach(light => light.specular = normalizeColor(v))
+            onChange: v => game.scene.lights.forEach(light => light.specular = normalizeColor(v))
         },
         'Constant': {
             value: 1,
             min: 0, max: 2, step: 0.1,
-            onChange: v => lights.forEach(light => light.constant = v)
+            onChange: v => game.scene.lights.forEach(light => light.constant = v)
         },
         'Linear': {
             value: 0.35,
             min: 0, max: 10, step: 0.05,
-            onChange: v => lights.forEach(light => light.linear = v)
+            onChange: v => game.scene.lights.forEach(light => light.linear = v)
         },
         'Quadratic': {
             value: 0.9,
             min: 0, max: 10, step: 0.05,
-            onChange: v => lights.forEach(light => light.quadratic = v)
+            onChange: v => game.scene.lights.forEach(light => light.quadratic = v)
         },
     }
 
-    controls.particles = {
+    /* controls.particles = {
         'Count': {
             value: 10,
             min: 1, max: 50, step: 1,
-            onChange: v => scene.particles.setParticleCount(v)
+            onChange: v => game.scene.particles.setParticleCount(v)
         },
         'Spread': {
-            value: scene.particles.spread,
+            value: game.scene.particles.spread,
             min: 0, max: 1, step: 0.01,
-            onChange: v => scene.particles.spread = v
+            onChange: v => game.scene.particles.spread = v
         },
         'Particle life time': {
-            value: scene.particles.particle_life_time,
+            value: game.scene.particles.particle_life_time,
             min: 0, max: 5000, step: 10,
-            onChange: v => scene.particles.particle_life_time = v
+            onChange: v => game.scene.particles.particle_life_time = v
         },
         'Minimal particle speed': {
-            value: scene.particles.min_speed,
+            value: game.scene.particles.min_speed,
             min: 0, max: 0.01, step: 0.0001,
-            onChange: v => scene.particles.min_speed = Math.min(scene.particles.max_speed, v)
+            onChange: v => game.scene.particles.min_speed = Math.min(game.scene.particles.max_speed, v)
         },
         'Maximal particle speed': {
-            value: scene.particles.max_speed,
+            value: game.scene.particles.max_speed,
             min: 0, max: 0.01, step: 0.0001,
-            onChange: v => scene.particles.max_speed = Math.max(scene.particles.min_speed, v)
+            onChange: v => game.scene.particles.max_speed = Math.max(game.scene.particles.min_speed, v)
         },
         'Continuous': {
-            value: scene.particles.continuous,
+            value: game.scene.particles.continuous,
             onChange: v => {
-                scene.particles.continuous = v;
+                game.scene.particles.continuous = v;
             }
         },
         'Start randomly': {
-            value: scene.particles.start_randomly,
-            onChange: v => scene.particles.start_randomly = v
+            value: game.scene.particles.start_randomly,
+            onChange: v => game.scene.particles.start_randomly = v
         },
         'Direction': {
-            value: scene.particles.direction,
-            onChange: v => scene.particles.direction = v
+            value: game.scene.particles.direction,
+            onChange: v => game.scene.particles.direction = v
         },
         'Start Color': {
-            value: denormalizeColor(scene.particles.start.color),
-            onChange: v => scene.particles.start.color = normalizeColor(v)
+            value: denormalizeColor(game.scene.particles.start.color),
+            onChange: v => game.scene.particles.start.color = normalizeColor(v)
         },
         'Start Scale': {
-            value: scene.particles.start.scale,
+            value: game.scene.particles.start.scale,
             min: 0, max: 1, step: 0.01,
-            onChange: v => scene.particles.start.scale = v
+            onChange: v => game.scene.particles.start.scale = v
         },
         'Stop Color': {
-            value: denormalizeColor(scene.particles.stop.color),
-            onChange: v => scene.particles.stop.color = normalizeColor(v)
+            value: denormalizeColor(game.scene.particles.stop.color),
+            onChange: v => game.scene.particles.stop.color = normalizeColor(v)
         },
         'Stop Scale': {
-            value: scene.particles.stop.scale,
+            value: game.scene.particles.stop.scale,
             min: 0, max: 1, step: 0.01,
-            onChange: v => scene.particles.stop.scale = v
+            onChange: v => game.scene.particles.stop.scale = v
         },
-    }
+    } */
     
     
 

@@ -5,7 +5,6 @@ class Drawable extends Entity {
         super(parent, local_position);
         this.model = model;
         this.material = materials.wall;
-        this.id = undefined;
     }
 
     draw(renderer) {

@@ -26,8 +26,8 @@ class Prism extends Drawable {
 }
 
 class FloatingLightBulb extends PointLight {
-    constructor(parent, local_position) {
-        super(parent, local_position);
+    constructor(parent, local_position, scene) {
+        super(parent, local_position, scene);
         this.constant = LanternLight.Constant;
         this.linear = LanternLight.Linear;
         this.quadratic = LanternLight.Quadratic;

@@ -20,7 +20,7 @@ class Rocket extends Drawable {
         this.instigator = instigator;
         this.collider.type = CollisionTypes.Projectile;
         this.collider.radius = 0.1;
-        scene.entities.push(this);
+        game.scene.entities.push(this);
         this.dmg = 20;
         this.sound = getRandomElement(sfx.rocket_flying).cloneNode();
         this.sound.play();
@@ -35,12 +35,12 @@ class Rocket extends Drawable {
     }
 
     explode() {
-        scene.remove(this);
+        game.scene.remove(this);
         var direction = vec3.clone(this.velocity);
         vec3.scale(direction, direction, -1);
         vec3.normalize(direction, direction);
-        scene.entities.push(new FirePuff(null, this.getWorldPosition(), direction));
-        scene.entities.push(new Smoke(null, this.getWorldPosition()));
+        game.scene.entities.push(new FirePuff(null, this.getWorldPosition(), direction));
+        game.scene.entities.push(new Smoke(null, this.getWorldPosition()));
         this.sound.pause();
         this.sound.currentTime = 0;
         getRandomElement(sfx.rocket_exploding).cloneNode().play();

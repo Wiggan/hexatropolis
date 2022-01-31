@@ -1,11 +1,9 @@
 'use strict';
 
-var lights = [];
-
 class PointLight extends Entity {
-    constructor(parent, local_position) {
+    constructor(parent, local_position, scene) {
         super(parent, local_position);
-        lights.push(this);
+        scene.lights.push(this);
         this.active = false;
         this.model = models.block;
         this.ambient = [0.2, 0.2, 0.3];

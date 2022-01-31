@@ -1,6 +1,12 @@
 'use strict';
 
-var player;
+const Tiles = {
+    Wall: 0,
+    Floor: 1,
+    Lantern: 2,
+    Drone: 3,
+    Chest: 4
+};
 
 function getHexPosition(ix, y, iz) {
     const size = 1;
@@ -11,9 +17,10 @@ function getHexPosition(ix, y, iz) {
 
 
 class Scene {
-    constructor() {
+    constructor(level) {
         this.entities = [];
         this.entities_to_draw = [];
+        this.lights = [];
        /*  this.parse_level({
             tiles: [
                 [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -39,36 +46,20 @@ class Scene {
             ]
         }); */
 
-        this.parse_level({
-            tiles: [
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 4, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0],
-                [0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 2, 0],
-                [0, 4, 2, 1, 1, 1, 1, 1, 1, 1, 4, 0],
-                [0, 3, 4, 1, 1, 1, 1, 2, 1, 1, 4, 0],
-                [0, 3, 4, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [0, 4, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]
-        });
+        this.parse_level(level);
         //this.parse_level(level);
         this.entities.push(new DebugCamera([6, 6, 8]));
-        player = new Player(getHexPosition(1, 0, 1));
-        player.equip(new DoubleLauncher(null, [0, 0, 0]), player.sockets.right_arm);
-        player.equip(new Launcher(null, [0, 0, 0]), player.sockets.left_arm);
-        this.entities.push(player);
-        this.particles = new ParticleSystem(null, [0, 1, 0], 10);
-        this.entities.push(this.particles);
+
+        //this.particles = new ParticleSystem(null, [0, 1, 0], 10);
+        //this.entities.push(this.particles);
+        //this.entities.push(new Portal(this, getHexPosition(3, 0, 2), null));
 
         //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
         //this.entities.push(new FireBlock(null, [0, 4, 0]));
     }
 
     remove(object) {
-        scene.entities.splice(scene.entities.lastIndexOf(object), 1);
+        this.entities.splice(game.scene.entities.lastIndexOf(object), 1);
     }
 
     makeArray(w, h, val) {
@@ -151,7 +142,7 @@ class Scene {
                         this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
                         break;
                     case 2:
-                        this.entities.push(new Lantern(null, getHexPosition(x, 0, y)));
+                        this.entities.push(new Lantern(null, getHexPosition(x, 0, y), this));
                         break;
                     case 3:
                         this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
@@ -171,16 +162,16 @@ class Scene {
         this.entities_to_draw.forEach(entity => {
             entity.draw(renderer);
         });
-        lights.forEach((light) => {
+        this.lights.forEach((light) => {
             light.draw(renderer);
         });
     }
 
     update(elapsed) {
         // Ensure only 4 lights are active. This should probably be done less often...
-        lights.sort((a, b) => { return a.getSquaredHorizontalDistanceToPlayer() - b.getSquaredHorizontalDistanceToPlayer();});
-        var activeLightCount = lights.filter((light) => light.active).length;
-        lights.forEach((light, i) => {
+        this.lights.sort((a, b) => { return a.getSquaredHorizontalDistanceToPlayer() - b.getSquaredHorizontalDistanceToPlayer();});
+        var activeLightCount = this.lights.filter((light) => light.active).length;
+        this.lights.forEach((light, i) => {
             if (i<4) {
                 if (activeLightCount < 4) {
                     light.activate();

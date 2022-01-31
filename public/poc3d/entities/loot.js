@@ -7,12 +7,12 @@ class Loot extends Pickable {
         this.drawable.material = materials.red_led;
         this.drawable.id = this.id;
         this.item = item;
-        scene.entities.push(this);
+        game.scene.entities.push(this);
     }
 
     interact() {
         player.inventory.push(this.item);
-        scene.entities.splice(scene.entities.lastIndexOf(this), 1);
+        game.scene.entities.splice(game.scene.entities.lastIndexOf(this), 1);
     }
 
     draw(renderer) {

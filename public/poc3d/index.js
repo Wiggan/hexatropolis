@@ -75,8 +75,7 @@ function initControls() {
     });
     window.addEventListener('keydown', (e) => {
         if (e.key == 's' && e.ctrlKey) {
-            download('materials.json', JSON.stringify(materials))
-            //console.log(JSON.stringify(materials));
+            download('materials.json', JSON.stringify(materials, null, 4));
             e.preventDefault();
         }
         active_camera.onKeyDown(e);

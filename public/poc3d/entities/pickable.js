@@ -16,8 +16,9 @@ const PickableType = {
 }
 
 class Pickable extends Entity {
-    constructor(parent, local_position) {
+    constructor(parent, local_position, label) {
         super(parent, local_position);
+        this.label = label;
         this.id = getNextPickableId();
         this.type = PickableType.Default;
         pickable_map.set(this.id, this);
@@ -26,5 +27,18 @@ class Pickable extends Entity {
     make_unpickable() {
         pickable_map.delete(this.id);
         this.id = undefined;
+    }
+    
+    draw(renderer) {
+        super.draw(renderer);
+        if (alt_pressed || selected_id == this.id) {
+            var pos = this.getWorldPosition();
+            if (this.type == PickableType.Enemy) {                
+                pos[1] += 1;
+                renderer.add_textbox({pos: pos, text: this.name, health: this.health / this.max_health});
+            } else {
+                renderer.add_textbox({pos: pos, text: this.label});
+            }
+        }
     }
 }

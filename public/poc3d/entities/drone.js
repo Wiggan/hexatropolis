@@ -34,13 +34,4 @@ class Drone extends Pickable {
         this.local_transform.setPosition(pos);
         super.update(elapsed, dirty);
     }
-    
-    draw(renderer) {
-        super.draw(renderer);
-        if (alt_pressed || selected_id == this.id) {
-            var pos = this.getWorldPosition();
-            pos[1] += 1;
-            renderer.add_textbox({pos: pos, text: this.name, health: this.health / this.max_health});
-        }
-    }
 }

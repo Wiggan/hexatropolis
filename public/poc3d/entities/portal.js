@@ -9,6 +9,7 @@ class Portal extends Pickable {
         this.particle_socket = new Entity(this, [0, 0, 0]);
         this.particles = new Blue(this.particle_socket, [0, 1, -0.5]);
         this.rotation_speed = 1;
+        this.label = "Portal";
     }
 
     interact() {
@@ -23,6 +24,8 @@ class Portal extends Pickable {
     connect(other) {
         this.destination = other;
         other.destination = this;
+        this.label = "To: " + this.scene.name;
+        other.label = "To: " + other.scene.name;
     }
 
     update(elapsed, dirty) {

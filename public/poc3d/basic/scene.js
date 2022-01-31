@@ -130,6 +130,7 @@ class Scene {
     }
 
     parse_level(level) {
+        this.name = level.name;
         for (var x = 0; x < level.tiles[0].length; x++) {
             for (var y = 0; y < level.tiles.length; y++) {
                 switch(level.tiles[y][x]) {

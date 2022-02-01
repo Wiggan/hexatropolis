@@ -169,47 +169,49 @@ class Transition {
     }
 
     update(elapsed) {
-        var keypoint = this.keypoints[this.keypoint_index];
-        const t = 0.5 + 0.5 * (Math.cos(this.elapsed / keypoint.time * Math.PI - Math.PI));
-        for (const [key, value] of Object.entries(keypoint.to)) {
-            switch (typeof (value)) {
-                case 'object':
-                    if (Array.isArray(value)) {
-                        if (value.length == 2) {
-                            vec2.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
-                        } else if (value.length == 3) {
-                            vec3.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
-                        } else if (value.length == 4) {
-                            vec4.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
+        if (!this.done) {
+            var keypoint = this.keypoints[this.keypoint_index];
+            const t = 0.5 + 0.5 * (Math.cos(this.elapsed / keypoint.time * Math.PI - Math.PI));
+            for (const [key, value] of Object.entries(keypoint.to)) {
+                switch (typeof (value)) {
+                    case 'object':
+                        if (Array.isArray(value)) {
+                            if (value.length == 2) {
+                                vec2.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
+                            } else if (value.length == 3) {
+                                vec3.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
+                            } else if (value.length == 4) {
+                                vec4.lerp(this.entity[key], this.original_state[key], keypoint.to[key], t);
+                            }
+                        } else {
+                            if (this.elapsed >= keypoint.time) {
+                                this.entity[key] = keypoint.to[key];
+                            }
                         }
-                    } else {
+                        break;
+                    case 'boolean':
+                    case 'string':
                         if (this.elapsed >= keypoint.time) {
                             this.entity[key] = keypoint.to[key];
                         }
-                    }
-                    break;
-                case 'boolean':
-                case 'string':
-                    if (this.elapsed >= keypoint.time) {
-                        this.entity[key] = keypoint.to[key];
-                    }
-                    break;
-                case 'number':
-                    this.entity[key] = this.original_state[key] + t * (keypoint.to[key] - this.original_state[key]);
-                    break;
+                        break;
+                    case 'number':
+                        this.entity[key] = this.original_state[key] + t * (keypoint.to[key] - this.original_state[key]);
+                        break;
+                }
             }
+            if (this.elapsed >= keypoint.time) {
+                if (keypoint.callback != undefined) {
+                    keypoint.callback();
+                }
+                this.keypoint_index++;
+                if (this.keypoints.length > this.keypoint_index) {
+                    this.getOriginalStateForKeyPoint();
+                } else {
+                    this.done = true;
+                }
+            }
+            this.elapsed += elapsed;
         }
-        if (this.elapsed >= keypoint.time) {
-            if (keypoint.callback != undefined) {
-                keypoint.callback();
-            }
-            this.keypoint_index++;
-            if (this.keypoints.length > this.keypoint_index) {
-                this.getOriginalStateForKeyPoint();
-            } else {
-                this.done = true;
-            }
-        }
-        this.elapsed += elapsed;
     }
 }

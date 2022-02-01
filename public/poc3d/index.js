@@ -17,7 +17,7 @@ function render() {
         now = Date.now();
         var elapsed = now - then;
         frame_intervals.push(elapsed);
-        game.scene.update(elapsed);
+        game.update(elapsed);
         then = now;
         game.scene.draw(renderer);
         if (frame_intervals.length == 60) {

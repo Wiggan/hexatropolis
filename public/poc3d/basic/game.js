@@ -42,7 +42,10 @@ class Game {
             }) 
         };
         
-        this.scene = this.scenes.Downfall;        
+        this.scene = this.scenes.Downfall;
+        this.paused = false;
+        this.overlay = [0.0, 0.0, 0.0, 0.0];
+        this.transition;
         
         player = new Player(getHexPosition(1, 0, 1));
         player.equip(new DoubleLauncher(null, [0, 0, 0]), player.sockets.right_arm);
@@ -55,6 +58,15 @@ class Game {
         this.scene.entities.push(new EditorCamera([6, 16, 8], this.scene));
     }
 
+    update(elapsed) {
+        if (!this.paused) {
+            this.scene.update(elapsed);
+        }
+        if (this.transition) {
+            this.transition.update(elapsed);
+        }
+    }
+
     connectScenes(scene1, scene2, pos1, pos2) {
         var portal1 = new Portal(scene1, getHexPosition(3, 0, 2));
         var portal2 = new Portal(scene2, getHexPosition(5, 0, 6));
@@ -63,10 +75,26 @@ class Game {
         scene2.entities.push(portal2);
     }
 
-    setScene(scene) {
-        game.scene.remove(player);
-        game.scene = scene;
-        game.scene.entities.push(player);
+    setScene(scene, player_position) {
+        this.paused = true;
+        this.transition = new Transition(this,
+            [
+                {
+                    time: 1000, 
+                    to: {overlay: [0.0, 0.0, 0.0, 1.0], paused: false},
+                    callback: () => {
+                        game.scene.remove(player);
+                        game.scene = scene;
+                        game.scene.entities.push(player);
+                        player.local_transform.setPosition(player_position);
+                        game.scene.update(0);
+                    }
+                },
+                {
+                    time: 1000, 
+                    to: {overlay: [0.0, 0.0, 0.0, 0.0], transition: null}
+                }
+            ]);
     }
 
     save() {
@@ -82,11 +110,8 @@ class Game {
     load() {
         let splitCookie = document.cookie.split('=')[1];
         var persistent = JSON.parse(splitCookie);
-        if (persistent.scene) {
-            this.setScene(this.scenes[persistent.scene]);
-        }
-        if (persistent.position) {
-            player.local_transform.setPosition(persistent.position);
+        if (persistent.scene && persistent.position) {
+            this.setScene(this.scenes[persistent.scene], persistent.position);
         }
         if (persistent.inventory) {
             player.inventory = persistent.inventory;

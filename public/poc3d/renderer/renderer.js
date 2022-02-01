@@ -351,6 +351,8 @@ class Renderer {
 
     draw_textboxes() {
         d2.clearRect(0, 0, d2.canvas.clientWidth, d2.canvas.clientHeight); 
+        d2.fillStyle = 'rgba(' + game.overlay[0]*255 + ',' + game.overlay[1]*255 + ',' +  game.overlay[2]*255 + ',' +  game.overlay[3] +')';
+        d2.fillRect(0, 0, d2.canvas.clientWidth, d2.canvas.clientHeight); 
         this.textboxes.forEach(textbox => {
             var pos;
             if (textbox.screen_pos != undefined) {

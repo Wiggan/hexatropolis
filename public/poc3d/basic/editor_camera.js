@@ -56,7 +56,6 @@ class EditorCamera extends Camera {
 
     updateScroll(e) {
         active_camera.wheel += Number(e.wheelDeltaY);
-        console.log(active_camera.wheel);
         return false;
     }
 
@@ -123,9 +122,6 @@ class EditorCamera extends Camera {
     draw(renderer) {
         this.pointer_entity.draw(renderer);
         if (debug) {
-            //var world_transform = mat4.create();
-            //mat4.fromTranslation(world_transform, this.pointing_at);
-            //renderer.add_drawable(models.sphere, materials.light, world_transform);
             renderer.add_drawable(models.sphere, materials.light, this.pointer_entity.getWorldTransform());
             
         }

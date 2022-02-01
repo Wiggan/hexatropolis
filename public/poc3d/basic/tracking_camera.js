@@ -1,8 +1,5 @@
 'use strict'
 
-var alt_pressed = false;
-var shift_pressed = false;
-
 class TrackingCamera extends Camera {
     constructor(parent, local_position) {
         super(parent, local_position);

@@ -21,21 +21,6 @@ class Scene {
         this.entities = [];
         this.entities_to_draw = [];
         this.lights = [];
-       /*  this.parse_level({
-            tiles: [
-                [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 2, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                [0, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 0],
-                [0, 1, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            ]
-        }); */
 
         //var level = {tiles: this.generate([[1, 1], [50, 90], [20, 20], [50, 50], [90, 90], [2, 5]])};
         /* this.parse_level({
@@ -48,7 +33,6 @@ class Scene {
 
         this.parse_level(level);
         //this.parse_level(level);
-        this.entities.push(new DebugCamera([6, 6, 8]));
 
         //this.particles = new ParticleSystem(null, [0, 1, 0], 10);
         //this.entities.push(this.particles);
@@ -135,22 +119,21 @@ class Scene {
             for (var y = 0; y < level.tiles.length; y++) {
                 switch(level.tiles[y][x]) {
                     case 0:
-                        var hex = new Hex(null, getHexPosition(x, 3, y));
-                        hex.collider.type = CollisionTypes.Level;
+                        var hex = new Wall(null, getHexPosition(x, 0, y));
                         this.entities.push(hex);
                         break;
                     case 1:
-                        this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
+                        this.entities.push(new Floor(null, getHexPosition(x, 0, y)));
                         break;
                     case 2:
                         this.entities.push(new Lantern(null, getHexPosition(x, 0, y), this));
                         break;
                     case 3:
-                        this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
+                        this.entities.push(new Floor(null, getHexPosition(x, 0, y)));
                         this.entities.push(new Chest(getHexPosition(x, 0, y)));
                         break;
                     case 4:
-                        this.entities.push(new Hex(null, getHexPosition(x, 0, y)));
+                        this.entities.push(new Floor(null, getHexPosition(x, 0, y)));
                         this.entities.push(new Drone(getHexPosition(x, 0, y)));
                         break;
 

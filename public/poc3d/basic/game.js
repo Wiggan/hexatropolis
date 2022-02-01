@@ -49,6 +49,10 @@ class Game {
         player.equip(new Launcher(null, [0, 0, 0]), player.sockets.left_arm);
         this.scene.entities.push(player);
         this.connectScenes(this.scenes.Downfall, this.scenes.Junction);
+        
+        this.scene.entities.push(new DebugCamera([6, 6, 8]));
+        
+        this.scene.entities.push(new EditorCamera([6, 16, 8], this.scene));
     }
 
     connectScenes(scene1, scene2, pos1, pos2) {
@@ -59,12 +63,24 @@ class Game {
         scene2.entities.push(portal2);
     }
 
-    saveGame() {
+    save() {
         var persistent = {
             inventory: player.inventory,
-            equipment: player.equipment,
-            scene: game.scene.id
+            //equipment: player.equipment,
+            scene: game.scene.name
         };
         document.cookie = 'slot1=' + JSON.stringify(persistent) +'expires=Tue, 19 Jan 2038 04:14:07 GMT';
+    }
+
+    load() {
+        document.cookie.split(';').reduce((cookieObject, cookieString) => {
+        let splitCookie = cookieString.split('=').map((cookiePart) => { cookiePart.trim() })
+        try {
+            cookieObject[splitCookie[0]] = JSON.parse(splitCookie[1])
+        } catch (error) {
+            cookieObject[splitCookie[0]] = splitCookie[1]
+        }
+        return cookieObject
+        })
     }
 }

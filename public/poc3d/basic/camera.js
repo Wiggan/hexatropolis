@@ -2,6 +2,9 @@
 
 var cameras = [];
 var active_camera;
+var alt_pressed = false;
+var shift_pressed = false;
+
 
 
 class Camera extends Entity {
@@ -37,7 +40,13 @@ class Camera extends Entity {
             active_camera.local_transform.setPosition(previous_position);
             active_camera.activate();
             e.preventDefault();
-        } 
+        } else if (e.key == 'F3') {
+            game.save();
+            e.preventDefault();
+        } else if (e.key == 'F4') {
+            game.load();
+            e.preventDefault();
+        }
     }
 
     draw(renderer) {

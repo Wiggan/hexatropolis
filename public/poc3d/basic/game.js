@@ -63,24 +63,33 @@ class Game {
         scene2.entities.push(portal2);
     }
 
+    setScene(scene) {
+        game.scene.remove(player);
+        game.scene = scene;
+        game.scene.entities.push(player);
+    }
+
     save() {
         var persistent = {
             inventory: player.inventory,
+            position: player.getWorldPosition(),
             //equipment: player.equipment,
             scene: game.scene.name
         };
-        document.cookie = 'slot1=' + JSON.stringify(persistent) +'expires=Tue, 19 Jan 2038 04:14:07 GMT';
+        document.cookie = 'slot1=' + JSON.stringify(persistent) +';expires=Tue, 19 Jan 2038 04:14:07 GMT';
     }
 
     load() {
-        document.cookie.split(';').reduce((cookieObject, cookieString) => {
-        let splitCookie = cookieString.split('=').map((cookiePart) => { cookiePart.trim() })
-        try {
-            cookieObject[splitCookie[0]] = JSON.parse(splitCookie[1])
-        } catch (error) {
-            cookieObject[splitCookie[0]] = splitCookie[1]
+        let splitCookie = document.cookie.split('=')[1];
+        var persistent = JSON.parse(splitCookie);
+        if (persistent.scene) {
+            this.setScene(this.scenes[persistent.scene]);
         }
-        return cookieObject
-        })
+        if (persistent.position) {
+            player.local_transform.setPosition(persistent.position);
+        }
+        if (persistent.inventory) {
+            player.inventory = persistent.inventory;
+        }
     }
 }

@@ -14,6 +14,7 @@ class Portal extends Pickable {
 
     interact() {
         //transition to destination
+        game.setScene(this.destination.scene);
         game.scene.remove(player);
         game.scene = this.destination.scene;
         game.scene.entities.push(player);

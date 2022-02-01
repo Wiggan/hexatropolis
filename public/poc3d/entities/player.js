@@ -42,6 +42,10 @@ class Player extends Entity {
         }
     }
 
+    toJSON(key) {
+        return {};
+    }
+    
     equip(item, socket) {
         socket.removeAllChildren();
         socket.addChild(item);

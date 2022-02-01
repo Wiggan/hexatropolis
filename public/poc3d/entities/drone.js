@@ -1,8 +1,9 @@
 'use strict'
 
 class Drone extends Pickable {
-    constructor(position) {
+    constructor(parent, position) {
         super(null, position);
+        this.position = position;
         this.type = PickableType.Enemy;
         this.body = new Drawable(this, [0, 0, 0], models.drone.body);
         this.lamp = new Drawable(this, [0, 0, 0], models.drone.lamp);
@@ -18,6 +19,14 @@ class Drone extends Pickable {
         this.max_health = 50;
         this.health = 50;
     }
+    
+    toJSON(key) {
+        return {
+            type: 'Drone',
+            local_position: this.position
+        }
+    }
+
 
     takeDamage(amount) {
         this.health = Math.max(0, this.health - amount);
@@ -35,3 +44,6 @@ class Drone extends Pickable {
         super.update(elapsed, dirty);
     }
 }
+
+
+classes.Drone = Drone;

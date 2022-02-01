@@ -12,6 +12,10 @@ class Portal extends Pickable {
         this.label = "Portal";
     }
 
+    toJSON(key) {
+        return {};
+    }
+
     interact() {
         //transition to destination
         game.setScene(this.destination.scene, this.destination.getWorldPosition());

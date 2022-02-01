@@ -1,8 +1,9 @@
 'use strict';
 
 class Chest extends Pickable {
-    constructor(local_position) {
+    constructor(parent, local_position) {
         super(null, local_position);
+        this.local_position = local_position;
         this.side1 = new ChestSide(this, [0, 0, -0.25], this.id);
         this.side2 = new ChestSide(this, [-0.25, 0, 0], this.id);
         this.side3 = new ChestSide(this, [0, 0, 0.25], this.id);
@@ -12,6 +13,13 @@ class Chest extends Pickable {
         this.side4.local_transform.yaw(-90);
         this.max_drop = 3;
         this.level = 5;
+    }
+
+    toJSON(key) {
+        return {
+            type: 'Chest',
+            local_position: this.local_position
+        }
     }
 
     interact() {
@@ -68,3 +76,5 @@ class ChestLamp extends Drawable {
         super.draw(renderer);
     }
 }
+
+classes.Chest = Chest;

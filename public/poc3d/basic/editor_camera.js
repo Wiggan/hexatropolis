@@ -32,7 +32,7 @@ class EditorCamera extends Camera {
         this.pointer_entity = new Entity(null, [0,0,0]);
         this.blocks = [new Wall(null, [0,0,0]),
                        new Floor(null, [0,0,0]),
-                       new Lantern(null, [0,0,0], scene)];
+                       new Lantern(scene, [0,0,0])];
 
         this.blocks.forEach(block => block.material = materials.blue);
         this.block_index = 0;

@@ -2,10 +2,11 @@
 
 var player;
 var game;
+var classes = {};
 
 class Game {
     constructor() {
-        this.scenes = {
+        /* this.scenes = {
             Downfall: new Scene ({
                 name: "Downfall",
                 tiles: [
@@ -42,7 +43,8 @@ class Game {
             }) 
         };
         
-        this.scene = this.scenes.Downfall;
+        this.scene = this.scenes.Downfall; */
+        this.scenes = {};
         this.paused = false;
         this.overlay = [0.0, 0.0, 0.0, 0.0];
         this.transition;
@@ -50,14 +52,27 @@ class Game {
         player = new Player(getHexPosition(1, 0, 1));
         player.equip(new DoubleLauncher(null, [0, 0, 0]), player.sockets.right_arm);
         player.equip(new Launcher(null, [0, 0, 0]), player.sockets.left_arm);
+        //this.scene.entities.push(player);
+        //this.connectScenes(this.scenes.Downfall, this.scenes.Junction);
+
+    }
+
+    loadLevels(levels) {
+        for (const [key, value] of Object.entries(JSON.parse(levels))) {
+            this.scenes[key] = new Scene(value.name, value.entities);
+        }
+        this.scene = this.scenes.Downfall;
         this.scene.entities.push(player);
-        this.connectScenes(this.scenes.Downfall, this.scenes.Junction);
         
         this.scene.entities.push(new DebugCamera([6, 6, 8]));
         
         this.scene.entities.push(new EditorCamera([6, 16, 8], this.scene));
     }
 
+    serialize() {
+        return JSON.stringify(this.scenes, null, 4);
+    }
+    
     update(elapsed) {
         if (!this.paused) {
             this.scene.update(elapsed);
@@ -77,24 +92,23 @@ class Game {
 
     setScene(scene, player_position) {
         this.paused = true;
-        this.transition = new Transition(this,
-            [
-                {
-                    time: 1000, 
-                    to: {overlay: [0.0, 0.0, 0.0, 1.0], paused: false},
-                    callback: () => {
-                        game.scene.remove(player);
-                        game.scene = scene;
-                        game.scene.entities.push(player);
-                        player.local_transform.setPosition(player_position);
-                        game.scene.update(0);
-                    }
-                },
-                {
-                    time: 1000, 
-                    to: {overlay: [0.0, 0.0, 0.0, 0.0], transition: null}
+        this.transition = new Transition(this, [
+            {
+                time: 300,
+                to: { overlay: [0.0, 0.0, 0.0, 1.0], paused: false },
+                callback: () => {
+                    game.scene.remove(player);
+                    game.scene = scene;
+                    game.scene.entities.push(player);
+                    player.local_transform.setPosition(player_position);
+                    game.scene.update(0);
                 }
-            ]);
+            },
+            {
+                time: 300,
+                to: { overlay: [0.0, 0.0, 0.0, 0.0], transition: null }
+            }
+        ]);
     }
 
     save() {

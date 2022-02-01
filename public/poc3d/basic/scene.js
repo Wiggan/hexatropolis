@@ -16,30 +16,33 @@ function getHexPosition(ix, y, iz) {
 }
 
 
-class Scene {
-    constructor(level) {
+class Scene extends Entity {
+/*     constructor(level) {
         this.entities = [];
         this.entities_to_draw = [];
         this.lights = [];
 
-        //var level = {tiles: this.generate([[1, 1], [50, 90], [20, 20], [50, 50], [90, 90], [2, 5]])};
-        /* this.parse_level({
-            tiles: [
-                [1, 1, 1],
-                [1, 1, 2],
-                [0, 4, 3],
-            ]
-        }); */
-
         this.parse_level(level);
-        //this.parse_level(level);
+    }
+ */
+    constructor(name, entities) {
+        super(null, [0, 0, 0]);
+        this.name = name;
+        this.lights = [];
+        this.entities = entities.map((entity) => {
+            if (entity.type) {
+                return new classes[entity.type](this, entity.local_position);
+            }
+        })
+        this.entities = this.entities.filter((entity => entity))
+        this.entities_to_draw = [];
+    }
 
-        //this.particles = new ParticleSystem(null, [0, 1, 0], 10);
-        //this.entities.push(this.particles);
-        //this.entities.push(new Portal(this, getHexPosition(3, 0, 2), null));
-
-        //this.entities.push(new TrackingCamera(null, [10, 0, 0]));
-        //this.entities.push(new FireBlock(null, [0, 4, 0]));
+    toJSON(key) {
+        return {
+            name: this.name,
+            entities: this.entities
+        }
     }
 
     remove(object) {
@@ -126,15 +129,15 @@ class Scene {
                         this.entities.push(new Floor(null, getHexPosition(x, 0, y)));
                         break;
                     case 2:
-                        this.entities.push(new Lantern(null, getHexPosition(x, 0, y), this));
+                        this.entities.push(new Lantern(this, getHexPosition(x, 0, y)));
                         break;
                     case 3:
                         this.entities.push(new Floor(null, getHexPosition(x, 0, y)));
-                        this.entities.push(new Chest(getHexPosition(x, 0, y)));
+                        this.entities.push(new Chest(null, getHexPosition(x, 0, y)));
                         break;
                     case 4:
                         this.entities.push(new Floor(null, getHexPosition(x, 0, y)));
-                        this.entities.push(new Drone(getHexPosition(x, 0, y)));
+                        this.entities.push(new Drone(null, getHexPosition(x, 0, y)));
                         break;
 
                 }

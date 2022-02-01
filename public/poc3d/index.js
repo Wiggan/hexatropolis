@@ -38,6 +38,8 @@ async function init() {
     await load_all_models();
     await wait_for_all_audio();
     game = new Game();
+    await fetch('/models/levels.json').then(response => response.json()).then(levels => game.loadLevels(levels));
+    
     active_camera.activate();
 
     render();
@@ -76,6 +78,7 @@ function initControls() {
     window.addEventListener('keydown', (e) => {
         if (e.key == 's' && e.ctrlKey) {
             download('materials.json', JSON.stringify(materials, null, 4));
+            download('levels.json', JSON.stringify(game.serialize(), null, 4));
             e.preventDefault();
         }
         active_camera.onKeyDown(e);

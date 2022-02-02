@@ -1,6 +1,6 @@
 'use strict'
 
-var selected_entity;
+var selected_entity, selected_gui;
 
 function snapToHexPosition(pos) {
     return indexToHexPosition(hexPositionToIndex(pos));
@@ -43,6 +43,7 @@ class EditorCamera extends Camera {
     }
 
     activate() {
+        super.activate();
         document.addEventListener("mousemove", active_camera.updatePosition, false);
         document.addEventListener("wheel", active_camera.updateScroll, false);
 
@@ -104,8 +105,18 @@ class EditorCamera extends Camera {
 
     selectEntity(entity) {
         selected_entity = entity;
-        var relevant_parameters = selected_entity.toJSON();
-        
+        if (selected_gui) {
+            gui.removeFolder(selected_gui);
+        }
+        selected_gui = gui.addFolder('Selected');
+        var persistent = selected_entity.toJSON();
+        Object.assign(entity, persistent);
+        for (const [key, value] of Object.entries(persistent)) {
+            if (key == 'destination_scene_name') {
+                //selected_gui.add(selected_entity, key, Object.keys(game.scenes));
+                selected_gui.add(persistent, key, Object.keys(game.scenes)).onChange((v) => selected_entity[key] = v);
+            }
+        }
     }
 
     onmousedown(e) {

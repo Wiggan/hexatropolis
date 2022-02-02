@@ -4,7 +4,7 @@ class Portal extends Pickable {
     constructor(scene, position, destination_scene_name) {
         super(null, position);
         this.scene = scene;
-        this.destination_scene_name = destination_scene_name;
+        this.destination_scene_name = destination_scene_name || 'None';
         this.hex = new Floor(this, [0, 0.1, 0]);
         this.hex.material = materials.blue;
         this.particle_socket = new Entity(this, [0, 0, 0]);

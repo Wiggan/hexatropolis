@@ -2,7 +2,8 @@
 
 // Global variables that are set and used
 // across the application
-let renderer;
+let renderer, gui;
+
 
 var frame_intervals = [];
 var fps = 0;
@@ -43,12 +44,13 @@ async function init() {
                 entity.makePickable();
             }
         });
+        //value.entities.push(new DebugCamera([6, 6, 8]));
+        value.editor_camera = new EditorCamera([6, 16, 8], value);
+        value.entities.push(value.editor_camera);
     }
 
-    game.scene.entities.push(new DebugCamera([6, 6, 8]));
-    game.scene.entities.push(new EditorCamera([6, 16, 8], game.scene));
     
-    active_camera.activate();
+    game.scene.editor_camera.activate();
     picking = false;
     render();
     initControls();
@@ -92,6 +94,40 @@ function initControls() {
         active_camera.onKeyDown(e);
     });
 
+
+    gui = new dat.GUI({name: 'Editor'});
+    var scenes_folder = gui.addFolder('Scenes');
+    var current_scene = {scene: game.scene.name};
+    var changeScene = (scene_name) => {
+        game.scene = game.scenes[scene_name];
+        game.scene.editor_camera.activate();
+    } 
+    var scene_list = scenes_folder.add(current_scene, 'scene', Object.keys(game.scenes)).onChange(changeScene);
+    var new_scene = {name: ''};
+    scenes_folder.add(new_scene, 'name').onFinishChange(v => {
+        game.scenes[v] = new Scene(v, []);
+        game.scenes[v].editor_camera = new EditorCamera([6, 16, 8], game.scenes[v]);
+        game.scenes[v].entities.push(game.scenes[v].editor_camera);
+        scenes_folder.remove(scene_list);
+        scene_list = scenes_folder.add(current_scene, 'scene', Object.keys(game.scenes)).onChange(changeScene);
+        scene_list.setValue(v);
+    });
+
+    var material_folder = gui.addFolder('Materials');
+    for (const [key, value] of Object.entries(materials)) {
+        var material = material_folder.addFolder(key);
+        ['ambient', 'diffuse', 'specular'].forEach(color => {
+            const c = {};
+            c[color] = denormalizeColor(value[color]);
+            var controller = material.addColor(c, color);
+            controller.onChange(v => value[color] = normalizeColor(v));
+        });
+        material.add(value, 'shininess', 1, 50, 0.1);
+        material.add(value, 'isLight');
+    }
+
+    
+    /* 
     var controls = {};
     controls.materials = {};
     for (const [key, value] of Object.entries(materials)) {
@@ -147,7 +183,7 @@ function initControls() {
             min: 0, max: 10, step: 0.05,
             onChange: v => game.scene.lights.forEach(light => light.quadratic = v)
         },
-    }
+    } */
 
     /* controls.particles = {
         'Count': {
@@ -211,7 +247,7 @@ function initControls() {
     
     
 
-    utils.configureControls(controls);
+    //utils.configureControls(controls);
 }
 
 // De-normalize colors from 0-1 to 0-255

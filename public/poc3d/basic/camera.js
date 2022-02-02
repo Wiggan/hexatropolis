@@ -34,11 +34,7 @@ class Camera extends Entity {
             debug = !debug;
             e.preventDefault();
         } else if (e.key == 'F2') {
-            active_camera.deactivate();
-            //const previous_position = vec3.clone(active_camera.getWorldPosition());
-            active_camera = cameras[(cameras.indexOf(active_camera)+1) % cameras.length];
-            //active_camera.local_transform.setPosition(previous_position);
-            active_camera.activate();
+            cameras[(cameras.indexOf(active_camera)+1) % cameras.length].activate();
             e.preventDefault();
         } else if (e.key == 'F3') {
             game.save();
@@ -56,5 +52,8 @@ class Camera extends Entity {
     }
 
     deactivate() {}
-    activate() {}
+    activate() {
+        active_camera.deactivate();
+        active_camera = this;
+    }
 }

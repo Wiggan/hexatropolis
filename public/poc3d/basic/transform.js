@@ -9,7 +9,11 @@ class Transform {
     #dirty;
     #transform;
     constructor(position) {
-        this.#position = vec3.fromValues(position[0], position[1], position[2]);
+        if (position) {
+            this.#position = vec3.fromValues(position[0], position[1], position[2]);
+        } else {
+            this.#position = vec3.create();
+        }
         this.#scale = vec3.fromValues(1, 1, 1);
         this.#yaw = 0;
         this.#pitch = 0;

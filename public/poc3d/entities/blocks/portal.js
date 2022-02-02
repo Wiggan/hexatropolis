@@ -3,6 +3,7 @@
 class Portal extends Pickable {
     constructor(scene, position, destination_scene_name) {
         super(null, position);
+        this.local_position = position;
         this.scene = scene;
         this.destination_scene_name = destination_scene_name || 'None';
         this.hex = new Floor(this, [0, 0.1, 0]);
@@ -16,7 +17,7 @@ class Portal extends Pickable {
     toJSON(key) {
         return {
             type: 'Portal',
-            local_position: this.position,
+            local_position: this.local_position,
             destination_scene_name: this.destination_scene_name
         };
     }
@@ -28,14 +29,7 @@ class Portal extends Pickable {
         var destination_portal = destination_scene.entities.find(entity => entity.type == 'Portal' && entity.destination_scene_name == this.scene.name);
         game.setScene(destination_scene, destination_portal.getWorldPosition());
     }
-/* 
-    connect(other) {
-        this.destination = other;
-        other.destination = this;
-        this.label = "To: " + this.scene.name;
-        other.label = "To: " + other.scene.name;
-    }
- */
+    
     update(elapsed, dirty) {
         this.particle_socket.local_transform.yaw(elapsed * this.rotation_speed);
         this.particle_socket.local_transform.setPosition([0, Math.sin(Date.now()*0.005), 0]);

@@ -42,6 +42,10 @@ class EditorCamera extends Camera {
         this.pointer_entity.addChild(this.blocks[this.block_index]);
     }
 
+    toJSON(key) { 
+        return {}; 
+    }
+
     activate() {
         super.activate();
         document.addEventListener("mousemove", active_camera.updatePosition, false);
@@ -117,11 +121,13 @@ class EditorCamera extends Camera {
                 selected_gui.add(persistent, key, Object.keys(game.scenes)).onChange((v) => selected_entity[key] = v);
             }
         }
+        selected_gui.open();
     }
 
     onmousedown(e) {
         if (e.button == 0) {
             if (alt_pressed) {
+                this.selectEntity(pickable_map.get(selected_id));
             } else {
                 var new_entity = new classes[this.blocks[this.block_index].toJSON().type](game.scene, this.pointer_entity.getWorldPosition());
                 this.selectEntity(new_entity);
@@ -141,7 +147,7 @@ class EditorCamera extends Camera {
     }
 
     update(elapsed, dirty) {
-        var block_index = Math.floor(this.wheel / 50) % this.blocks.length;
+        var block_index = Math.floor(this.wheel / 120) % this.blocks.length;
         if (block_index < 0) block_index += this.blocks.length;
         if (block_index != this.block_index) {
             this.block_index = block_index;
@@ -161,7 +167,9 @@ class EditorCamera extends Camera {
     }
 
     draw(renderer) {
-        this.pointer_entity.draw(renderer);
+        if (!alt_pressed) {
+            this.pointer_entity.draw(renderer);
+        }
         if (debug) {
             renderer.add_drawable(models.sphere, materials.light, this.pointer_entity.getWorldTransform());
             

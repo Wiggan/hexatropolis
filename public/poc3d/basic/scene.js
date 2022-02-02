@@ -23,7 +23,9 @@ class Scene extends Entity {
         this.lights = [];
         this.entities = entities.map((entity) => {
             if (entity.type) {
-                return new classes[entity.type](this, entity.local_position);
+                var e = new classes[entity.type](this, entity.local_position);
+                e = Object.assign(e, entity);
+                return e;
             }
         })
         this.entities = this.entities.filter((entity => entity))

@@ -105,12 +105,14 @@ function initControls() {
     var scene_list = scenes_folder.add(current_scene, 'scene', Object.keys(game.scenes)).onChange(changeScene);
     var new_scene = {name: ''};
     scenes_folder.add(new_scene, 'name').onFinishChange(v => {
-        game.scenes[v] = new Scene(v, []);
-        game.scenes[v].editor_camera = new EditorCamera([6, 16, 8], game.scenes[v]);
-        game.scenes[v].entities.push(game.scenes[v].editor_camera);
-        scenes_folder.remove(scene_list);
-        scene_list = scenes_folder.add(current_scene, 'scene', Object.keys(game.scenes)).onChange(changeScene);
-        scene_list.setValue(v);
+        if (v) {
+            game.scenes[v] = new Scene(v, []);
+            game.scenes[v].editor_camera = new EditorCamera([6, 16, 8], game.scenes[v]);
+            game.scenes[v].entities.push(game.scenes[v].editor_camera);
+            scenes_folder.remove(scene_list);
+            scene_list = scenes_folder.add(current_scene, 'scene', Object.keys(game.scenes)).onChange(changeScene);
+            scene_list.setValue(v);
+        }
     });
 
     var material_folder = gui.addFolder('Materials');

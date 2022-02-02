@@ -17,14 +17,6 @@ function getHexPosition(ix, y, iz) {
 
 
 class Scene extends Entity {
-/*     constructor(level) {
-        this.entities = [];
-        this.entities_to_draw = [];
-        this.lights = [];
-
-        this.parse_level(level);
-    }
- */
     constructor(name, entities) {
         super(null, [0, 0, 0]);
         this.name = name;

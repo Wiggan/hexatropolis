@@ -136,12 +136,20 @@ class Entity {
     }
 
     getSquaredHorizontalDistanceToPlayer() {
-        return vec2.sqrDist(vec2.fromValues(this.getWorldPosition()[0], this.getWorldPosition()[2]),
-            vec2.fromValues(player.getWorldPosition()[0], player.getWorldPosition()[2]));
+        if (player) {
+            return vec2.sqrDist(vec2.fromValues(this.getWorldPosition()[0], this.getWorldPosition()[2]),
+                vec2.fromValues(player.getWorldPosition()[0], player.getWorldPosition()[2]));
+        } else {
+            return 0;
+        }
     }
 
     getDistanceToPlayer() {
-        return vec3.dist(this.getWorldPosition(), player.getWorldPosition());
+        if (player) {
+            return vec3.dist(this.getWorldPosition(), player.getWorldPosition());
+        } else {
+            return 0;
+        }
     }
 
     getForwardVector() {

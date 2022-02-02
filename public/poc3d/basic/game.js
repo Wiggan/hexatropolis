@@ -6,67 +6,24 @@ var classes = {};
 
 class Game {
     constructor() {
-        /* this.scenes = {
-            Downfall: new Scene ({
-                name: "Downfall",
-                tiles: [
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 4, 0],
-                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0],
-                    [0, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 0],
-                    [0, 4, 2, 1, 1, 1, 1, 1, 1, 1, 4, 0],
-                    [0, 3, 4, 1, 1, 1, 1, 2, 1, 1, 4, 0],
-                    [0, 3, 4, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [0, 0, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                ],
-                entities: []
-            }),
-            Junction: new Scene({
-                name: "Junction",
-                tiles: [
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [0, 1, 1, 2, 1, 1, 1, 1, 1, 1, 4, 0],
-                    [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 0],
-                    [0, 0, 0, 0, 0, 0, 2, 1, 1, 1, 2, 0],
-                    [0, 4, 2, 1, 1, 1, 1, 1, 1, 1, 4, 0],
-                    [0, 3, 4, 1, 1, 1, 1, 2, 1, 1, 4, 0],
-                    [0, 3, 4, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [0, 4, 2, 1, 1, 1, 1, 1, 1, 1, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                ],
-                entities: []
-            }) 
-        };
-        
-        this.scene = this.scenes.Downfall; */
         this.scenes = {};
         this.paused = false;
         this.overlay = [0.0, 0.0, 0.0, 0.0];
         this.transition;
-        
-        player = new Player(getHexPosition(1, 0, 1));
-        player.equip(new DoubleLauncher(null, [0, 0, 0]), player.sockets.right_arm);
-        player.equip(new Launcher(null, [0, 0, 0]), player.sockets.left_arm);
-        //this.scene.entities.push(player);
-        //this.connectScenes(this.scenes.Downfall, this.scenes.Junction);
-
     }
-
+    
     loadLevels(levels) {
         for (const [key, value] of Object.entries(JSON.parse(levels))) {
             this.scenes[key] = new Scene(value.name, value.entities);
         }
         this.scene = this.scenes.Downfall;
+    }
+    
+    placePlayer() {        
+        player = new Player(getHexPosition(1, 0, 1));
+        player.equip(new DoubleLauncher(null, [0, 0, 0]), player.sockets.right_arm);
+        player.equip(new Launcher(null, [0, 0, 0]), player.sockets.left_arm);
         this.scene.entities.push(player);
-        
-        this.scene.entities.push(new DebugCamera([6, 6, 8]));
-        
-        this.scene.entities.push(new EditorCamera([6, 16, 8], this.scene));
     }
 
     serialize() {

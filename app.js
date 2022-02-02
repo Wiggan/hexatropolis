@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var dropTestRouter = require('./routes/drop_test');
 var pocRouter = require('./routes/game_poc');
 var poc3dRouter = require('./routes/game_poc_3d');
+var poc3dEditorRouter = require('./routes/game_poc_3d_editor');
 var app = express();
 
 // view engine setup
@@ -25,6 +26,7 @@ app.use('/', indexRouter);
 app.use('/drop_test', dropTestRouter);
 app.use('/poc', pocRouter);
 app.use('/poc3d', poc3dRouter);
+app.use('/poc3deditor', poc3dEditorRouter);
 
 
 // catch 404 and forward to error handler

@@ -3,7 +3,7 @@
 var cameras = [];
 var active_camera;
 var alt_pressed = false;
-var shift_pressed = false;
+var ctrl_pressed = false;
 
 
 

@@ -1,5 +1,6 @@
 'use strict'
 
+var selected_entity;
 
 function snapToHexPosition(pos) {
     return indexToHexPosition(hexPositionToIndex(pos));
@@ -28,6 +29,7 @@ class EditorCamera extends Camera {
         this.local_transform.pitch(-60);
         this.x = 10;
         this.y = 10;
+        this.velocity = [0, 0, 0];
         this.wheel = 0;
         this.pointer_entity = new Entity(null, [0,0,0]);
         this.blocks = [new Wall(null, [0,0,0]),
@@ -37,6 +39,7 @@ class EditorCamera extends Camera {
 
         this.blocks.forEach(block => block.material = materials.blue);
         this.block_index = 0;
+        this.pointer_entity.addChild(this.blocks[this.block_index]);
     }
 
     activate() {
@@ -62,33 +65,59 @@ class EditorCamera extends Camera {
 
     onKeyDown(e) {
         super.onKeyDown(e);
-        if (e.key == 'i' || e.key == 'I') {
-            show_inventory = !show_inventory;
-        } else if (e.key == 'l') {
-            new Loot(player.getWorldPosition(), drop_consumable({max_drop: 5, level:10}));
-            e.preventDefault();
-        } else if (e.key == 'Alt') {
+        if (e.key == 'Alt') {
             alt_pressed = true;
+            picking = true;
             e.preventDefault();
         } else if (e.key == 'Control') {
-            shift_pressed = true;
+            ctrl_pressed = true;
             e.preventDefault();
+        } else if (e.key == 'w' || e.key == 'W') {
+            this.velocity[2] = -0.005;
+        } else if (e.key == 's' || e.key == 'S') {
+            this.velocity[2] = 0.005;
+        } else if (e.key == 'a' || e.key == 'A') {
+            this.velocity[0] = -0.005;
+        } else if (e.key == 'd' || e.key == 'D') {
+            this.velocity[0] = 0.005;
         }
     }
 
     onKeyUp(e) {
         if (e.key == 'Alt') {
             alt_pressed = false;
+            picking = false;
             e.preventDefault();
         } else if (e.key == 'Control') {
-            shift_pressed = false;
+            ctrl_pressed = false;
             e.preventDefault();
+        } else if (e.key == 'w' || e.key == 'W') {
+            this.velocity[2] = 0;
+        } else if (e.key == 's' || e.key == 'S') {
+            this.velocity[2] = 0;
+        } else if (e.key == 'a' || e.key == 'A') {
+            this.velocity[0] = 0;
+        } else if (e.key == 'd' || e.key == 'D') {
+            this.velocity[0] = 0;
         }
+    }
+
+    selectEntity(entity) {
+        selected_entity = entity;
+        var relevant_parameters = selected_entity.toJSON();
+        
     }
 
     onmousedown(e) {
         if (e.button == 0) {
+            if (alt_pressed) {
+            } else {
+                var new_entity = new classes[this.blocks[this.block_index].toJSON().type](game.scene, this.pointer_entity.getWorldPosition());
+                this.selectEntity(new_entity);
+                game.scene.entities.push(new_entity);
+            }
         } else if (e.button == 2) {
+
         }
         e.preventDefault();
     }

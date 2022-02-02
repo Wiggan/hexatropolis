@@ -54,7 +54,7 @@ class Player extends Entity {
 
     left_click(point, object) {
         this.models.body.look_at = point;
-        if (shift_pressed) {
+        if (ctrl_pressed) {
             if (this.sockets.left_arm.eq) { 
                 this.models.body.lookAtInstantly(point);
                 this.velocity = undefined;

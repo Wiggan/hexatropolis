@@ -3,7 +3,8 @@
 var gl, 
     d2,
     projection_matrix = mat4.create(), 
-    view_matrix = mat4.create();
+    view_matrix = mat4.create(),
+    picking = true;
 
 class Renderer {
     constructor() {
@@ -136,7 +137,9 @@ class Renderer {
         this.validateSize();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
         this.draw();
-        this.savePixelUnderCursor();
+        if (picking) {
+            this.savePixelUnderCursor();
+        }
 
         // Offscreen MSAA 
         /* gl.bindFramebuffer(gl.READ_FRAMEBUFFER, this.framebuffer);

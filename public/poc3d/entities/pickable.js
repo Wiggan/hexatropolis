@@ -19,9 +19,7 @@ class Pickable extends Entity {
     constructor(parent, local_position, label) {
         super(parent, local_position);
         this.label = label;
-        this.id = getNextPickableId();
-        this.type = PickableType.Default;
-        pickable_map.set(this.id, this);
+        this.makePickable();
     }
 
     make_unpickable() {

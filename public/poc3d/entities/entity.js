@@ -104,6 +104,12 @@ class Entity {
         this.children.forEach(child => child.update(elapsed, dirty));
     }
 
+    makePickable() {
+        this.id = getNextPickableId();
+        this.type = PickableType.Default;
+        pickable_map.set(this.id, this);
+    }
+
     onCollision(other) {
         // Revert movement that caused collision
         vec3.scale(this.last_movement, this.last_movement, -1);

@@ -37,11 +37,19 @@ async function init() {
     game = new Game();
     await fetch('/models/levels.json').then(response => response.json()).then(levels => game.loadLevels(levels));
     
+    for (const [key, value] of Object.entries(game.scenes)) {
+        game.scenes[key].entities.forEach(entity => {
+            if (!entity.id) {
+                entity.makePickable();
+            }
+        });
+    }
+
     game.scene.entities.push(new DebugCamera([6, 6, 8]));
     game.scene.entities.push(new EditorCamera([6, 16, 8], game.scene));
-        
+    
     active_camera.activate();
-
+    picking = false;
     render();
     initControls();
 }
@@ -85,8 +93,9 @@ function initControls() {
     });
 
     var controls = {};
+    controls.materials = {};
     for (const [key, value] of Object.entries(materials)) {
-        controls[key] = {
+        controls.materials[key] = {
             'Diffuse': {
                 value: denormalizeColor(value.diffuse),
                 onChange: v => value.diffuse = normalizeColor(v)

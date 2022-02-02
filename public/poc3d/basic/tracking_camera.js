@@ -33,7 +33,7 @@ class TrackingCamera extends Camera {
             alt_pressed = true;
             e.preventDefault();
         } else if (e.key == 'Control') {
-            shift_pressed = true;
+            ctrl_pressed = true;
             e.preventDefault();
         }
     }
@@ -43,7 +43,7 @@ class TrackingCamera extends Camera {
             alt_pressed = false;
             e.preventDefault();
         } else if (e.key == 'Control') {
-            shift_pressed = false;
+            ctrl_pressed = false;
             e.preventDefault();
         }
     }

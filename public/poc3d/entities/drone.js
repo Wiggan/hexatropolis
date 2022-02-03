@@ -22,7 +22,7 @@ class Drone extends Pickable {
     
     toJSON(key) {
         return {
-            type: 'Drone',
+            class: 'Drone',
             local_position: this.position
         }
     }

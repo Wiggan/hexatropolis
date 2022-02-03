@@ -13,7 +13,7 @@ class Lantern extends Drawable {
     
     toJSON(key) {
         return {
-            type: 'Lantern',
+            class: 'Lantern',
             local_position: this.local_position
         }
     }

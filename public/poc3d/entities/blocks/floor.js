@@ -14,7 +14,7 @@ class Floor extends Drawable {
     
     toJSON(key) {
         return {
-            type: 'Floor',
+            class: 'Floor',
             local_position: this.local_position
         }
     }

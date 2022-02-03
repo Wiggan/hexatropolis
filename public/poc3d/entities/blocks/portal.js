@@ -16,7 +16,7 @@ class Portal extends Pickable {
 
     toJSON(key) {
         return {
-            type: 'Portal',
+            class: 'Portal',
             local_position: this.local_position,
             destination_scene_name: this.destination_scene_name
         };
@@ -26,7 +26,7 @@ class Portal extends Pickable {
         //transition to destination
         var destination_scene = game.scenes[this.destination_scene_name];
         // find a portal in destination scene leading to this scene
-        var destination_portal = destination_scene.entities.find(entity => entity.type == 'Portal' && entity.destination_scene_name == this.scene.name);
+        var destination_portal = destination_scene.entities.find(entity => entity.class == 'Portal' && entity.destination_scene_name == this.scene.name);
         game.setScene(destination_scene, destination_portal.getWorldPosition());
     }
     

@@ -17,7 +17,7 @@ class Chest extends Pickable {
 
     toJSON(key) {
         return {
-            type: 'Chest',
+            class: 'Chest',
             local_position: this.local_position
         }
     }

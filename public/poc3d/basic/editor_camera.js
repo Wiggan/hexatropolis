@@ -26,6 +26,7 @@ function hexPositionToIndex(pos) {
 class EditorCamera extends Camera {
     constructor(local_position, scene) {
         super(null, local_position);
+        this.original_position = local_position;
         this.local_transform.pitch(-60);
         this.x = 10;
         this.y = 10;
@@ -85,6 +86,8 @@ class EditorCamera extends Camera {
             this.velocity[0] = -0.005;
         } else if (e.key == 'd' || e.key == 'D') {
             this.velocity[0] = 0.005;
+        } else if (e.key == ' ') {
+            this.local_transform.setPosition(this.original_position);
         }
     }
 
@@ -129,7 +132,7 @@ class EditorCamera extends Camera {
             if (alt_pressed) {
                 this.selectEntity(pickable_map.get(selected_id));
             } else {
-                var new_entity = new classes[this.blocks[this.block_index].toJSON().type](game.scene, this.pointer_entity.getWorldPosition());
+                var new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());
                 this.selectEntity(new_entity);
                 game.scene.entities.push(new_entity);
             }

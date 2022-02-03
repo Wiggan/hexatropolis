@@ -27,7 +27,7 @@ class Portal extends Pickable {
         var destination_scene = game.scenes[this.destination_scene_name];
         // find a portal in destination scene leading to this scene
         var destination_portal = destination_scene.entities.find(entity => entity.class == 'Portal' && entity.destination_scene_name == this.scene.name);
-        game.setScene(destination_scene, destination_portal.getWorldPosition());
+        game.changeScene(destination_scene, destination_portal.getWorldPosition());
     }
     
     update(elapsed, dirty) {

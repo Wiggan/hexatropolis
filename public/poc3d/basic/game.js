@@ -47,23 +47,51 @@ class Game {
         scene2.entities.push(portal2);
     }
 
-    setScene(scene, player_position) {
+    changeScene(scene, player_position) {
         this.paused = true;
         this.transition = new Transition(this, [
             {
                 time: 300,
                 to: { overlay: [0.0, 0.0, 0.0, 1.0], paused: false },
                 callback: () => {
-                    game.scene.remove(player);
-                    game.scene = scene;
-                    game.scene.entities.push(player);
-                    player.local_transform.setPosition(player_position);
-                    game.scene.update(0);
+                    this.setScene(scene, player_position);
                 }
             },
             {
                 time: 300,
                 to: { overlay: [0.0, 0.0, 0.0, 0.0], transition: null }
+            }
+        ]);
+    }
+
+    setScene(scene, player_position) {
+        game.scene.remove(player);
+        game.scene = scene;
+        game.scene.entities.push(player);
+        player.local_transform.setPosition(player_position);
+        game.scene.update(0);
+    }
+
+    showMenu() {
+        this.transition = new Transition(this, [
+            {
+                time: 300,
+                to: { overlay: [0.0, 0.0, 0.0, 0.8], paused: true, transition: null},
+                callback: () => {
+                    game.scene.update(0);
+                    document.getElementById("outer-container").style.visibility = "visible";
+                } 
+            }
+        ]);
+    }
+
+    hideMenu() {
+        document.getElementById("outer-container").style.visibility = "hidden";
+        this.paused = false;
+        this.transition = new Transition(this, [
+            {
+                time: 300,
+                to: { overlay: [0.0, 0.0, 0.0, 0.0], transition: null}
             }
         ]);
     }
@@ -75,10 +103,11 @@ class Game {
             //equipment: player.equipment,
             scene: game.scene.name
         };
-        document.cookie = 'slot1=' + JSON.stringify(persistent) +';expires=Tue, 19 Jan 2038 04:14:07 GMT';
+        document.cookie = 'slot1=' + JSON.stringify(persistent) +';expires=Tue, 19 Jan 2038 04:14:07 GMT; SameSite=Lax';
     }
 
     load() {
+        console.log(this);
         let splitCookie = document.cookie.split('=')[1];
         var persistent = JSON.parse(splitCookie);
         if (persistent.scene && persistent.position) {

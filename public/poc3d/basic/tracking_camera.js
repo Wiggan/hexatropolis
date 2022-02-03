@@ -35,6 +35,8 @@ class TrackingCamera extends Camera {
         } else if (e.key == 'Control') {
             ctrl_pressed = true;
             e.preventDefault();
+        } else if (e.key == 'Escape') {
+            toggleMenuVisible();
         }
     }
 

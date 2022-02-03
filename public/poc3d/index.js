@@ -41,6 +41,7 @@ async function init() {
 
     render();
     initControls();
+    initMenu();
 }
 
 function initControls() {

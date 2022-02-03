@@ -18,8 +18,8 @@ block head
     image-rendering: crisp-edges;
     }
     #outer-container {
-      visibility: hidden;
-      position : absolute;
+      display: none;
+      position: absolute;
       width: 100%;
       height: 100%;
     }
@@ -30,12 +30,12 @@ block head
       justify-content: center;
     }
 
-    #centered-content {
+    #menu-content {
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
-    #centered-content > button {    
+    #menu-content > button {    
       display: block;
       width: 200px;
       flex-shrink: 1;
@@ -45,6 +45,25 @@ block head
       margin: 0.5em;
       padding: 1em 2em;
     }
+
+
+    #settings-content {
+      width: 0px;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+    }
+    #settings-content > button {    
+      display: block;
+      width: 200px;
+      flex-shrink: 1;
+      background: none;
+      font: inherit;
+      line-height: 1;
+      margin: 0.5em;
+      padding: 1em 2em;
+    }
+
 
     .btn {
       box-sizing: border-box;
@@ -81,6 +100,11 @@ block head
     .third:hover {
       box-shadow: 0 0 10px 0 #3498db inset, 0 0 10px 4px #3498db;
     }
+    .slider-container {
+    }
+    .slider {
+      float: right;
+    }
 
 
 
@@ -91,10 +115,18 @@ block content
     canvas#text_canvas
   #outer-container
     #inner-container
-      #centered-content
+      #menu-content
         button.btn.third#resume Resume
         button.btn.third#save Save
         button.btn.third#load Load
         button.btn.third#settings Settings
+      #settings-content 
+        .slider-container
+          | SFX
+          input#sfx_slider.slider(type='range' min='0' max='100' value='50')
+        .slider-container
+          | Music
+          input#music_slider.slider(type='range' min='0' max='100' value='50')
+        button.btn.third#back Back
 
 

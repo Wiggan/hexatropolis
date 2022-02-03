@@ -3,6 +3,7 @@
 var player;
 var game;
 var classes = {};
+var settings = {};
 
 class Game {
     constructor() {
@@ -10,6 +11,7 @@ class Game {
         this.paused = false;
         this.overlay = [0.0, 0.0, 0.0, 0.0];
         this.transition;
+        this.loadSettings();
     }
     
     loadLevels(levels) {
@@ -79,14 +81,15 @@ class Game {
                 to: { overlay: [0.0, 0.0, 0.0, 0.8], paused: true, transition: null},
                 callback: () => {
                     game.scene.update(0);
-                    document.getElementById("outer-container").style.visibility = "visible";
+                    document.getElementById("outer-container").style.display = "block";
                 } 
             }
         ]);
     }
 
     hideMenu() {
-        document.getElementById("outer-container").style.visibility = "hidden";
+        document.getElementById("outer-container").style.display = "none";
+        //document.getElementById("outer-container").style.opacity = 0.0;
         this.paused = false;
         this.transition = new Transition(this, [
             {
@@ -97,24 +100,54 @@ class Game {
     }
 
     save() {
-        var persistent = {
+        var cookie = this.getCookie() || {};
+        cookie.persistent = {
             inventory: player.inventory,
             position: player.getWorldPosition(),
             //equipment: player.equipment,
             scene: game.scene.name
         };
-        document.cookie = 'slot1=' + JSON.stringify(persistent) +';expires=Tue, 19 Jan 2038 04:14:07 GMT; SameSite=Lax';
+        this.saveCookie(cookie);
     }
 
     load() {
-        console.log(this);
-        let splitCookie = document.cookie.split('=')[1];
-        var persistent = JSON.parse(splitCookie);
-        if (persistent.scene && persistent.position) {
-            this.setScene(this.scenes[persistent.scene], persistent.position);
+        var cookie = this.getCookie() || {};
+        if (cookie.persistent) {
+            if (cookie.persistent.scene && cookie.persistent.position) {
+                this.setScene(this.scenes[cookie.persistent.scene], cookie.persistent.position);
+            }
+            if (cookie.persistent.inventory) {
+                player.inventory = cookie.persistent.inventory;
+            }
         }
-        if (persistent.inventory) {
-            player.inventory = persistent.inventory;
+    }
+
+    saveSettings() {
+        var cookie = this.getCookie() || {};
+        cookie.settings = settings;
+        this.saveCookie(cookie);
+    }
+
+    loadSettings() {
+        var cookie = this.getCookie() || {};
+        if (cookie.settings) {
+            settings = cookie.settings;
+            document.getElementById("music_slider").value = settings.music_volume;
+            console.log(document.getElementById("sfx_slider").value);
+            document.getElementById("sfx_slider").value = settings.sfx_volume;
+            console.log(document.getElementById("sfx_slider").value);
+        }
+    }
+
+    saveCookie(cookie) {
+        document.cookie = 'cookie=' + JSON.stringify(cookie) +';expires=Tue, 19 Jan 2038 04:14:07 GMT; SameSite=Lax;';
+    }
+
+    getCookie() {
+        let splitCookie = document.cookie.split(/[=;\s]/);
+        var index = splitCookie.indexOf('cookie');
+        if (index > 0) {
+            return JSON.parse(splitCookie[index + 1]);
         }
     }
 }

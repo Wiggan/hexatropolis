@@ -126,6 +126,7 @@ class Game {
         var cookie = this.getCookie() || {};
         cookie.settings = settings;
         this.saveCookie(cookie);
+        setSfxVolume(settings.sfx_volume);
     }
 
     loadSettings() {
@@ -133,9 +134,8 @@ class Game {
         if (cookie.settings) {
             settings = cookie.settings;
             document.getElementById("music_slider").value = settings.music_volume;
-            console.log(document.getElementById("sfx_slider").value);
             document.getElementById("sfx_slider").value = settings.sfx_volume;
-            console.log(document.getElementById("sfx_slider").value);
+            setSfxVolume(settings.sfx_volume);
         }
     }
 

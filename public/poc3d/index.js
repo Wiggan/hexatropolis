@@ -33,7 +33,6 @@ async function init() {
     renderer = new Renderer();
     await initProgram();
     await load_all_models();
-    await wait_for_all_audio();
     game = new Game();
     await fetch('/models/levels.json').then(response => response.json()).then(levels => game.loadLevels(levels));
     game.placePlayer();

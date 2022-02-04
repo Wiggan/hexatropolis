@@ -30,7 +30,7 @@ class DoubleLauncher extends Drawable {
             new Rocket(pos2, point, 0.008, player);
             this.cooldown = this.stats.cooldown;
             this.lamp.material = materials.red_led;
-            this.sound = getRandomElement(sfx.launch).play();
+            this.sound = new SFX(this, [0,0,0], sfx.launch);
         }
     }
 

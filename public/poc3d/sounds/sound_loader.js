@@ -13,27 +13,55 @@ const createPromiseFromDomEvent = (eventTarget, eventName) =>
 
 var sfx = {
     launch: [
-        new Audio('/sfx/launch_01.ogg'),
-        new Audio('/sfx/launch_02.ogg'),
-        new Audio('/sfx/launch_03.ogg'),
-        new Audio('/sfx/launch_04.ogg'),
+        new Howl({ src: ['/sfx/launch_01.ogg']}),
+        new Howl({ src: ['/sfx/launch_02.ogg']}),
+        new Howl({ src: ['/sfx/launch_03.ogg']}),
+        new Howl({ src: ['/sfx/launch_04.ogg']}),
     ],
     rocket_exploding: [
-        new Audio('/sfx/rocket_exploding_01.ogg'),
-        new Audio('/sfx/rocket_exploding_02.ogg'),
-        new Audio('/sfx/rocket_exploding_03.ogg'),
-        new Audio('/sfx/rocket_exploding_04.ogg'),
+        new Howl({ src: ['/sfx/rocket_exploding_01.ogg']}),
+        new Howl({ src: ['/sfx/rocket_exploding_02.ogg']}),
+        new Howl({ src: ['/sfx/rocket_exploding_03.ogg']}),
+        new Howl({ src: ['/sfx/rocket_exploding_04.ogg']}),
     ],
     rocket_flying: [
-        new Audio('/sfx/rocket_flying_01.ogg'),
-        new Audio('/sfx/rocket_flying_02.ogg'),
-        new Audio('/sfx/rocket_flying_03.ogg'),
+        new Howl({ src: ['/sfx/rocket_flying_01.ogg']}),
+        new Howl({ src: ['/sfx/rocket_flying_02.ogg']}),
+        new Howl({ src: ['/sfx/rocket_flying_03.ogg']}),
     ]
 }
 
-async function wait_for_all_audio() {
+var music = {
+
+}
+
+class SFX extends Entity {
+    constructor(parent, local_position, sound) {
+        super(parent, local_position);
+        this.sound = getRandomElement(sound);
+        this.id = this.sound.play();
+        this.setPosition(parent.getWorldPosition());
+    }
+
+    setPosition(pos) {
+        this.sound.pos(pos[0], pos[1], pos[2], this.id);
+    }
+
+    update(elapsed, dirty) {
+        super.update(elapsed, dirty);
+        if (dirty) {
+            this.setPosition(this.getWorldPosition());
+        }
+    }
+
+    stop() {
+        this.sound.stop(this.id);
+    }
+}
+
+function setSfxVolume(volume) {
     for (const [key, value] of Object.entries(sfx)) {
-        value.forEach(async (audio) => {await createPromiseFromDomEvent(audio, 'canplaythrough');});
+        value.forEach(howl => howl.volume(volume));
     }
 }
 

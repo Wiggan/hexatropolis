@@ -32,7 +32,7 @@ var sfx = {
 }
 
 var music = {
-
+    start_screen: new Howl({ src: ['/music/start_screen.ogg']})
 }
 
 class SFX extends Entity {
@@ -61,6 +61,12 @@ class SFX extends Entity {
 
 function setSfxVolume(volume) {
     for (const [key, value] of Object.entries(sfx)) {
+        value.forEach(howl => howl.volume(volume));
+    }
+}
+
+function setMusicVolume(volume) {
+    for (const [key, value] of Object.entries(music)) {
         value.forEach(howl => howl.volume(volume));
     }
 }

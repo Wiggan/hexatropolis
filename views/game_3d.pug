@@ -35,20 +35,21 @@ block head
 
     #menu-content {
       display: flex;
+      width: 200px;
       flex-direction: column;
       justify-content: center;
     }
 
 
     #settings-content {
-      width: 0px;
+      width: 200px;
       display: none;
       flex-direction: column;
       justify-content: center;
     }
 
     #start-content {
-      width: 0px;
+      width: 200px;
       display: none;
       flex-direction: column;
       justify-content: center;
@@ -69,7 +70,6 @@ block head
       cursor: pointer;
       align-self: center;
       font-size: 1rem;
-      font-weight: 400;
       line-height: 1;
       margin: 20px;
       padding: 1.2em 2.8em;
@@ -98,6 +98,9 @@ block head
     .slider {
       float: right;
     }
+    .third:disabled {
+      opacity: 0.4;
+    }
 
 
 
@@ -113,7 +116,9 @@ block content
         button.btn.third#save Save
         button.btn.third#load Load
         button.btn.third#settings Settings
+        button.btn.third#exit Exit
       #start-content
+        h1 Hexatropolis
         button.btn.third#continue Continue
         button.btn.third#new_game New Game
       #settings-content 
@@ -123,6 +128,6 @@ block content
         .slider-container
           | Music
           input#music_slider.slider(type='range' min='0' max='1.0' value='1.0' step='0.01')
-        button.btn.third#back Back
+        button.btn.third#back Save
 
 

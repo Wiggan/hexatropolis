@@ -33,6 +33,7 @@ async function init() {
     renderer = new Renderer();
     await initProgram();
     await load_all_models();
+    initMenu();
     game = new Game();
     await fetch('/models/levels.json').then(response => response.json()).then(levels => game.loadLevels(levels));
     game.placePlayer();
@@ -40,7 +41,6 @@ async function init() {
 
     render();
     initControls();
-    initMenu();
 }
 
 function initControls() {

@@ -1,5 +1,13 @@
 'use strict'
 
+var saved_game_exists = false;
+
+function setSavedGameExists(exists) {
+    saved_game_exists = exists;
+    document.getElementById("continue").disabled = !exists;
+    document.getElementById("load").disabled = !exists;
+}
+
 function initMenu() {
     document.getElementById("resume").onclick = (e) => {
         game.hideMenu();
@@ -12,10 +20,16 @@ function initMenu() {
         mscConfirm('Load?', 'All unsaved progress will be lost.', () => { game.load(); game.hideMenu(); });
     };
     document.getElementById("settings").onclick = async (e) => {
-        await enterSettings();
+        enterSettings();
+    };
+    document.getElementById("exit").onclick = async (e) => {    
+        mscConfirm('Exit to main menu?', 'All unsaved progress will be lost.', () => { 
+            hideView("menu-content");
+            showView("start-content");
+        });
     };
     document.getElementById("back").onclick = async (e) => {
-        await leaveSettings();
+        leaveSettings();
     };
     document.getElementById("music_slider").oninput = () => {
         settings.music_volume = document.getElementById("music_slider").value;
@@ -23,21 +37,38 @@ function initMenu() {
     document.getElementById("sfx_slider").oninput = () => {
         settings.sfx_volume = document.getElementById("sfx_slider").value;
     };
+    
+    document.getElementById("continue").onclick = (e) => {
+        game.load();
+        game.hideMenu();
+    };
+    document.getElementById("new_game").onclick = (e) => {
+        mscConfirm('Start new game?', 'All unsaved progress will be lost.', () => { 
+            game.startNewGame();
+            game.hideMenu();
+        });
+    };
+    document.getElementById("continue").disabled = true;
+    document.getElementById("load").disabled = true;
 }
 
 function enterSettings() {
-    document.getElementById("menu-content").style.display = "none";
-    document.getElementById("menu-content").style.width = "0px";
-    document.getElementById("settings-content").style.width = "200px";
-    document.getElementById("settings-content").style.display = "flex";
+    hideView("menu-content");
+    showView("settings-content");
 }
 
 function leaveSettings() {
     game.saveSettings();
-    document.getElementById("settings-content").style.display = "none";
-    document.getElementById("settings-content").style.width = "0px";
-    document.getElementById("menu-content").style.width = "200px";
-    document.getElementById("menu-content").style.display = "flex";
+    hideView("settings-content");
+    showView("menu-content");
+}
+
+function showView(id) {
+    document.getElementById(id).style.display = "flex";
+}
+
+function hideView(id) {
+    document.getElementById(id).style.display = "none";
 }
 
 function toggleMenuVisible() {

@@ -147,7 +147,9 @@ class Game {
         let splitCookie = document.cookie.split(/[=;\s]/);
         var index = splitCookie.indexOf('cookie');
         if (index > 0) {
-            return JSON.parse(splitCookie[index + 1]);
+            var cookie = JSON.parse(splitCookie[index + 1]);
+            setSavedGameExists(cookie.persistent != undefined);
+            return cookie;
         }
     }
 }

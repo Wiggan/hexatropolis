@@ -73,10 +73,11 @@
     height: 38px;
     font-size: 14px;
     text-align: center;
-    letter-spacing: 0.02em;
     font-weight: 400;
-    font-style: normal;
-    font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
     border: none;
     border-bottom: 1px solid rgba(0,0,0,0.15);
     padding: 0 15px;

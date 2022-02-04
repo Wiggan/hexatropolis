@@ -9,8 +9,7 @@ function initMenu() {
         game.hideMenu();
     };
     document.getElementById("load").onclick = (e) => {
-        game.load();
-        game.hideMenu();
+        mscConfirm('Load?', 'All unsaved progress will be lost.', () => { game.load(); game.hideMenu(); });
     };
     document.getElementById("settings").onclick = async (e) => {
         await enterSettings();
@@ -26,27 +25,25 @@ function initMenu() {
     };
 }
 
-async function enterSettings() {
+function enterSettings() {
     document.getElementById("menu-content").style.display = "none";
     document.getElementById("menu-content").style.width = "0px";
-    await new Promise(r => setTimeout(r, 200));
     document.getElementById("settings-content").style.width = "200px";
     document.getElementById("settings-content").style.display = "flex";
 }
 
-async function leaveSettings() {
+function leaveSettings() {
     game.saveSettings();
     document.getElementById("settings-content").style.display = "none";
     document.getElementById("settings-content").style.width = "0px";
-    await new Promise(r => setTimeout(r, 200));
     document.getElementById("menu-content").style.width = "200px";
     document.getElementById("menu-content").style.display = "flex";
 }
 
-async function toggleMenuVisible() {
+function toggleMenuVisible() {
     if (document.getElementById("outer-container").style.display && document.getElementById("outer-container").style.display != "none") {
         if (document.getElementById("settings-content").style.display && document.getElementById("settings-content").style.display != "none") {
-            await leaveSettings()
+            leaveSettings()
         } else {
             game.hideMenu();
         }

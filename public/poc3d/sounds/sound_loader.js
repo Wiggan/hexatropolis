@@ -1,38 +1,34 @@
 'use strict'
 
-const createPromiseFromDomEvent = (eventTarget, eventName) =>
-    new Promise((resolve, reject) => {
-        const handleEvent = () => {
-            eventTarget.removeEventListener(eventName, handleEvent);
 
-            resolve();
-        };
+var sfx;
+var music;
 
-        eventTarget.addEventListener(eventName, handleEvent);
-});
+function load_all_sounds() {
+    sfx = {
+        launch: [
+            new Howl({ src: ['/sfx/launch_01.ogg']}),
+            new Howl({ src: ['/sfx/launch_02.ogg']}),
+            new Howl({ src: ['/sfx/launch_03.ogg']}),
+            new Howl({ src: ['/sfx/launch_04.ogg']}),
+        ],
+        rocket_exploding: [
+            new Howl({ src: ['/sfx/rocket_exploding_01.ogg']}),
+            new Howl({ src: ['/sfx/rocket_exploding_02.ogg']}),
+            new Howl({ src: ['/sfx/rocket_exploding_03.ogg']}),
+            new Howl({ src: ['/sfx/rocket_exploding_04.ogg']}),
+        ],
+        rocket_flying: [
+            new Howl({ src: ['/sfx/rocket_flying_01.ogg']}),
+            new Howl({ src: ['/sfx/rocket_flying_02.ogg']}),
+            new Howl({ src: ['/sfx/rocket_flying_03.ogg']}),
+        ]
+    }
 
-var sfx = {
-    launch: [
-        new Howl({ src: ['/sfx/launch_01.ogg']}),
-        new Howl({ src: ['/sfx/launch_02.ogg']}),
-        new Howl({ src: ['/sfx/launch_03.ogg']}),
-        new Howl({ src: ['/sfx/launch_04.ogg']}),
-    ],
-    rocket_exploding: [
-        new Howl({ src: ['/sfx/rocket_exploding_01.ogg']}),
-        new Howl({ src: ['/sfx/rocket_exploding_02.ogg']}),
-        new Howl({ src: ['/sfx/rocket_exploding_03.ogg']}),
-        new Howl({ src: ['/sfx/rocket_exploding_04.ogg']}),
-    ],
-    rocket_flying: [
-        new Howl({ src: ['/sfx/rocket_flying_01.ogg']}),
-        new Howl({ src: ['/sfx/rocket_flying_02.ogg']}),
-        new Howl({ src: ['/sfx/rocket_flying_03.ogg']}),
-    ]
-}
+    music = {
+        start_screen: new Howl({ src: ['/music/start_screen.ogg'], loop: true})
+    }
 
-var music = {
-    start_screen: new Howl({ src: ['/music/start_screen.ogg']})
 }
 
 class SFX extends Entity {
@@ -67,7 +63,7 @@ function setSfxVolume(volume) {
 
 function setMusicVolume(volume) {
     for (const [key, value] of Object.entries(music)) {
-        value.forEach(howl => howl.volume(volume));
+        value.volume(volume);
     }
 }
 

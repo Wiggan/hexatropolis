@@ -55,6 +55,26 @@ block head
       justify-content: center;
     }
 
+    #init-content {
+      height: 100vh;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      background-color: #3498db;
+    }
+    #init {
+      background-color: transparent;
+      color: white;
+      height: 100%;
+      width: 100%;
+      text-decoration: none;
+      text-align: center;
+      text-transform: uppercase;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 2rem;
+    }
+
 
     .btn {
       display: block;
@@ -129,5 +149,7 @@ block content
           | Music
           input#music_slider.slider(type='range' min='0' max='1.0' value='1.0' step='0.01')
         button.btn.third#back Save
+  #init-content 
+    button#init Click to start Hexatropolis
 
 

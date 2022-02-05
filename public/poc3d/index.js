@@ -29,10 +29,10 @@ function render() {
 
 // Entry point to our application
 async function init() {
-    
     renderer = new Renderer();
     await initProgram();
     await load_all_models();
+    load_all_sounds();
     initMenu();
     game = new Game();
     await fetch('/models/levels.json').then(response => response.json()).then(levels => game.loadLevels(levels));
@@ -75,4 +75,5 @@ function normalizeColor(color) {
 }
 
 // Call init once the webpage has loaded
-window.onload = init;
+//window.onload = init;
+window.onload = initMenu;

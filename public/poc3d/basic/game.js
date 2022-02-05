@@ -81,6 +81,8 @@ class Game {
                 to: { overlay: [0.0, 0.0, 0.0, 0.8], paused: true, transition: null},
                 callback: () => {
                     game.scene.update(0);
+                    showView("menu-content");
+                    showView("outer-container");
                     document.getElementById("outer-container").style.display = "block";
                 } 
             }

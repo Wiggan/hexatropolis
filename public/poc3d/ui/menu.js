@@ -9,6 +9,10 @@ function setSavedGameExists(exists) {
 }
 
 function initMenu() {
+    document.getElementById("init").onclick = (e) => {
+        init();
+        hideView("init-content");
+    };
     document.getElementById("resume").onclick = (e) => {
         game.hideMenu();
     };
@@ -41,11 +45,17 @@ function initMenu() {
     document.getElementById("continue").onclick = (e) => {
         game.load();
         game.hideMenu();
+        hideView("settings-content");
+        hideView("start-content");
+        hideView("menu-content");
     };
     document.getElementById("new_game").onclick = (e) => {
         mscConfirm('Start new game?', 'All unsaved progress will be lost.', () => { 
             game.startNewGame();
             game.hideMenu();
+            hideView("settings-content");
+            hideView("start-content");
+            hideView("menu-content");
         });
     };
     document.getElementById("continue").disabled = true;
@@ -54,12 +64,14 @@ function initMenu() {
 
 function enterSettings() {
     hideView("menu-content");
+    hideView("start-content");
     showView("settings-content");
 }
 
 function leaveSettings() {
     game.saveSettings();
     hideView("settings-content");
+    hideView("start-content");
     showView("menu-content");
 }
 

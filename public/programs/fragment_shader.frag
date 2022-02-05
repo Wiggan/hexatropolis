@@ -61,7 +61,7 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
 
 void main() {
-    idColor = uIdColor;//vec4(1.0, 0.0, 1.0, 1.0);
+    idColor = uIdColor;
     if (uDebug){
         fragColor = vec4(1.0, 0.0, 1.0, 1.0);
         brightColor = fragColor;
@@ -80,6 +80,9 @@ void main() {
         
         fragColor = vec4(result, 1.0);
         brightColor = vec4(0.0, 0.0, 0.0, 1.0);
+        //float depth = vFragPos.y*-0.1 + 0.2;
+        //float alpha = min(max(depth, 0.0), 1.0);
+        //fragColor = vec4(mix(result, vec3(0.1, 0.2, 0.5), alpha), 1.0);
     }
     if (uSelected) {
         fragColor += vec4(0.2, 0.2, 0.4, 1.0);

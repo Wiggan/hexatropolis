@@ -49,14 +49,14 @@ async function loadProgram(vert, frag) {
     gl.useProgram(program);
 
     var na = gl.getProgramParameter(program, gl.ACTIVE_ATTRIBUTES);
-    console.log(na, 'attributes');
+    //console.log(na, 'attributes');
     for (var i = 0; i < na; ++i) {
         var a = gl.getActiveAttrib(program, i);
         console.log(i, a.size, a.type, a.name);
         program[a.name] = gl.getAttribLocation(program, a.name);
     }
     var nu = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-    console.log(nu, 'uniforms');
+    //console.log(nu, 'uniforms');
     for (var i = 0; i < nu; ++i) {
         var u = gl.getActiveUniform(program, i);
         program[u.name] = gl.getUniformLocation(program, u.name);

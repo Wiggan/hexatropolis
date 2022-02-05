@@ -68,11 +68,17 @@ function initMenu() {
         hideAllViews();
     };
     document.getElementById("new_game").onclick = (e) => {
-        mscConfirm('Start new game?', 'All unsaved progress will be lost.', () => { 
+        if (saved_game_exists) {
+            mscConfirm('Start new game?', 'All unsaved progress will be lost.', () => { 
+                game.startNewGame();
+                game.hideMenu();
+                hideAllViews();
+            });
+        } else {
             game.startNewGame();
             game.hideMenu();
             hideAllViews();
-        });
+        }
     };
     document.getElementById("continue").disabled = true;
     document.getElementById("load").disabled = true;

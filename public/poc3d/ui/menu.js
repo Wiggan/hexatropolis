@@ -2,16 +2,37 @@
 
 var saved_game_exists = false;
 
+const views = {
+    init: "init-content",
+    start: "start-content",
+    menu: "menu-content",
+    settings: "settings-content"
+}
+
+function hideAllViews() {
+    for (const [key, value] of Object.entries(views)) {
+        hideView(value);
+    }
+}
+
 function setSavedGameExists(exists) {
     saved_game_exists = exists;
     document.getElementById("continue").disabled = !exists;
     document.getElementById("load").disabled = !exists;
 }
 
+function showStartScreen () {
+    document.getElementById("outer-container").style.display = "block";
+    game.getCookie(); // To get disabled buttons right... blah
+    playMusic(music.start_screen);
+    hideAllViews();
+    showView(views.start);
+}
+
 function initMenu() {
-    document.getElementById("init").onclick = (e) => {
-        init();
-        hideView("init-content");
+    document.getElementById("init").onclick = async (e) => {
+        await init();
+        showStartScreen();
     };
     document.getElementById("resume").onclick = (e) => {
         game.hideMenu();
@@ -28,8 +49,7 @@ function initMenu() {
     };
     document.getElementById("exit").onclick = async (e) => {    
         mscConfirm('Exit to main menu?', 'All unsaved progress will be lost.', () => { 
-            hideView("menu-content");
-            showView("start-content");
+            showStartScreen();
         });
     };
     document.getElementById("back").onclick = async (e) => {
@@ -45,17 +65,13 @@ function initMenu() {
     document.getElementById("continue").onclick = (e) => {
         game.load();
         game.hideMenu();
-        hideView("settings-content");
-        hideView("start-content");
-        hideView("menu-content");
+        hideAllViews();
     };
     document.getElementById("new_game").onclick = (e) => {
         mscConfirm('Start new game?', 'All unsaved progress will be lost.', () => { 
             game.startNewGame();
             game.hideMenu();
-            hideView("settings-content");
-            hideView("start-content");
-            hideView("menu-content");
+            hideAllViews();
         });
     };
     document.getElementById("continue").disabled = true;
@@ -63,16 +79,14 @@ function initMenu() {
 }
 
 function enterSettings() {
-    hideView("menu-content");
-    hideView("start-content");
-    showView("settings-content");
+    hideAllViews();
+    showView(views.settings);
 }
 
 function leaveSettings() {
     game.saveSettings();
-    hideView("settings-content");
-    hideView("start-content");
-    showView("menu-content");
+    hideAllViews();
+    showView(views.menu);
 }
 
 function showView(id) {
@@ -94,3 +108,6 @@ function toggleMenuVisible() {
         game.showMenu();
     }
 }
+
+
+window.onload = initMenu;

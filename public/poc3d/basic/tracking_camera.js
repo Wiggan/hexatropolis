@@ -7,6 +7,10 @@ class TrackingCamera extends Camera {
         this.x = 10;
         this.y = 10;
         this.pointing_at = vec3.create();
+        this.update(0, true);
+        var fwd = forward(this.getWorldTransform());
+        var upp = up(this.getWorldTransform());
+        Howler.orientation(fwd[0], fwd[1], fwd[2], upp[0], upp[1], upp[2]);
     }
 
     activate() {
@@ -75,6 +79,8 @@ class TrackingCamera extends Camera {
             dirty = true;
         }
         super.update(elapsed, dirty);
+        var pos = this.getWorldPosition();
+        Howler.pos(pos[0], pos[1], pos[2]);
     }
 
     draw(renderer) {

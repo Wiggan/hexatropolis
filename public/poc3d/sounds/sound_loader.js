@@ -26,7 +26,8 @@ function load_all_sounds() {
     }
 
     music = {
-        start_screen: new Howl({ src: ['/music/start_screen.ogg'], loop: true})
+        start_screen: new Howl({ src: ['/music/start_screen.ogg'], loop: true}),
+        in_game: new Howl({ src: ['/music/in_game.ogg'], loop: true}),
     }
 
 }
@@ -53,6 +54,13 @@ class SFX extends Entity {
     stop() {
         this.sound.stop(this.id);
     }
+}
+
+function playMusic(song) {
+    for (const [key, value] of Object.entries(music)) {
+        value.stop();
+    }
+    song.play();
 }
 
 function setSfxVolume(volume) {

@@ -14,6 +14,7 @@ function render() {
         now = Date.now();
         var elapsed = now - then;
         frame_intervals.push(elapsed);
+        var throttled_elapsed = Math.max(30, elapsed);
         game.update(elapsed);
         then = now;
         game.scene.draw(renderer);
@@ -33,7 +34,7 @@ async function init() {
     await initProgram();
     await load_all_models();
     load_all_sounds();
-    initMenu();
+    //initMenu();
     game = new Game();
     await fetch('/models/levels.json').then(response => response.json()).then(levels => game.loadLevels(levels));
     game.placePlayer();
@@ -76,4 +77,3 @@ function normalizeColor(color) {
 
 // Call init once the webpage has loaded
 //window.onload = init;
-window.onload = initMenu;

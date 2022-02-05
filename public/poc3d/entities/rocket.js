@@ -22,7 +22,7 @@ class Rocket extends Drawable {
         this.collider.radius = 0.1;
         game.scene.entities.push(this);
         this.dmg = 20;
-        this.sound = new SFX(this, [0,0,0], sfx.launch);
+        this.sound = new SFX(this, [0,0,0], sfx.rocket_flying);
     }
 
     update(elapsed, dirty) {

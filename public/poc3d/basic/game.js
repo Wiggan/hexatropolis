@@ -41,12 +41,9 @@ class Game {
         }
     }
 
-    connectScenes(scene1, scene2, pos1, pos2) {
-        var portal1 = new Portal(scene1, getHexPosition(3, 0, 2));
-        var portal2 = new Portal(scene2, getHexPosition(5, 0, 6));
-        portal1.connect(portal2);
-        scene1.entities.push(portal1);
-        scene2.entities.push(portal2);
+    startNewGame() {
+        playMusic(music.in_game);
+        // Todo
     }
 
     changeScene(scene, player_position) {
@@ -75,14 +72,15 @@ class Game {
     }
 
     showMenu() {
+        this.getCookie(); // To get disabled buttons right... blah
         this.transition = new Transition(this, [
             {
                 time: 300,
                 to: { overlay: [0.0, 0.0, 0.0, 0.8], paused: true, transition: null},
                 callback: () => {
                     game.scene.update(0);
-                    showView("menu-content");
-                    showView("outer-container");
+                    //showView("outer-container");
+                    showView(views.menu);
                     document.getElementById("outer-container").style.display = "block";
                 } 
             }
@@ -113,6 +111,7 @@ class Game {
     }
 
     load() {
+        playMusic(music.in_game);
         var cookie = this.getCookie() || {};
         if (cookie.persistent) {
             if (cookie.persistent.scene && cookie.persistent.position) {

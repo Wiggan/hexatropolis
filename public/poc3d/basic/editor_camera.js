@@ -21,13 +21,11 @@ function hexPositionToIndex(pos) {
     return [ix, iy, iz];
 }
 
-
-
 class EditorCamera extends Camera {
     constructor(local_position, scene) {
         super(null, local_position);
         this.original_position = local_position;
-        this.local_transform.pitch(-60);
+        this.local_transform.pitch(-90);
         this.x = 10;
         this.y = 10;
         this.velocity = [0, 0, 0];
@@ -40,10 +38,16 @@ class EditorCamera extends Camera {
                        new FloorButton(null, [0,0,0]),
                        new SinkableWall(null, [0,0,0]),
                     ];
-
+        this.dynamics = [
+            new Drone(null, [0, 0, 0]),
+            new Chest(null, [0, 0, 0]),
+        ];
         this.blocks.forEach(block => block.material = materials.blue);
         this.block_index = 0;
+        this.dynamics.forEach(dynamic => dynamic.material = materials.blue);
+        this.dynamic_index = 0;
         this.pointer_entity.addChild(this.blocks[this.block_index]);
+        this.selected_tool = 1;
     }
 
     toJSON(key) { 
@@ -68,7 +72,7 @@ class EditorCamera extends Camera {
     }
 
     updateScroll(e) {
-        active_camera.wheel += Number(e.wheelDeltaY);
+        active_camera.local_transform.translate([0, e.wheelDeltaY/100, 0]);
         return false;
     }
 
@@ -91,7 +95,47 @@ class EditorCamera extends Camera {
             this.velocity[0] = 0.005;
         } else if (e.key == ' ') {
             this.local_transform.setPosition(this.original_position);
+        } else if (e.key == '1') {
+               this.selected_tool = 1;
+               this.pointer_entity.removeAllChildren();
+               this.pointer_entity.addChild(this.blocks[this.block_index]);
+        } else if (e.key == '2') {
+            this.selected_tool = 2;
+            this.pointer_entity.removeAllChildren();
+            this.pointer_entity.addChild(this.dynamics[this.dynamic_index]);
+        } else if (e.key == '3') {
+            this.selected_tool = 3;
+        } else if (e.key == 'ArrowUp') {
+            if (this.selected_tool == 1) {
+                this.changeBlock(1);
+            } else if (this.selected_tool == 2) {
+                this.changeDynamic(1);
+            }
+        } else if (e.key == 'ArrowDown') {
+            if (this.selected_tool == 1) {
+                this.changeBlock(-1);
+            } else if (this.selected_tool == 2) {
+                this.changeDynamic(-1);
+            }
         }
+    }
+
+
+    
+    changeDynamic(delta) {
+        var dynamic_index = (this.dynamic_index + delta) % this.dynamics.length;
+        if (dynamic_index < 0) dynamic_index += this.dynamics.length;
+        this.dynamic_index = dynamic_index;
+        this.pointer_entity.removeAllChildren();
+        this.pointer_entity.addChild(this.dynamics[this.dynamic_index]);
+    }
+
+    changeBlock(delta) {
+        var block_index = (this.block_index + delta) % this.blocks.length;
+        if (block_index < 0) block_index += this.blocks.length;
+        this.block_index = block_index;
+        this.pointer_entity.removeAllChildren();
+        this.pointer_entity.addChild(this.blocks[this.block_index]);
     }
 
     onKeyUp(e) {
@@ -139,7 +183,12 @@ class EditorCamera extends Camera {
             if (alt_pressed) {
                 this.selectEntity(pickable_map.get(selected_id));
             } else {
-                var new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
+                var new_entity;
+                if (this.selected_tool == 1) {
+                    new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
+                } else if (this.selected_tool == 2) {
+                    new_entity = new classes[this.dynamics[this.dynamic_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
+                }
                 if (!new_entity.id) {
                     new_entity.makePickable();
                 }
@@ -160,14 +209,6 @@ class EditorCamera extends Camera {
     }
 
     update(elapsed, dirty) {
-        var block_index = Math.floor(this.wheel / 120) % this.blocks.length;
-        if (block_index < 0) block_index += this.blocks.length;
-        if (block_index != this.block_index) {
-            this.block_index = block_index;
-            this.pointer_entity.removeAllChildren();
-            this.pointer_entity.addChild(this.blocks[this.block_index]);
-        }
-
         var p1 = getScreenSpaceToWorldLocation([this.x, this.y, 0]);
         var p2 = getScreenSpaceToWorldLocation([this.x, this.y, 100]);
         var intersection = getHorizontalIntersection(p1, p2, 0);
@@ -182,7 +223,11 @@ class EditorCamera extends Camera {
     draw(renderer) {
         if (!alt_pressed) {
             this.pointer_entity.draw(renderer);
-            renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.blocks[this.block_index].toJSON().class});
+            if (this.selected_tool == 1) {
+                renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.blocks[this.block_index].toJSON().class});
+            } else if (this.selected_tool == 2) {
+                renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.dynamics[this.dynamic_index].toJSON().class});
+            }
         }
         if (debug) {
             renderer.add_drawable(models.sphere, materials.light, this.pointer_entity.getWorldTransform());

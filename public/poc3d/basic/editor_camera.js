@@ -36,7 +36,10 @@ class EditorCamera extends Camera {
         this.blocks = [new Wall(null, [0,0,0]),
                        new Floor(null, [0,0,0]),
                        new Lantern(scene, [0,0,0]),
-                       new Portal(scene, [0,0,0])];
+                       new Portal(scene, [0,0,0]),
+                       new FloorButton(null, [0,0,0]),
+                       new SinkableWall(null, [0,0,0]),
+                    ];
 
         this.blocks.forEach(block => block.material = materials.blue);
         this.block_index = 0;
@@ -116,12 +119,16 @@ class EditorCamera extends Camera {
             gui.removeFolder(selected_gui);
         }
         selected_gui = gui.addFolder('Selected');
-        var persistent = selected_entity.toJSON();
-        Object.assign(entity, persistent);
-        for (const [key, value] of Object.entries(persistent)) {
-            if (key == 'destination_scene_name') {
-                //selected_gui.add(selected_entity, key, Object.keys(game.scenes));
-                selected_gui.add(persistent, key, Object.keys(game.scenes)).onChange((v) => selected_entity[key] = v);
+        if (selected_entity) {
+            var persistent = selected_entity.toJSON();
+            Object.assign(entity, persistent);
+            for (const [key, value] of Object.entries(persistent)) {
+                if (key == 'destination_scene_name') {
+                    //selected_gui.add(selected_entity, key, Object.keys(game.scenes));
+                    selected_gui.add(persistent, key, Object.keys(game.scenes)).onChange((v) => selected_entity[key] = v);
+                } else if (key == 'triggee') {
+                    selected_gui.add(persistent, key, game.scene.entities.filter(entity => entity.trigger)).onChange((v) => selected_entity[key] = v.uuid);
+                }
             }
         }
         selected_gui.open();
@@ -132,7 +139,10 @@ class EditorCamera extends Camera {
             if (alt_pressed) {
                 this.selectEntity(pickable_map.get(selected_id));
             } else {
-                var new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());
+                var new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
+                if (!new_entity.id) {
+                    new_entity.makePickable();
+                }
                 this.selectEntity(new_entity);
                 game.scene.entities.push(new_entity);
             }
@@ -172,6 +182,7 @@ class EditorCamera extends Camera {
     draw(renderer) {
         if (!alt_pressed) {
             this.pointer_entity.draw(renderer);
+            renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.blocks[this.block_index].toJSON().class});
         }
         if (debug) {
             renderer.add_drawable(models.sphere, materials.light, this.pointer_entity.getWorldTransform());

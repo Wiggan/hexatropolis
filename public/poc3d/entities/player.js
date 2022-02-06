@@ -33,7 +33,7 @@ class Player extends Entity {
             position: [local_position[0], local_position[1], local_position[2] - 1]
         };
         
-        this.collider.type = CollisionTypes.Actor;
+        this.collider.type = CollisionTypes.Player;
         this.collider.radius = 0.5;
 
         this.sockets = {

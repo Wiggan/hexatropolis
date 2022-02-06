@@ -17,6 +17,7 @@ class Portal extends Pickable {
     toJSON(key) {
         return {
             class: 'Portal',
+            uuid: this.uuid,
             local_position: this.local_position,
             destination_scene_name: this.destination_scene_name
         };

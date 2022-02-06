@@ -14,6 +14,7 @@ class Lantern extends Drawable {
     toJSON(key) {
         return {
             class: 'Lantern',
+            uuid: this.uuid,
             local_position: this.local_position
         }
     }

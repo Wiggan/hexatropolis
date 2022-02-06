@@ -4,8 +4,11 @@ const CollisionTypes = {
     NoCollision: 'NoCollision',
     Level: 'Level',
     Actor: 'Actor',
-    Projectile: 'Projectile'
+    Projectile: 'Projectile',
+    Trigger: 'Trigger',
+    Player: 'Player'
 };
+
 
 class Entity {
     constructor(parent, local_position) {
@@ -26,6 +29,7 @@ class Entity {
             type: CollisionTypes.NoCollision
         };
         this.independent = false;
+        this.uuid = uuid();
     }
 
     addChild(child) {
@@ -108,19 +112,24 @@ class Entity {
         this.id = getNextPickableId();
         this.type = PickableType.Default;
         pickable_map.set(this.id, this);
+        this.children.forEach(child => child.id = this.id);
     }
 
     onCollision(other) {
-        // Revert movement that caused collision
-        vec3.scale(this.last_movement, this.last_movement, -1);
-        this.local_transform.translate(this.last_movement);
-
-        var collision_normal = vec3.create();
-        vec3.sub(collision_normal, this.getWorldPosition(), other.getWorldPosition());
-        vec3.normalize(collision_normal, collision_normal);
-        vec3.scale(collision_normal, collision_normal, 0.05);
-        collision_normal[1] = 0;
-        this.local_transform.translate(collision_normal);
+        if (other.collider.type == CollisionTypes.Trigger) {
+            other.onCollision(this);
+        } else {
+            // Revert movement that caused collision
+            vec3.scale(this.last_movement, this.last_movement, -1);
+            this.local_transform.translate(this.last_movement);
+    
+            var collision_normal = vec3.create();
+            vec3.sub(collision_normal, this.getWorldPosition(), other.getWorldPosition());
+            vec3.normalize(collision_normal, collision_normal);
+            vec3.scale(collision_normal, collision_normal, 0.05);
+            collision_normal[1] = 0;
+            this.local_transform.translate(collision_normal);
+        }
     }
 
     getLocalTransform() {
@@ -178,14 +187,18 @@ class Transition {
         this.elapsed = 0;
         this.original_state = {};
         for (const [key, value] of Object.entries(this.keypoints[this.keypoint_index].to)) {
-            this.original_state[key] = this.entity[key];
+            if (typeof this.entity[key] == 'object' && Array.isArray(this.entity[key])) {
+                this.original_state[key] = [...this.entity[key]];
+            } else {
+                this.original_state[key] = this.entity[key];
+            }
         }
     }
 
     update(elapsed) {
         if (!this.done) {
             var keypoint = this.keypoints[this.keypoint_index];
-            const t = 0.5 + 0.5 * (Math.cos(this.elapsed / keypoint.time * Math.PI - Math.PI));
+            const t = 0.5 - 0.5 * (Math.cos(this.elapsed / keypoint.time * Math.PI));
             for (const [key, value] of Object.entries(keypoint.to)) {
                 switch (typeof (value)) {
                     case 'object':

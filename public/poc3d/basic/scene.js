@@ -21,10 +21,12 @@ class Scene extends Entity {
         super(null, [0, 0, 0]);
         this.name = name;
         this.lights = [];
+        this.entity_uuid_map = new Map();
         this.entities = entities.map((entity) => {
             if (entity.class) {
                 var e = new classes[entity.class](this, entity.local_position);
                 e = Object.assign(e, entity);
+                this.entity_uuid_map.set(e.uuid, e);
                 return e;
             }
         })

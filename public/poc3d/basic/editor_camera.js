@@ -1,6 +1,6 @@
 'use strict'
 
-var selected_entity, selected_gui;
+var selected_entities = [], selected_gui;
 
 function snapToHexPosition(pos) {
     return indexToHexPosition(hexPositionToIndex(pos));
@@ -46,8 +46,7 @@ class EditorCamera extends Camera {
         this.block_index = 0;
         this.dynamics.forEach(dynamic => dynamic.material = materials.blue);
         this.dynamic_index = 0;
-        this.pointer_entity.addChild(this.blocks[this.block_index]);
-        this.selected_tool = 1;
+        this.selected_tool = 3;
     }
 
     toJSON(key) { 
@@ -80,7 +79,6 @@ class EditorCamera extends Camera {
         super.onKeyDown(e);
         if (e.key == 'Alt') {
             alt_pressed = true;
-            picking = true;
             e.preventDefault();
         } else if (e.key == 'Control') {
             ctrl_pressed = true;
@@ -90,7 +88,11 @@ class EditorCamera extends Camera {
         } else if (e.key == 's' || e.key == 'S') {
             this.velocity[2] = 0.005;
         } else if (e.key == 'a' || e.key == 'A') {
-            this.velocity[0] = -0.005;
+            if (e.shiftKey) {
+                selected_entities.length = 0;
+            } else {
+                this.velocity[0] = -0.005;
+            }
         } else if (e.key == 'd' || e.key == 'D') {
             this.velocity[0] = 0.005;
         } else if (e.key == ' ') {
@@ -99,12 +101,16 @@ class EditorCamera extends Camera {
                this.selected_tool = 1;
                this.pointer_entity.removeAllChildren();
                this.pointer_entity.addChild(this.blocks[this.block_index]);
+               picking = false;
         } else if (e.key == '2') {
             this.selected_tool = 2;
             this.pointer_entity.removeAllChildren();
             this.pointer_entity.addChild(this.dynamics[this.dynamic_index]);
+            picking = false;
         } else if (e.key == '3') {
             this.selected_tool = 3;
+            this.pointer_entity.removeAllChildren();
+            picking = true;
         } else if (e.key == 'ArrowUp') {
             if (this.selected_tool == 1) {
                 this.changeBlock(1);
@@ -141,7 +147,6 @@ class EditorCamera extends Camera {
     onKeyUp(e) {
         if (e.key == 'Alt') {
             alt_pressed = false;
-            picking = false;
             e.preventDefault();
         } else if (e.key == 'Control') {
             ctrl_pressed = false;
@@ -157,45 +162,69 @@ class EditorCamera extends Camera {
         }
     }
 
-    selectEntity(entity) {
-        selected_entity = entity;
+    updateSelectedGui() {
         if (selected_gui) {
             gui.removeFolder(selected_gui);
         }
         selected_gui = gui.addFolder('Selected');
-        if (selected_entity) {
-            var persistent = selected_entity.toJSON();
-            Object.assign(entity, persistent);
+        if (selected_entities.length == 1) {
+            var persistent = selected_entities[0].toJSON();
+            Object.assign(selected_entities[0], persistent);
             for (const [key, value] of Object.entries(persistent)) {
-                if (key == 'destination_scene_name') {
-                    //selected_gui.add(selected_entity, key, Object.keys(game.scenes));
-                    selected_gui.add(persistent, key, Object.keys(game.scenes)).onChange((v) => selected_entity[key] = v);
+                if (key == 'destination_scene_name' || key == 'uuid') {
+                    selected_gui.add(persistent, key, Object.keys(game.scenes)).onChange((v) => selected_entities[0][key] = v);
                 } else if (key == 'triggee') {
-                    selected_gui.add(persistent, key, game.scene.entities.filter(entity => entity.trigger)).onChange((v) => selected_entity[key] = v.uuid);
+                    selected_gui.add(persistent, key, game.scene.entities.filter(entity => entity.trigger)).onChange((v) => selected_entities[0][key] = v.uuid);
                 }
             }
         }
         selected_gui.open();
     }
 
+    selectEntity(entity) {
+        selected_entities.push(entity);
+        this.updateSelectedGui();
+    }
+    
+    deselectEntity(entity) {
+        selected_entities.splice(selected_entities.indexOf(entity), 1);
+        this.updateSelectedGui();
+    }
+
     onmousedown(e) {
-        if (e.button == 0) {
-            if (alt_pressed) {
-                this.selectEntity(pickable_map.get(selected_id));
-            } else {
-                var new_entity;
-                if (this.selected_tool == 1) {
-                    new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
-                } else if (this.selected_tool == 2) {
-                    new_entity = new classes[this.dynamics[this.dynamic_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
+        var clicked_entity = pickable_map.get(selected_id);
+        if (clicked_entity) {
+            if (e.button == 0) {
+                if (this.selected_tool == 3) {
+                    if (e.shiftKey) {
+                        if (selected_entities.length == 1) {
+                            if (selected_entities[0].collider.type == CollisionTypes.Trigger && clicked_entity.trigger) {
+                                selected_entities[0].triggee = clicked_entity.uuid;
+                            }
+                        }
+                    } else {
+                        this.selectEntity(clicked_entity);
+                    }
+                } else {
+                    var new_entity;
+                    if (this.selected_tool == 1) {
+                        new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
+                    } else if (this.selected_tool == 2) {
+                        new_entity = new classes[this.dynamics[this.dynamic_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
+                    }
+                    if (!new_entity.id) {
+                        new_entity.makePickable();
+                    }
+                    //this.selectEntity(new_entity);
+                    game.scene.entities.push(new_entity);
                 }
-                if (!new_entity.id) {
-                    new_entity.makePickable();
+            } else if (e.button == 2) {
+                if (this.selected_tool < 3) {
+                    game.scene.remove(clicked_entity);
+                } else if (this.selected_tool == 3) {
+                    this.deselectEntity(clicked_entity);
                 }
-                this.selectEntity(new_entity);
-                game.scene.entities.push(new_entity);
             }
-        } else if (e.button == 2) {
 
         }
         e.preventDefault();
@@ -220,14 +249,28 @@ class EditorCamera extends Camera {
         super.update(elapsed, dirty);
     }
 
+    drawSelected(renderer, entity) {
+        if (entity.model) {
+            var transform = mat4.clone(entity.getWorldTransform());
+            mat4.scale(transform, transform, [1.1, 1.0, 1.1]);
+            renderer.add_drawable(entity.model, materials.light, transform);
+        }
+        entity.children.forEach(child => this.drawSelected(renderer, child));
+    }
+
     draw(renderer) {
+        this.pointer_entity.draw(renderer);
         if (!alt_pressed) {
-            this.pointer_entity.draw(renderer);
             if (this.selected_tool == 1) {
                 renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.blocks[this.block_index].toJSON().class});
             } else if (this.selected_tool == 2) {
                 renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.dynamics[this.dynamic_index].toJSON().class});
             }
+        }
+        if (this.selected_tool == 3) {
+            selected_entities.forEach(entity => {
+                this.drawSelected(renderer, entity);
+            });
         }
         if (debug) {
             renderer.add_drawable(models.sphere, materials.light, this.pointer_entity.getWorldTransform());

@@ -51,7 +51,7 @@ async function init() {
 
     
     game.scene.editor_camera.activate();
-    picking = false;
+    picking = true;
     render();
     initControls();
 }

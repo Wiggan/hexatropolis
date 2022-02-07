@@ -170,14 +170,18 @@ template {
   display: none;
 }
 
-*, body {
+body {
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   font-style: normal;
   font-variant: normal;
   line-height: 1.5em;
-  color: white;
+  color: black;
   padding: 0;
   margin: 0;
+}
+
+select {
+  color: black;
 }
 
 strong {

@@ -34,7 +34,7 @@ class FloorButton extends Trigger {
             class: 'FloorButton',
             uuid: this.uuid,
             local_position: this.local_position,
-            triggee: (this.triggee && this.triggee.uuid) ? this.triggee.uuid : ''
+            triggee: this.triggee ? this.triggee : ''
         }
     }
 }

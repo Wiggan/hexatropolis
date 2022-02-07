@@ -171,10 +171,16 @@ class EditorCamera extends Camera {
             var persistent = selected_entities[0].toJSON();
             Object.assign(selected_entities[0], persistent);
             for (const [key, value] of Object.entries(persistent)) {
-                if (key == 'destination_scene_name' || key == 'uuid') {
+                if (key == 'destination_scene_name') {
                     selected_gui.add(persistent, key, Object.keys(game.scenes)).onChange((v) => selected_entities[0][key] = v);
+                } else if (key == 'uuid') {
+                    selected_gui.add(persistent, key).onChange((v) => selected_entities[0][key] = v);
                 } else if (key == 'triggee') {
-                    selected_gui.add(persistent, key, game.scene.entities.filter(entity => entity.trigger)).onChange((v) => selected_entities[0][key] = v.uuid);
+                    selected_gui.add(persistent, key/*, game.scene.entities.filter(entity => entity.trigger)*/).listen().onChange((v) => {
+                        selected_entities[0][key] = v;
+                    });
+                } else if (key == 'class') {
+                    selected_gui.add(persistent, key).onChange((v) => selected_entities[0][key] = v);
                 }
             }
         }
@@ -182,8 +188,10 @@ class EditorCamera extends Camera {
     }
 
     selectEntity(entity) {
-        selected_entities.push(entity);
-        this.updateSelectedGui();
+        if (!selected_entities.includes(entity)) {
+            selected_entities.push(entity);
+            this.updateSelectedGui();
+        }
     }
     
     deselectEntity(entity) {
@@ -196,10 +204,12 @@ class EditorCamera extends Camera {
         if (clicked_entity) {
             if (e.button == 0) {
                 if (this.selected_tool == 3) {
-                    if (e.shiftKey) {
+                    if (e.shiftKey && e.ctrlKey) {
                         if (selected_entities.length == 1) {
                             if (selected_entities[0].collider.type == CollisionTypes.Trigger && clicked_entity.trigger) {
+                                console.log("Connected trigger and triggee");
                                 selected_entities[0].triggee = clicked_entity.uuid;
+                                //this.selectEntity(clicked_entity);
                             }
                         }
                     } else {

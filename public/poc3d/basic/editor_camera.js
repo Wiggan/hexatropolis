@@ -188,7 +188,7 @@ class EditorCamera extends Camera {
     }
 
     selectEntity(entity) {
-        if (!selected_entities.includes(entity)) {
+        if (!selected_entities.includes(entity) && entity != this) {
             selected_entities.push(entity);
             this.updateSelectedGui();
         }
@@ -204,6 +204,7 @@ class EditorCamera extends Camera {
         if (clicked_entity) {
             if (e.button == 0) {
                 if (this.selected_tool == 3) {
+                    
                     if (e.shiftKey && e.ctrlKey) {
                         if (selected_entities.length == 1) {
                             if (selected_entities[0].collider.type == CollisionTypes.Trigger && clicked_entity.trigger) {
@@ -213,7 +214,7 @@ class EditorCamera extends Camera {
                             }
                         }
                     } else {
-                        this.selectEntity(clicked_entity);
+                        this.selection_start = clicked_entity;
                     }
                 } else {
                     var new_entity;
@@ -240,11 +241,30 @@ class EditorCamera extends Camera {
         e.preventDefault();
     }
     onmouseup(e) {
+        if (e.button == 0) {
+            if (this.selected_tool == 3) {
+                if (e.shiftKey && e.ctrlKey) {
+                } else {
+                    var selection_end = pickable_map.get(selected_id);
+                    if (this.selection_start == selection_end) {
+                        this.selectEntity(selection_end);
+                    } else {
+                        var entities = game.scene.entities.filter(entity => this.isEntityInsideRectangle(this.selection_start.getWorldPosition(), selection_end.getWorldPosition(), entity));
+                        entities.forEach(entity => this.selectEntity(entity));
+                    }
+                }
+            }
+        }
         e.preventDefault();
     } 
 
     onclick(e) {
         e.preventDefault();
+    }
+
+    isEntityInsideRectangle(pos1, pos2, entity) {
+        var pos = entity.getWorldPosition();
+        return pos1[0] <= pos[0] && pos[0] <= pos2[0] && pos1[2] <= pos[2] && pos[2] <= pos2[2];
     }
 
     update(elapsed, dirty) {

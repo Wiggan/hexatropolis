@@ -5,7 +5,6 @@ class PointLight extends Entity {
         super(parent, local_position);
         scene.lights.push(this);
         this.active = false;
-        this.model = models.block;
         this.ambient = [0.2, 0.2, 0.3];
         this.diffuse = [0.4, 0.4, 0.6];
         this.specular = [0.8, 0.8, 0.8];
@@ -24,9 +23,6 @@ class PointLight extends Entity {
         super.draw(renderer);
         if (this.active) {
             renderer.add_light(this);
-        }
-        if (debug) {
-            //renderer.add_drawable(this);
         }
     }
 

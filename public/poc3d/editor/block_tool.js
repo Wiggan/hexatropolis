@@ -35,10 +35,17 @@ class BlockTool extends Tool {
         super.onmouseup(e, clicked_entity);
         
         if (e.button == 0) {
+            var blockInPosition = this.getBlockInPosition(this.getWorldPosition());
             if (e.altKey) {
                 //clicked_entity // Fix "color picking"
+                if (blockInPosition) {
+                    var block_index = this.blocks.findIndex(block => block.toJSON().class == blockInPosition.class);
+                    if (block_index != -1) {
+                        console.log("Picked " + block_index + " " + blockInPosition.class);
+                        this.setBlock(block_index);
+                    }
+                }
             } else {
-                var blockInPosition = this.getBlockInPosition(this.getWorldPosition());
                 if (blockInPosition) {
                     game.scene.remove(blockInPosition);
                 }
@@ -54,7 +61,7 @@ class BlockTool extends Tool {
     }
 
     draw(renderer) {
-        if (!alt_pressed) {
+        if (alt_pressed) {
             
         } else {
             super.draw(renderer);
@@ -69,11 +76,15 @@ class BlockTool extends Tool {
         });
     }
 
-    changeBlock(delta) {
-        var block_index = (this.block_index + delta) % this.blocks.length;
-        if (block_index < 0) block_index += this.blocks.length;
+    setBlock(block_index) { 
         this.block_index = block_index;
         this.removeAllChildren();
         this.addChild(this.blocks[this.block_index]);
+    }
+
+    changeBlock(delta) {
+        var block_index = (this.block_index + delta) % this.blocks.length;
+        if (block_index < 0) block_index += this.blocks.length;
+        this.setBlock(block_index);
     }
 }

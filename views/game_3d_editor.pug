@@ -2,8 +2,11 @@ extends layout
 
 block head
   script(type='text/javascript', src='/common/lib/dat.gui.js')
-  script(type='text/javascript', src='/poc3d/basic/editor_camera.js')
-  script(type='text/javascript', src='/poc3d/editor.js')
+  script(type='text/javascript', src='/poc3d/editor/editor_camera.js')
+  script(type='text/javascript', src='/poc3d/editor/editor.js')
+  script(type='text/javascript', src='/poc3d/editor/tool.js')
+  script(type='text/javascript', src='/poc3d/editor/selection_tool.js')
+  script(type='text/javascript', src='/poc3d/editor/block_tool.js')
   style.
     #stack {
     position:relative;
@@ -13,10 +16,6 @@ block head
     position:absolute;
     left:0;
     top:0;
-    image-rendering: -moz-crisp-edges;
-    image-rendering: -webkit-crisp-edges;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
     }
 
 block content

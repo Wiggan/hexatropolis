@@ -46,7 +46,7 @@ class BlockTool extends Tool {
                     }
                 }
             } else {
-                this.placeBlockInScene();
+                this.placeBlockInScene(this.blocks[this.block_index].toJSON().class, this.getWorldPosition());
             }
         } else if (e.button == 2) {
             game.scene.remove(clicked_entity);
@@ -65,24 +65,6 @@ class BlockTool extends Tool {
         }
     }
 
-    placeBlockInScene() {
-        var blockInPosition = this.getBlockInPosition(this.getWorldPosition());
-        if (blockInPosition) {
-            game.scene.remove(blockInPosition);
-        }
-        var new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.getWorldPosition());    
-        if (!new_entity.id) {
-            new_entity.makePickable();
-        }
-        game.scene.entities.push(new_entity);
-    }
-
-    getBlockInPosition(pos) {
-        return game.scene.entities.find(entity => {
-            var pos1 = entity.getWorldPosition();
-            return Math.abs(pos1[0] - pos[0]) < 0.01 && Math.abs(pos1[2] - pos[2]) < 0.01;
-        });
-    }
 
     setBlock(block_index) { 
         this.block_index = block_index;

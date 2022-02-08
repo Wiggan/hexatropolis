@@ -9,8 +9,7 @@ class EditorCamera extends Camera {
         this.y = 10;
         this.velocity = [0, 0, 0];
         this.wheel = 0;
-        this.pointer_entity = new Entity(null, [0,0,0]);
-        
+
         this.dynamics = [
             new Drone(null, [0, 0, 0]),
             new Chest(null, [0, 0, 0]),
@@ -23,17 +22,30 @@ class EditorCamera extends Camera {
             new BlockTool(scene)
         ]
         this.active_tool = this.tools[0];
+        this.undo_stack = new Stack(10);
     }
 
     toJSON(key) { 
         return {}; 
     }
 
+    pushToUndoStackIfNeeded(original_json, new_json) {
+        if (original_json != new_json) {
+            this.undo_stack.push(original_json);
+        }
+    }
+
+    undo() {
+        if (!this.undo_stack.isEmpty()) {
+            var previous = JSON.parse(this.undo_stack.pop());
+            game.scene = new Scene(previous.name, previous.entities);
+        }
+    }
+
     activate() {
         super.activate();
         document.addEventListener("mousemove", active_camera.updatePosition, false);
         document.addEventListener("wheel", active_camera.updateScroll, false);
-
     }
     
     deactivate() {
@@ -47,7 +59,7 @@ class EditorCamera extends Camera {
     }
 
     updateScroll(e) {
-        active_camera.local_transform.translate([0, e.wheelDeltaY/100, 0]);
+        active_camera.local_transform.translate([0, -e.wheelDeltaY/100, 0]);
         return false;
     }
 
@@ -75,8 +87,12 @@ class EditorCamera extends Camera {
             this.active_tool = this.tools[1];
         } else if (e.key == '3') {
             this.active_tool = this.tools[2];
-        } 
+        } else if (e.key == 'z' && e.ctrlKey) {
+            this.undo();
+        }
+        var original_json = JSON.stringify(game.scene);
         this.active_tool.onKeyDown(e);
+        this.pushToUndoStackIfNeeded(original_json, JSON.stringify(game.scene));
     }
     
     changeDynamic(delta) {
@@ -103,11 +119,15 @@ class EditorCamera extends Camera {
         } else if (e.key == 'd' || e.key == 'D') {
             this.velocity[0] = 0;
         }
+        var original_json = JSON.stringify(game.scene);
         this.active_tool.onKeyUp(e);
+        this.pushToUndoStackIfNeeded(original_json, JSON.stringify(game.scene));
     }
 
     onmousedown(e) {
+        var original_json = JSON.stringify(game.scene);
         this.active_tool.onmousedown(e, pickable_map.get(selected_id));
+        this.pushToUndoStackIfNeeded(original_json, JSON.stringify(game.scene));
         /* 
         if (clicked_entity) {
             if (e.button == 0) {
@@ -150,21 +170,10 @@ class EditorCamera extends Camera {
     }
 
     onmouseup(e) {
+        var original_json = JSON.stringify(game.scene);
         this.active_tool.onmouseup(e, pickable_map.get(selected_id));
-/*         if (e.button == 0) {
-            if (this.selected_tool == 3) {
-                if (e.shiftKey && e.ctrlKey) {
-                } else {
-                    var selection_end = pickable_map.get(selected_id);
-                    if (this.selection_start == selection_end) {
-                        this.selectEntity(selection_end);
-                    } else {
-                        var entities = game.scene.entities.filter(entity => this.isEntityInsideRectangle(this.selection_start.getWorldPosition(), selection_end.getWorldPosition(), entity));
-                        entities.forEach(entity => this.selectEntity(entity));
-                    }
-                }
-            }
-        } */
+        this.pushToUndoStackIfNeeded(original_json, JSON.stringify(game.scene));
+
         e.preventDefault();
     } 
 
@@ -198,3 +207,45 @@ class EditorCamera extends Camera {
         }
     }
 }
+
+class Stack {
+    constructor(maxSize) { // Set default max size if not provided
+       if (isNaN(maxSize)) {
+          maxSize = 10;
+       }
+       this.maxSize = maxSize; // Init an array that'll contain the stack values.
+       this.container = [];
+    }
+    display() {
+       console.log(this.container);
+    }
+    isEmpty() {
+       return this.container.length === 0;
+    }
+    isFull() {
+       return this.container.length >= this.maxSize;
+    }
+    push(element) { // Check if stack is full
+       if (this.isFull()) {
+        this.container.shift();
+       }
+       this.container.push(element);
+    }
+    pop() { // Check if empty
+       if (this.isEmpty()) {
+          console.log("Stack Underflow!"); 
+          return;
+       }
+       return this.container.pop();
+    }
+    peek() {
+       if (isEmpty()) {
+          console.log("Stack Underflow!");
+          return;
+       }
+       return this.container[this.container.length - 1];
+    }
+    clear() {
+       this.container = [];
+    }
+ }

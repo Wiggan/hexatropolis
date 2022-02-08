@@ -49,8 +49,25 @@ class Tool extends Entity {
             }
         }
     }
+    
+    getBlockInPosition(pos) {
+        return game.scene.entities.find(entity => {
+            var pos1 = entity.getWorldPosition();
+            return Math.abs(pos1[0] - pos[0]) < 0.01 && Math.abs(pos1[2] - pos[2]) < 0.01;
+        });
+    }
 
-
+    placeBlockInScene(class_name, position) {
+        var blockInPosition = this.getBlockInPosition(this.getWorldPosition());
+        if (blockInPosition) {
+            game.scene.remove(blockInPosition);
+        }
+        var new_entity = new classes[class_name](game.scene, position);    
+        if (!new_entity.id) {
+            new_entity.makePickable();
+        }
+        game.scene.entities.push(new_entity);
+    }
     
     changeDynamic(delta) {
         var dynamic_index = (this.dynamic_index + delta) % this.dynamics.length;

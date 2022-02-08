@@ -7,10 +7,33 @@ class SelectionTool extends Tool {
 
     onKeyDown(e) {
         super.onKeyDown(e);
+        if ((e.key == 'g' || e.key == 'G') && !e.repeat) {
+            this.moving = true;
+            this.moving_start_point = this.getWorldPosition();
+        }
     }
     
     onKeyUp(e) {
         super.onKeyUp(e);
+        if (e.key == 'g' || e.key == 'G') {
+            this.moving = false;
+            var translation = [this.getWorldPosition()[0] - this.moving_start_point[0], 0, this.getWorldPosition()[2] - this.moving_start_point[2]];
+            if (e.shiftKey) {
+                selected_entities.forEach(entity => {
+                    var copy_position = snapToHexPosition([entity.getWorldPosition()[0] + translation[0], 0, entity.getWorldPosition()[2] + translation[2]]);
+                    this.placeBlockInScene(entity.toJSON().class, copy_position);
+                });
+            } else {
+                selected_entities.forEach(entity => {
+                    entity.local_transform.translate(snapToHexPosition(translation));
+                });
+            }
+        } else if (e.key == 'Delete') {
+            selected_entities.forEach(entity => {
+                game.scene.remove(entity);
+            });
+        }
+
     }
 
     onmousedown(e, clicked_entity) {

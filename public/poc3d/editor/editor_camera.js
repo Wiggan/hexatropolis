@@ -71,13 +71,10 @@ class EditorCamera extends Camera {
             this.local_transform.setPosition(this.original_position);
         } else if (e.key == '1') {
             this.active_tool = this.tools[0];
-            picking = true;
         } else if (e.key == '2') {
             this.active_tool = this.tools[1];
-            picking = false;
         } else if (e.key == '3') {
             this.active_tool = this.tools[2];
-            picking = false;
         } 
         this.active_tool.onKeyDown(e);
     }
@@ -182,6 +179,7 @@ class EditorCamera extends Camera {
         if (Number.isFinite(intersection[0]) && Number.isFinite(intersection[1]) && Number.isFinite(intersection[2])) {
             this.active_tool.setPosition(intersection);
         }
+        this.active_tool.update(elapsed, dirty);
         super.update(elapsed, dirty);
     }
 

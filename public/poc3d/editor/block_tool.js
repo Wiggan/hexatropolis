@@ -46,14 +46,7 @@ class BlockTool extends Tool {
                     }
                 }
             } else {
-                if (blockInPosition) {
-                    game.scene.remove(blockInPosition);
-                }
-                var new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.getWorldPosition());    
-                if (!new_entity.id) {
-                    new_entity.makePickable();
-                }
-                game.scene.entities.push(new_entity);
+                this.placeBlockInScene();
             }
         } else if (e.button == 2) {
             game.scene.remove(clicked_entity);
@@ -62,11 +55,26 @@ class BlockTool extends Tool {
 
     draw(renderer) {
         if (alt_pressed) {
-            
+            var selected_entity = pickable_map.get(selected_id);
+            if (selected_entity) {
+                renderer.add_textbox({pos: this.getWorldPosition(), text: selected_entity.toJSON().class});
+            }
         } else {
             super.draw(renderer);
             renderer.add_textbox({pos: this.getWorldPosition(), text: this.blocks[this.block_index].toJSON().class});
         }
+    }
+
+    placeBlockInScene() {
+        var blockInPosition = this.getBlockInPosition(this.getWorldPosition());
+        if (blockInPosition) {
+            game.scene.remove(blockInPosition);
+        }
+        var new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.getWorldPosition());    
+        if (!new_entity.id) {
+            new_entity.makePickable();
+        }
+        game.scene.entities.push(new_entity);
     }
 
     getBlockInPosition(pos) {
@@ -86,5 +94,14 @@ class BlockTool extends Tool {
         var block_index = (this.block_index + delta) % this.blocks.length;
         if (block_index < 0) block_index += this.blocks.length;
         this.setBlock(block_index);
+    }
+
+    update(elapsed, dirty) {
+        super.update(elapsed, dirty);
+        if (alt_pressed) {
+            this.setPicking(true); 
+        } else {
+            this.setPicking(false);
+        }
     }
 }

@@ -33,7 +33,7 @@ class SelectionTool extends Tool {
                 if (!e.shiftKey) {
                     selected_entities.length = 0;
                 }
-                if (this.clicked_entity_start == clicked_entity) {
+                if (this.clicked_entity_start == clicked_entity && this.clicked_entity_start && clicked_entity) {
                     this.selectEntity(clicked_entity);
                 } else {
                     var entities = game.scene.entities.filter(entity => this.isEntityInsideRectangle(this.click_start, this.click_end, entity));
@@ -54,5 +54,10 @@ class SelectionTool extends Tool {
         selected_entities.forEach(entity => {
             this.drawSelected(renderer, entity);
         });
+    }
+    
+    update(elapsed, dirty) {
+        super.update(elapsed, dirty);
+        picking = true;
     }
 }

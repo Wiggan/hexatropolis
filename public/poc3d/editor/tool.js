@@ -117,7 +117,10 @@ class Tool extends Entity {
 
     isEntityInsideRectangle(pos1, pos2, entity) {
         var pos = entity.getWorldPosition();
-        return pos1[0] <= pos[0] && pos[0] <= pos2[0] && pos1[2] <= pos[2] && pos[2] <= pos2[2];
+        return Math.min(pos1[0], pos2[0]) <= pos[0] && 
+               pos[0] <= Math.max(pos1[0], pos2[0]) && 
+               Math.min(pos1[2], pos2[2]) <= pos[2] && 
+               pos[2] <= Math.max(pos1[2], pos2[2]);
     }
 
     setPosition(position) {
@@ -140,5 +143,10 @@ class Tool extends Entity {
         }
     }
 
-    
+    setPicking(p) {
+        picking = p;
+        if (!picking) {
+            selected_id = 0;
+        }
+    }
 }

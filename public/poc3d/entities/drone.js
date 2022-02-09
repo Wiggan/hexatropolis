@@ -7,6 +7,8 @@ class Drone extends Pickable {
         this.type = PickableType.Enemy;
         this.body = new Drawable(this, [0, 0, 0], models.drone.body);
         this.lamp = new Drawable(this, [0, 0, 0], models.drone.lamp);
+        this.body.local_transform.yaw(90);
+        this.lamp.local_transform.yaw(90);
         this.lamp.material = materials.red_led;
         this.lamp.id = this.id;
         this.body.material = materials.player;
@@ -18,12 +20,19 @@ class Drone extends Pickable {
         this.name = "Drone";
         this.max_health = 50;
         this.health = 50;
+        this.patrol_position = vec3.clone(this.position);
+        this.target_position = this.patrol_position;
+        this.tolerance = 0.1;
+        this.stats = {
+            movement_speed: 0.001
+        };
     }
     
     toJSON(key) {
         return {
             class: 'Drone',
-            local_position: this.position
+            local_position: this.position,
+            patrol_position: this.patrol_position
         }
     }
 
@@ -38,10 +47,25 @@ class Drone extends Pickable {
     }
 
     update(elapsed, dirty) {
+        if (this.patrol_position) {
+            if (!this.velocity) {
+                this.velocity = vec3.create();
+            }
+            this.look_at = this.target_position;
+            vec3.scale(this.velocity, forward(this.getWorldTransform()), this.stats.movement_speed);
+            if(vec3.dist(this.target_position, this.getWorldPosition()) < this.tolerance) {
+                if (this.target_position == this.position) {
+                    this.target_position = this.patrol_position;
+                } else {
+                    this.target_position = this.position;
+                }
+            }
+        }
+        dirty = true;
+        super.update(elapsed, dirty);
         var pos = vec3.create();
         vec3.add(pos, this.getLocalPosition(), [0, Math.sin(Date.now()*0.005)*0.005, 0]);
         this.local_transform.setPosition(pos);
-        super.update(elapsed, dirty);
     }
 }
 

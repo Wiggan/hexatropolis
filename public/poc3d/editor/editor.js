@@ -15,7 +15,7 @@ function render() {
         now = Date.now();
         var elapsed = now - then;
         frame_intervals.push(elapsed);
-        game.update(elapsed);
+        game.update(0);
         editor_camera.update(elapsed);
         then = now;
         game.scene.draw(renderer);

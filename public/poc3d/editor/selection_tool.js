@@ -54,6 +54,9 @@ class SelectionTool extends Tool {
                         console.log("Connected portals");
                         selected_entities[0].destination_uuid = clicked_entity.uuid;
                         clicked_entity.destination_uuid = selected_entities[0].uuid;
+                    } else if (selected_entities[0].toJSON().class == 'Drone') {
+                        console.log("Set partol position for drone");
+                        selected_entities[0].patrol_position = this.getWorldPosition();
                     }
                 }
             } else {

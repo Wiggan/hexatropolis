@@ -114,44 +114,6 @@ class EditorCamera extends Camera {
         var original_json = JSON.stringify(game.scene);
         this.active_tool.onmousedown(e, pickable_map.get(selected_id));
         this.pushToUndoStackIfNeeded(original_json, JSON.stringify(game.scene));
-        /* 
-        if (clicked_entity) {
-            if (e.button == 0) {
-                if (this.selected_tool == 3) {
-                    
-                    if (e.shiftKey && e.ctrlKey) {
-                        if (selected_entities.length == 1) {
-                            if (selected_entities[0].collider.type == CollisionTypes.Trigger && clicked_entity.trigger) {
-                                console.log("Connected trigger and triggee");
-                                selected_entities[0].triggee = clicked_entity.uuid;
-                                //this.selectEntity(clicked_entity);
-                            }
-                        }
-                    } else {
-                        this.selection_start = clicked_entity;
-                    }
-                } else {
-                    var new_entity;
-                    if (this.selected_tool == 1) {
-                        new_entity = new classes[this.blocks[this.block_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
-                    } else if (this.selected_tool == 2) {
-                        new_entity = new classes[this.dynamics[this.dynamic_index].toJSON().class](game.scene, this.pointer_entity.getWorldPosition());    
-                    }
-                    if (!new_entity.id) {
-                        new_entity.makePickable();
-                    }
-                    //this.selectEntity(new_entity);
-                    game.scene.entities.push(new_entity);
-                }
-            } else if (e.button == 2) {
-                if (this.selected_tool < 3) {
-                    game.scene.remove(clicked_entity);
-                } else if (this.selected_tool == 3) {
-                    this.deselectEntity(clicked_entity);
-                }
-            }
-
-        } */
         e.preventDefault();
     }
 
@@ -180,16 +142,8 @@ class EditorCamera extends Camera {
 
     draw(renderer) {
         this.active_tool.draw(renderer);
-        /* if (!alt_pressed) {
-            if (this.selected_tool == 1) {
-                renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.blocks[this.block_index].toJSON().class});
-            } else if (this.selected_tool == 2) {
-                renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.dynamics[this.dynamic_index].toJSON().class});
-            }
-        } */
         if (debug) {
             renderer.add_drawable(models.sphere, materials.light, this.pointer_entity.getWorldTransform());
-            
         }
     }
 }

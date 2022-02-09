@@ -49,7 +49,7 @@ class Tool extends Entity {
             }
         }
     }
-    
+
     getBlockInPosition(pos) {
         return game.scene.entities.find(entity => {
             var pos1 = entity.getWorldPosition();
@@ -99,6 +99,8 @@ class Tool extends Entity {
                     });
                 } else if (key == 'class') {
                     selected_gui.add(persistent, key).onChange((v) => selected_entities[0][key] = v);
+                } else if (key == 'patrol_position') {
+                    //selected_gui.add(persistent, key).onChange((v) => selected_entities[0][key] = v);
                 }
             }
         }

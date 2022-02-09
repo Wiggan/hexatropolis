@@ -89,8 +89,8 @@ class Tool extends Entity {
             var persistent = selected_entities[0].toJSON();
             Object.assign(selected_entities[0], persistent);
             for (const [key, value] of Object.entries(persistent)) {
-                if (key == 'destination_scene_name') {
-                    selected_gui.add(persistent, key, Object.keys(game.scenes)).onChange((v) => selected_entities[0][key] = v);
+                if (key == 'destination_uuid') {
+                    selected_gui.add(persistent, key/*, Object.keys(game.scenes)*/).onChange((v) => selected_entities[0][key] = v);
                 } else if (key == 'uuid') {
                     selected_gui.add(persistent, key).onChange((v) => selected_entities[0][key] = v);
                 } else if (key == 'triggee') {

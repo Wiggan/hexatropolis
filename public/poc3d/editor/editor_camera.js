@@ -1,7 +1,7 @@
 'use strict'
 
 class EditorCamera extends Camera {
-    constructor(local_position, scene) {
+    constructor(local_position) {
         super(null, local_position);
         this.original_position = local_position;
         this.local_transform.pitch(-90);
@@ -19,7 +19,7 @@ class EditorCamera extends Camera {
 
         this.tools = [
             new SelectionTool(),
-            new BlockTool(scene)
+            new BlockTool()
         ]
         this.active_tool = this.tools[0];
         this.undo_stack = new Stack(10);

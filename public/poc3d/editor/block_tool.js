@@ -1,12 +1,12 @@
 'use strict'
 
 class BlockTool extends Tool {
-    constructor(scene) {
+    constructor() {
         super();
         this.blocks = [new Wall(this, [0,0,0]),
                        new Floor(null, [0,0,0]),
-                       new Lantern(scene, [0,0,0]),
-                       new Portal(scene, [0,0,0]),
+                       new Lantern(null, [0,0,0]),
+                       new Portal(null, [0,0,0]),
                        new FloorButton(null, [0,0,0]),
                        new SinkableWall(null, [0,0,0]),
                     ];

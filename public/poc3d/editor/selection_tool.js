@@ -50,6 +50,10 @@ class SelectionTool extends Tool {
                     if (selected_entities[0].collider.type == CollisionTypes.Trigger && clicked_entity.trigger) {
                         console.log("Connected trigger and triggee");
                         selected_entities[0].triggee = clicked_entity.uuid;
+                    } else if (selected_entities[0].toJSON().class == 'Portal' && clicked_entity.toJSON().class == 'Portal') {
+                        console.log("Connected portals");
+                        selected_entities[0].destination_uuid = clicked_entity.uuid;
+                        clicked_entity.destination_uuid = selected_entities[0].uuid;
                     }
                 }
             } else {

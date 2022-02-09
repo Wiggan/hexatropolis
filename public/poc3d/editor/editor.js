@@ -2,7 +2,7 @@
 
 // Global variables that are set and used
 // across the application
-let renderer, gui;
+let renderer, gui, editor_camera;
 
 
 var frame_intervals = [];
@@ -16,8 +16,10 @@ function render() {
         var elapsed = now - then;
         frame_intervals.push(elapsed);
         game.update(elapsed);
+        editor_camera.update(elapsed);
         then = now;
         game.scene.draw(renderer);
+        editor_camera.draw(renderer);
         if (frame_intervals.length == 60) {
             fps = Math.floor(60000 / frame_intervals.reduce((total, interval) => total + interval));
             frame_intervals.length = 0;
@@ -45,12 +47,11 @@ async function init() {
             }
         });
         //value.entities.push(new DebugCamera([6, 6, 8]));
-        value.editor_camera = new EditorCamera([6, 16, 8], value);
-        value.entities.push(value.editor_camera);
     }
-
     
-    game.scene.editor_camera.activate();
+    
+    editor_camera = new EditorCamera([6, 16, 8]);
+    editor_camera.activate();
     picking = true;
     render();
     initControls();
@@ -100,15 +101,12 @@ function initControls() {
     var current_scene = {scene: game.scene.name};
     var changeScene = (scene_name) => {
         game.scene = game.scenes[scene_name];
-        game.scene.editor_camera.activate();
     } 
     var scene_list = scenes_folder.add(current_scene, 'scene', Object.keys(game.scenes)).onChange(changeScene);
     var new_scene = {name: ''};
     scenes_folder.add(new_scene, 'name').onFinishChange(v => {
         if (v) {
             game.scenes[v] = new Scene(v, []);
-            game.scenes[v].editor_camera = new EditorCamera([6, 16, 8], game.scenes[v]);
-            game.scenes[v].entities.push(game.scenes[v].editor_camera);
             scenes_folder.remove(scene_list);
             scene_list = scenes_folder.add(current_scene, 'scene', Object.keys(game.scenes)).onChange(changeScene);
             scene_list.setValue(v);

@@ -3,7 +3,9 @@
 class PointLight extends Entity {
     constructor(parent, local_position, scene) {
         super(parent, local_position);
-        scene.lights.push(this);
+        if (scene) {
+            scene.lights.push(this);
+        }
         this.active = false;
         this.ambient = [0.2, 0.2, 0.3];
         this.diffuse = [0.4, 0.4, 0.6];

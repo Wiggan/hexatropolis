@@ -29,6 +29,11 @@ class BlockTool extends Tool {
 
     onmousedown(e, clicked_entity) {
         super.onmousedown(e, clicked_entity);
+        if (e.button == 0 && !e.altKey) {
+            this.drawing = true;
+        } else if (e.button == 2) {
+            this.rubbering = true;
+        }
     }
     
     onmouseup(e, clicked_entity) {
@@ -46,10 +51,10 @@ class BlockTool extends Tool {
                     }
                 }
             } else {
-                this.placeBlockInScene(this.blocks[this.block_index].toJSON().class, this.getWorldPosition());
+                this.drawing = false;
             }
         } else if (e.button == 2) {
-            game.scene.remove(clicked_entity);
+            this.rubbering = false;
         }
     }
 
@@ -84,6 +89,14 @@ class BlockTool extends Tool {
             this.setPicking(true); 
         } else {
             this.setPicking(false);
+        }
+        if (this.drawing) {
+            this.placeBlockInScene(this.blocks[this.block_index].toJSON().class, this.getWorldPosition());
+        } else if (this.rubbering) {
+            var blockInPosition = this.getBlockInPosition(this.getWorldPosition());
+            if (blockInPosition) {
+                game.scene.remove(blockInPosition);
+            }
         }
     }
 }

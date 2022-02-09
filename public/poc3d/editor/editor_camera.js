@@ -10,16 +10,10 @@ class EditorCamera extends Camera {
         this.velocity = [0, 0, 0];
         this.wheel = 0;
 
-        this.dynamics = [
-            new Drone(null, [0, 0, 0]),
-            new Chest(null, [0, 0, 0]),
-        ];
-        this.dynamics.forEach(dynamic => dynamic.material = materials.blue);
-        this.dynamic_index = 0;
-
         this.tools = [
             new SelectionTool(),
-            new BlockTool()
+            new BlockTool(),
+            new ObjectTool()
         ]
         this.active_tool = this.tools[0];
         this.undo_stack = new Stack(10);
@@ -93,14 +87,6 @@ class EditorCamera extends Camera {
         var original_json = JSON.stringify(game.scene);
         this.active_tool.onKeyDown(e);
         this.pushToUndoStackIfNeeded(original_json, JSON.stringify(game.scene));
-    }
-    
-    changeDynamic(delta) {
-        var dynamic_index = (this.dynamic_index + delta) % this.dynamics.length;
-        if (dynamic_index < 0) dynamic_index += this.dynamics.length;
-        this.dynamic_index = dynamic_index;
-        this.pointer_entity.removeAllChildren();
-        this.pointer_entity.addChild(this.dynamics[this.dynamic_index]);
     }
 
     onKeyUp(e) {
@@ -194,13 +180,13 @@ class EditorCamera extends Camera {
 
     draw(renderer) {
         this.active_tool.draw(renderer);
-        if (!alt_pressed) {
+        /* if (!alt_pressed) {
             if (this.selected_tool == 1) {
                 renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.blocks[this.block_index].toJSON().class});
             } else if (this.selected_tool == 2) {
                 renderer.add_textbox({pos: this.pointer_entity.getWorldPosition(), text: this.dynamics[this.dynamic_index].toJSON().class});
             }
-        }
+        } */
         if (debug) {
             renderer.add_drawable(models.sphere, materials.light, this.pointer_entity.getWorldTransform());
             

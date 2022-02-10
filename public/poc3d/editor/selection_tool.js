@@ -25,6 +25,13 @@ class SelectionTool extends Tool {
                 });
             } else {
                 selected_entities.forEach(entity => {
+                    var new_position = vec3.create();
+                    vec3.add(new_position, entity.getWorldPosition(), translation);
+                    new_position = snapToHexPosition(new_position);
+                    var blockInPosition = this.getBlockInPosition(new_position);
+                    if (blockInPosition && !selected_entities.includes(blockInPosition)) {
+                        game.scene.remove(blockInPosition);
+                    }
                     entity.local_transform.translate(snapToHexPosition(translation));
                 });
             }
